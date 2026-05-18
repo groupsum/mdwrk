@@ -1,0 +1,749 @@
+// @vitest-environment jsdom
+import '@testing-library/jest-dom/vitest';
+import '@mdwrk/testing/vitest-setup';
+
+import React from 'react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ExtensionManifest, I18nLabel } from '@mdwrk/extension-manifest';
+import type {
+  DiagnosticRecord,
+  Disposable,
+  ExtensionContext,
+  ExtensionHost,
+  RegisteredActionRailItem,
+  RegisteredCommand,
+  RegisteredSettingsSection,
+  RegisteredView,
+  RegisteredWorkspaceModule,
+} from '@mdwrk/extension-host';
+import { EXTENSION_HOST_API_VERSION } from '@mdwrk/extension-host';
+import {
+  EXTENSION_RUNTIME_VERSION,
+  canonicalizeJson,
+  createExtensionRuntime,
+  createInMemoryExtensionArtifactTransport,
+  createInMemoryExtensionRuntimeStorage,
+  digestText,
+  type BundledExtensionCatalogEntry,
+  type ExtensionRuntimeRegistrationSink,
+} from '@mdwrk/extension-runtime';
+import { THEME_CONTRACT_VERSION } from '@mdwrk/theme-contract';
+import {
+  createExtensionManagerBundledEntry,
+  EXTENSION_MANAGER_VIEW_ID,
+  extensionManagerManifest,
+} from '../src/index';
+import { ExtensionManagerView } from '../src/components/ExtensionManagerView';
+
+const formatLabel = (label: I18nLabel | string): string => typeof label === 'string' ? label : label.defaultMessage;
+
+interface HostHarness {
+  host: ExtensionHost;
+  commands: RegisteredCommand[];
+  views: RegisteredView[];
+  workspaceModules: RegisteredWorkspaceModule[];
+  railItems: RegisteredActionRailItem[];
+  settingsSections: RegisteredSettingsSection[];
+  notifications: string[];
+  diagnostics: Record<string, DiagnosticRecord[]>;
+  setGrantedCapabilities(capabilities: readonly string[]): void;
+}
+
+function createManifest(overrides: Partial<ExtensionManifest> & Pick<ExtensionManifest, 'id' | 'packageName' | 'displayName' | 'description'>): ExtensionManifest {
+  return {
+    manifestVersion: 1,
+    id: overrides.id,
+    packageName: overrides.packageName,
+    version: '1.0.0',
+    displayName: overrides.displayName,
+    description: overrides.description,
+    kind: 'bundled',
+    icon: { kind: 'lucide', name: 'Puzzle' },
+    enabledByDefault: true,
+    capabilities: ['view.register', 'actionRail.register', 'notification.publish', 'settings.read', 'settings.write'],
+    compatibility: {
+      manifestVersion: 1,
+      hostApi: '*',
+      runtime: '*',
+      app: '*',
+      themeContract: '*',
+    },
+    entry: {
+      module: './index.js',
+      export: 'extension',
+    },
+    contributions: {
+      commands: [],
+      views: [],
+      components: [],
+      actionRail: [],
+      settingsSections: [],
+    },
+    ...overrides,
+  };
+}
+
+function createHostHarness(): HostHarness {
+  const commands: RegisteredCommand[] = [];
+  const views: RegisteredView[] = [];
+  const workspaceModules: RegisteredWorkspaceModule[] = [];
+  const railItems: RegisteredActionRailItem[] = [];
+  const settingsSections: RegisteredSettingsSection[] = [];
+  const notifications: string[] = [];
+  const diagnostics: Record<string, DiagnosticRecord[]> = {};
+  const hostSettings = new Map<string, unknown>();
+  const hostSettingListeners = new Map<string, Set<(value: unknown | null) => void>>();
+  const openedViews: string[] = [];
+
+  const watchSetting = <T,>(key: string, listener: (value: T | null) => void): Disposable => {
+    const bucket = hostSettingListeners.get(key) ?? new Set();
+    bucket.add(listener as (value: unknown | null) => void);
+    hostSettingListeners.set(key, bucket);
+    return {
+      dispose() {
+        const active = hostSettingListeners.get(key);
+        if (!active) return;
+        active.delete(listener as (value: unknown | null) => void);
+        if (active.size === 0) hostSettingListeners.delete(key);
+      },
+    };
+  };
+
+  const emitSetting = (key: string, value: unknown | null) => {
+    for (const listener of Array.from(hostSettingListeners.get(key) ?? [])) {
+      listener(value);
+    }
+  };
+
+  const host: ExtensionHost = {
+    apiVersion: EXTENSION_HOST_API_VERSION,
+    commands: {
+      async execute(id: string): Promise<unknown> {
+        const command = commands.find((candidate) => candidate.id === id);
+        return await command?.execute();
+      },
+      async list() {
+        return commands.map((command) => command.id);
+      },
+    },
+    views: {
+      async open(id: string): Promise<void> {
+        openedViews.push(id);
+      },
+      async close(): Promise<void> {},
+      async focus(): Promise<void> {},
+      async list() {
+        return views;
+      },
+    },
+    actionRail: {
+      async list() {
+        return railItems;
+      },
+      async reveal(): Promise<void> {},
+      async setBadge(): Promise<void> {},
+    },
+    settings: {
+      async get<T = unknown>(key: string): Promise<T | null> {
+        return (hostSettings.has(key) ? hostSettings.get(key) : null) as T | null;
+      },
+      async set<T = unknown>(key: string, value: T): Promise<void> {
+        hostSettings.set(key, value);
+        emitSetting(key, value ?? null);
+      },
+      async remove(key: string): Promise<void> {
+        hostSettings.delete(key);
+        emitSetting(key, null);
+      },
+      watch: watchSetting,
+    },
+    notifications: {
+      async info(message) { notifications.push(formatLabel(message)); },
+      async warn(message) { notifications.push(formatLabel(message)); },
+      async error(message) { notifications.push(formatLabel(message)); },
+    },
+    theme: {
+      async getToken() { return null; },
+      async getTokenMap() { return {}; },
+      async getTokens() { return []; },
+      async getClassNames() { return []; },
+      async getThemeBridge() { return []; },
+      async getThemeBridgeVariables() { return {}; },
+      async setDraftToken() {},
+      async setDraftTokens() {},
+      async previewTheme() {},
+      async applyDraft() {},
+      async discardDraft() {},
+      async exportTheme() {
+        return {
+          metadata: { id: 'test-theme', name: 'Test Theme', description: 'Test theme preset' },
+          compatibility: { contract: '1.0.0' },
+          tokens: {},
+        };
+      },
+      async exportThemeCss() { return ':root {}'; },
+      async supportsClass() { return true; },
+    },
+    editor: {
+      async getActiveDocument() { return null; },
+      async getSelections() { return []; },
+      async insertText() {},
+      async replaceSelections() {},
+      async setDocumentContent() {},
+    },
+    workspace: {
+      async listProjects() { return []; },
+      async listFiles() { return []; },
+      async getActiveProject() { return null; },
+      async getActiveFile() { return null; },
+      async readFile() { return ''; },
+      async writeFile() {},
+    },
+    i18n: {
+      async getLocale() { return 'en'; },
+      async setLocale() {},
+      async ensureLocale() {},
+      format: formatLabel,
+      registerCatalog() {
+        return { dispose() {} };
+      },
+      registerCatalogLoader() {
+        return { dispose() {} };
+      },
+    },
+    diagnostics: {
+      async publish(extensionId, record) {
+        diagnostics[extensionId] = [...(diagnostics[extensionId] ?? []), record];
+      },
+      async clear(extensionId) {
+        diagnostics[extensionId] = [];
+      },
+    },
+    logger: {
+      debug() {}, info() {}, warn() {}, error() {},
+    },
+    environment: {
+      platform: 'web',
+      mode: 'test',
+      hostVersion: '1.3.49',
+      runtimeVersion: EXTENSION_RUNTIME_VERSION,
+      grantedCapabilities: [
+        'view.register',
+        'actionRail.register',
+        'notification.publish',
+        'settings.read',
+        'settings.write',
+      ],
+    },
+  };
+
+  return { host, commands, views, workspaceModules, railItems, settingsSections, notifications, diagnostics, setGrantedCapabilities(capabilities) { (host as unknown as { environment: ExtensionHost['environment'] }).environment = { ...host.environment, grantedCapabilities: capabilities as never }; } };
+}
+
+function createRegistrationSink(harness: HostHarness): ExtensionRuntimeRegistrationSink {
+  return {
+    registerCommand(_extensionId, command) {
+      harness.commands.push(command);
+      return { dispose() {
+        const index = harness.commands.indexOf(command);
+        if (index >= 0) harness.commands.splice(index, 1);
+      } };
+    },
+    registerView(_extensionId, view) {
+      harness.views.push(view);
+      return { dispose() {
+        const index = harness.views.indexOf(view);
+        if (index >= 0) harness.views.splice(index, 1);
+      } };
+    },
+    registerWorkspaceModule(_extensionId, module) {
+      harness.workspaceModules.push(module);
+      harness.views.push({
+        id: module.primaryViewId,
+        title: module.title,
+        description: module.description,
+        icon: module.icon,
+        location: 'main',
+        allowMultiple: false,
+        canBePinned: true,
+        render: module.render,
+        renderSidebar: module.renderExplorer,
+      });
+      return { dispose() {
+        const moduleIndex = harness.workspaceModules.indexOf(module);
+        if (moduleIndex >= 0) harness.workspaceModules.splice(moduleIndex, 1);
+        const viewIndex = harness.views.findIndex((view) => view.id === module.primaryViewId);
+        if (viewIndex >= 0) harness.views.splice(viewIndex, 1);
+      } };
+    },
+    registerActionRailItem(_extensionId, item) {
+      harness.railItems.push(item);
+      return { dispose() {
+        const index = harness.railItems.indexOf(item);
+        if (index >= 0) harness.railItems.splice(index, 1);
+      } };
+    },
+    registerSettingsSection(_extensionId, section) {
+      harness.settingsSections.push(section);
+      return { dispose() {
+        const index = harness.settingsSections.indexOf(section);
+        if (index >= 0) harness.settingsSections.splice(index, 1);
+      } };
+    },
+  };
+}
+
+function createBundledEntry(options: {
+  manifest: ExtensionManifest;
+  activation?: 'eager' | 'lazy';
+  onActivate?: (context: ExtensionContext) => Promise<void> | void;
+  onDeactivate?: (context: ExtensionContext) => Promise<void> | void;
+  loadError?: Error;
+}): BundledExtensionCatalogEntry {
+  return {
+    manifest: options.manifest,
+    activation: options.activation ?? 'eager',
+    async load() {
+      if (options.loadError) throw options.loadError;
+      return {
+        manifest: options.manifest,
+        activate: async (context) => {
+          await options.onActivate?.(context);
+        },
+        deactivate: options.onDeactivate,
+      };
+    },
+  };
+}
+
+async function createInstallableCatalogFixture() {
+  const manifest = createManifest({
+    id: 'external.catalog-hello',
+    packageName: '@mdwrk/extension-catalog-hello',
+    displayName: { defaultMessage: 'Catalog Hello' },
+    description: { defaultMessage: 'Sample external catalog extension.' },
+    kind: 'external',
+    publisher: 'demo-catalog',
+    capabilities: ['view.register', 'actionRail.register', 'notification.publish', 'settings.read'],
+    distribution: {
+      channel: 'catalog',
+      format: 'esm',
+    },
+  });
+  const moduleCode = `
+const manifest = ${JSON.stringify(manifest)};
+export default {
+  manifest,
+  async activate(context) {
+    context.registerView({
+      id: "external.catalog-hello.view",
+      title: { defaultMessage: "Catalog Hello" },
+      description: { defaultMessage: "Catalog hello view" },
+      location: "panel",
+      allowMultiple: false,
+      render: () => "Catalog Hello"
+    });
+  }
+};
+`;
+  const signedManifest = {
+    schemaVersion: 1,
+    manifest,
+    signature: {
+      keyId: 'unsigned-test',
+      algorithm: 'ecdsa-p256-sha256',
+      signature: '',
+      signedAt: new Date(0).toISOString(),
+    },
+  };
+  const catalog = {
+    schemaVersion: 1 as const,
+    generatedAt: new Date(0).toISOString(),
+    publisher: 'demo-catalog',
+    extensions: [
+      {
+        entryId: 'external.catalog-hello@1.0.0',
+        extensionId: manifest.id,
+        packageName: manifest.packageName,
+        version: manifest.version,
+        displayName: manifest.displayName,
+        description: manifest.description,
+        publisher: manifest.publisher,
+        categories: ['sample'],
+        keywords: ['hello', 'catalog'],
+        capabilities: manifest.capabilities,
+        compatibility: manifest.compatibility,
+        supportedLocales: [],
+        urls: {
+          manifest: 'https://extensions.example/catalog-hello/manifest.json',
+          signedManifest: 'https://extensions.example/catalog-hello/signed-manifest.json',
+          module: 'https://extensions.example/catalog-hello/index.js',
+          integrity: 'https://extensions.example/catalog-hello/integrity.json',
+        },
+        integrity: {
+          manifest: {
+            algorithm: 'sha256' as const,
+            digest: await digestText(canonicalizeJson(manifest)),
+          },
+          module: {
+            algorithm: 'sha256' as const,
+            digest: await digestText(moduleCode),
+          },
+        },
+      },
+    ],
+  };
+  return {
+    catalog,
+    manifest,
+    transport: createInMemoryExtensionArtifactTransport({
+      'https://extensions.example/catalog-hello/manifest.json': JSON.stringify(manifest),
+      'https://extensions.example/catalog-hello/signed-manifest.json': JSON.stringify(signedManifest),
+      'https://extensions.example/catalog-hello/index.js': moduleCode,
+    }),
+  };
+}
+
+function renderManagerView(runtime: ReturnType<typeof createExtensionRuntime>) {
+  return render(
+    <ExtensionManagerView
+      runtime={runtime}
+      close={vi.fn(async () => {})}
+      formatLabel={formatLabel}
+      defaultSettings={{ showCompatibility: true, showDiagnostics: true }}
+    />,
+  );
+}
+
+describe('extension-manager', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('registers the extension manager bundled entry, view, command, and rail contribution', async () => {
+    const harness = createHostHarness();
+    const storage = createInMemoryExtensionRuntimeStorage();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage,
+    });
+
+    const entry = createExtensionManagerBundledEntry({ runtime });
+    runtime.registerBundledExtension(entry);
+    await runtime.start();
+
+    expect(runtime.get(extensionManagerManifest.id)?.status).toBe('active');
+    expect(harness.commands.some((command) => command.id === extensionManagerManifest.contributions.commands[0]?.id)).toBe(true);
+    expect(harness.views.some((view) => view.id === EXTENSION_MANAGER_VIEW_ID)).toBe(true);
+    expect(harness.views.find((view) => view.id === EXTENSION_MANAGER_VIEW_ID)?.location).toBe('main');
+    expect(harness.railItems.some((item) => item.id === extensionManagerManifest.contributions.actionRail[0]?.id)).toBe(true);
+    expect(harness.diagnostics[extensionManagerManifest.id]?.some((record) => record.code === 'EXT_MANAGER_READY')).toBe(true);
+
+    await runtime.stop();
+  });
+
+  it('renders manager view and bundled extension inventory', async () => {
+    const harness = createHostHarness();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage: createInMemoryExtensionRuntimeStorage(),
+    });
+
+    const inventoryManifest = createManifest({
+      id: 'core.inventory',
+      packageName: '@mdwrk/inventory',
+      displayName: { defaultMessage: 'Inventory Extension' },
+      description: { defaultMessage: 'Inventory test extension.' },
+    });
+
+    runtime.registerBundledExtension(createBundledEntry({
+      manifest: inventoryManifest,
+      onActivate(context) {
+        context.registerView({
+          id: 'core.inventory.view',
+          title: { defaultMessage: 'Inventory View' },
+          location: 'main',
+          render: () => null,
+        });
+        context.registerActionRailItem({
+          id: 'core.inventory.rail',
+          title: { defaultMessage: 'Inventory Rail' },
+          icon: { kind: 'lucide', name: 'Puzzle' },
+          group: 'extensions',
+          target: { kind: 'view', viewId: 'core.inventory.view' },
+        });
+      },
+    }));
+
+    await runtime.start();
+    renderManagerView(runtime);
+
+    expect(await screen.findByText('Extension Manager')).toBeInTheDocument();
+    expect(screen.getAllByText('Inventory Extension').length).toBeGreaterThan(0);
+    expect(screen.getByText('core.inventory')).toBeInTheDocument();
+    expect(screen.getAllByText('Bundled').length).toBeGreaterThan(0);
+    expect(screen.getByText('Purpose')).toBeInTheDocument();
+    expect(screen.getByText('Open workspace view')).toBeInTheDocument();
+    expect(screen.getByText('Trust detail')).toBeInTheDocument();
+    expect(screen.getByText('No markdown access')).toBeInTheDocument();
+    expect(screen.getAllByText('active', { exact: false }).length).toBeGreaterThan(0);
+    expect(screen.getByText('Compatible with the current host, runtime, and theme contract.')).toBeInTheDocument();
+
+    await runtime.stop();
+  });
+
+  it('uses a pane-only workspace layout with toolbar-controlled sidebar and split modes', async () => {
+    const harness = createHostHarness();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage: createInMemoryExtensionRuntimeStorage(),
+    });
+
+    const inventoryManifest = createManifest({
+      id: 'core.layout-check',
+      packageName: '@mdwrk/layout-check',
+      displayName: { defaultMessage: 'Layout Check Extension' },
+      description: { defaultMessage: 'Layout verification extension.' },
+    });
+
+    runtime.registerBundledExtension(createBundledEntry({ manifest: inventoryManifest }));
+    await runtime.start();
+    const view = renderManagerView(runtime);
+
+    expect(screen.queryByTestId('extension-manager-modal')).not.toBeInTheDocument();
+    expect(view.container.querySelector('aside.pane-sidebar.editor-pane-column')).not.toBeNull();
+
+    fireEvent.click(view.container.querySelector('button[title="Toggle sidebar"]') as HTMLButtonElement);
+    await waitFor(() => expect(view.container.querySelector('aside.pane-sidebar.editor-pane-column')).toBeNull());
+
+    fireEvent.click(view.container.querySelector('button[title="Single pane"]') as HTMLButtonElement);
+    await waitFor(() => expect(screen.queryByRole('separator', { name: 'Resize Extension Manager panes' })).not.toBeInTheDocument());
+
+    fireEvent.click(view.container.querySelector('button[title="Split screen"]') as HTMLButtonElement);
+    await waitFor(() => expect(screen.getByRole('separator', { name: 'Resize Extension Manager panes' })).toBeInTheDocument());
+
+    await runtime.stop();
+  });
+
+  it('persists enabled state toggles through runtime restarts', async () => {
+    const harness = createHostHarness();
+    const storage = createInMemoryExtensionRuntimeStorage();
+
+    const manifest = createManifest({
+      id: 'core.toggle',
+      packageName: '@mdwrk/toggle',
+      displayName: { defaultMessage: 'Toggle Extension' },
+      description: { defaultMessage: 'Toggle test extension.' },
+    });
+
+    const createRuntimeInstance = () => {
+      const runtime = createExtensionRuntime({
+        host: harness.host,
+        registrationSink: createRegistrationSink(harness),
+        storage,
+      });
+      runtime.registerBundledExtension(createBundledEntry({ manifest }));
+      return runtime;
+    };
+
+    let runtime = createRuntimeInstance();
+    await runtime.start();
+    renderManagerView(runtime);
+
+    const disableButton = await screen.findByRole('button', { name: 'Disable core.toggle' });
+    fireEvent.click(disableButton);
+    await waitFor(() => expect(runtime.get('core.toggle')?.enabled).toBe(false));
+    await waitFor(() => expect(runtime.get('core.toggle')?.status).toBe('disabled'));
+    await runtime.stop();
+
+    runtime = createRuntimeInstance();
+    await runtime.start();
+    expect(runtime.get('core.toggle')?.enabled).toBe(false);
+    expect(runtime.get('core.toggle')?.status).toBe('disabled');
+    await runtime.stop();
+  });
+
+  it('renders schema-driven settings forms and persists config values', async () => {
+    const harness = createHostHarness();
+    const storage = createInMemoryExtensionRuntimeStorage();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage,
+    });
+
+    const manifest = createManifest({
+      id: 'core.settings-form',
+      packageName: '@mdwrk/settings-form',
+      displayName: { defaultMessage: 'Settings Form Extension' },
+      description: { defaultMessage: 'Settings form test extension.' },
+      settingsSchema: {
+        version: 1,
+        sections: [
+          { id: 'general', title: { defaultMessage: 'General' } },
+        ],
+        fields: [
+          {
+            key: 'toastOnActivate',
+            kind: 'boolean',
+            sectionId: 'general',
+            label: { defaultMessage: 'Show activation toast' },
+            defaultValue: true,
+          },
+          {
+            key: 'mode',
+            kind: 'select',
+            sectionId: 'general',
+            label: { defaultMessage: 'Mode' },
+            defaultValue: 'safe',
+            options: [
+              { value: 'safe', label: { defaultMessage: 'Safe' } },
+              { value: 'advanced', label: { defaultMessage: 'Advanced' } },
+            ],
+          },
+        ],
+      },
+    });
+
+    runtime.registerBundledExtension(createBundledEntry({ manifest }));
+    await runtime.start();
+    renderManagerView(runtime);
+
+    const settingsSummary = screen.getAllByText('Settings')[0];
+    fireEvent.click(settingsSummary);
+
+    const checkbox = await screen.findByLabelText('Show activation toast');
+    expect(checkbox).toBeChecked();
+    fireEvent.click(checkbox);
+
+    const modeSelect = await screen.findByLabelText('Mode');
+    fireEvent.change(modeSelect, { target: { value: 'advanced' } });
+
+    await waitFor(async () => {
+      expect(await runtime.getConfigurationStore('core.settings-form').get('toastOnActivate')).toBe(false);
+      expect(await runtime.getConfigurationStore('core.settings-form').get('mode')).toBe('advanced');
+    });
+
+    await runtime.stop();
+  });
+
+  it('shows granted and missing permissions and compatibility issues', async () => {
+    const harness = createHostHarness();
+    harness.setGrantedCapabilities(['view.register']);
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage: createInMemoryExtensionRuntimeStorage(),
+    });
+
+    const manifest = createManifest({
+      id: 'core.permissions',
+      packageName: '@mdwrk/permissions',
+      displayName: { defaultMessage: 'Permissions Extension' },
+      description: { defaultMessage: 'Permission and compatibility test extension.' },
+      capabilities: ['view.register', 'actionRail.register', 'settings.read'],
+      compatibility: {
+        manifestVersion: 1,
+        hostApi: '1.0.0',
+        runtime: '1.0.0',
+        app: '>=99.0.0',
+        themeContract: '1.0.0',
+      },
+    });
+
+    runtime.registerBundledExtension(createBundledEntry({ manifest }));
+    await runtime.start();
+    renderManagerView(runtime);
+
+    expect(screen.getByText('view.register')).toBeInTheDocument();
+    expect(screen.getByText('actionRail.register')).toBeInTheDocument();
+    expect(screen.getByText('settings.read')).toBeInTheDocument();
+    expect(screen.getByText('One or more compatibility issues were detected.')).toBeInTheDocument();
+    expect(screen.getAllByText(/Expected app to satisfy/).length).toBeGreaterThan(0);
+
+    await runtime.stop();
+  });
+
+  it('shows health and diagnostics when extension activation fails', async () => {
+    const harness = createHostHarness();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage: createInMemoryExtensionRuntimeStorage(),
+    });
+
+    const manifest = createManifest({
+      id: 'core.failing',
+      packageName: '@mdwrk/failing',
+      displayName: { defaultMessage: 'Failing Extension' },
+      description: { defaultMessage: 'Fails during activation.' },
+    });
+
+    runtime.registerBundledExtension(createBundledEntry({
+      manifest,
+      onActivate() {
+        throw new Error('Activation exploded.');
+      },
+    }));
+
+    await runtime.start();
+    renderManagerView(runtime);
+
+    expect(await screen.findByText('Last error')).toBeInTheDocument();
+    expect(screen.getAllByText(/Activation exploded/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Ext Runtime Activate Failed/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Retry activation or disable the extension')).toBeInTheDocument();
+
+    await runtime.stop();
+  });
+
+  it('installs catalog hello, disables it, and removes the retained package', async () => {
+    const harness = createHostHarness();
+    const fixture = await createInstallableCatalogFixture();
+    const runtime = createExtensionRuntime({
+      host: harness.host,
+      registrationSink: createRegistrationSink(harness),
+      storage: createInMemoryExtensionRuntimeStorage(),
+      transport: fixture.transport,
+      trustPolicy: {
+        allowUnsigned: true,
+        allowIntegrityOnly: true,
+        allowedExtensionIds: [fixture.manifest.id],
+        allowedPackageNames: [fixture.manifest.packageName],
+        allowedPublishers: ['demo-catalog'],
+      },
+    });
+
+    runtime.registerCatalog(fixture.catalog, { catalogId: 'demo-catalog' });
+    await runtime.start();
+    renderManagerView(runtime);
+
+    expect((await screen.findAllByText('Catalog Hello')).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Trusted for install').length).toBeGreaterThan(0);
+    expect(screen.getByText('Import Package')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'INSTALL' })[0]);
+    await waitFor(() => expect(runtime.get(fixture.manifest.id)?.status).toBe('active'));
+    expect(harness.views.map((view) => view.id)).toContain('external.catalog-hello.view');
+
+    fireEvent.click(await screen.findByRole('button', { name: /Catalog Hello active/i }));
+    expect(screen.getByText('Installed packages keep the manifest, module source, verification record, enabled state, and active state until removed.')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Disable external.catalog-hello' }));
+    await waitFor(() => expect(runtime.get(fixture.manifest.id)?.enabled).toBe(false));
+    await waitFor(() => expect(runtime.get(fixture.manifest.id)?.status).toBe('disabled'));
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Remove Installed Package' }));
+    await waitFor(() => expect(runtime.get(fixture.manifest.id)).toBeUndefined());
+
+    await runtime.stop();
+  });
+});
