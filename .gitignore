@@ -8,6 +8,9 @@ artifacts/
 **/.tmp/
 **/.npm-cache/
 **/.pnpm-store/
+__pycache__/
+**/__pycache__/
+*.py[cod]
 *.log
 
 # Local environment and secrets
