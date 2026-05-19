@@ -227,6 +227,10 @@ function copyRegistryDocument(entity, targetRoot) {
   return true;
 }
 
+function entityById(sourceRegistry, family, id) {
+  return (sourceRegistry[family] ?? []).find((entity) => entity.id === id);
+}
+
 function mergeById(existing, additions) {
   const merged = new Map();
   for (const entity of existing) merged.set(entity.id, entity);
@@ -256,23 +260,48 @@ function importOwnedDocuments(sourceRegistry, owner, target) {
   const registryPath = join(target.root, '.ssot', 'registry.json');
   const targetRegistry = readJson(registryPath);
   const ownedAdrs = (sourceRegistry.adrs ?? []).filter((entity) => classify(entity) === owner);
-  const ownedAdrIds = new Set([...(targetRegistry.adrs ?? []).map((entity) => entity.id), ...ownedAdrs.map((entity) => entity.id)]);
+  const existingAdrIds = new Set((targetRegistry.adrs ?? []).map((entity) => entity.id));
 
-  const ownedSpecs = (sourceRegistry.specs ?? []).filter((entity) => {
-    if (classify(entity) !== owner) return false;
-    return (entity.adr_ids ?? []).every((adrId) => ownedAdrIds.has(adrId));
+  const ownedFeatures = (sourceRegistry.features ?? []).filter((entity) => classify(entity) === owner);
+  const directlyOwnedSpecs = (sourceRegistry.specs ?? []).filter((entity) => classify(entity) === owner);
+  const featureRequiredSpecs = ownedFeatures
+    .flatMap((entity) => entity.spec_ids ?? [])
+    .map((id) => entityById(sourceRegistry, 'specs', id))
+    .filter((entity) => entity && classify(entity) !== 'origin');
+  const specCandidates = mergeById(directlyOwnedSpecs, featureRequiredSpecs);
+
+  const requiredAdrIds = new Set(ownedAdrs.map((entity) => entity.id));
+  for (const spec of specCandidates) {
+    for (const adrId of spec.adr_ids ?? []) requiredAdrIds.add(adrId);
+  }
+
+  const supportingAdrs = [...requiredAdrIds]
+    .filter((id) => !ownedAdrs.some((entity) => entity.id === id))
+    .map((id) => entityById(sourceRegistry, 'adrs', id))
+    .filter((entity) => entity && classify(entity) !== 'history');
+
+  const availableAdrIds = new Set([
+    ...existingAdrIds,
+    ...ownedAdrs.map((entity) => entity.id),
+    ...supportingAdrs.map((entity) => entity.id),
+  ]);
+
+  const importableSpecs = specCandidates.filter((entity) => {
+    return (entity.adr_ids ?? []).every((adrId) => availableAdrIds.has(adrId));
   });
 
   const copiedAdrs = ownedAdrs.filter((entity) => copyRegistryDocument(entity, target.root));
-  const copiedSpecs = ownedSpecs.filter((entity) => copyRegistryDocument(entity, target.root));
+  const copiedSupportingAdrs = supportingAdrs.filter((entity) => copyRegistryDocument(entity, target.root));
+  const copiedSpecs = importableSpecs.filter((entity) => copyRegistryDocument(entity, target.root));
 
-  targetRegistry.adrs = mergeById(targetRegistry.adrs ?? [], copiedAdrs);
+  targetRegistry.adrs = mergeById(targetRegistry.adrs ?? [], [...copiedAdrs, ...copiedSupportingAdrs]);
   targetRegistry.specs = mergeById(targetRegistry.specs ?? [], copiedSpecs);
   writeJson(registryPath, targetRegistry);
 
   return {
     repo: target.repo,
     adrs: copiedAdrs.length,
+    supportingAdrs: copiedSupportingAdrs.length,
     specs: copiedSpecs.length,
   };
 }
@@ -299,21 +328,21 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
 
   const candidateTests = (sourceRegistry.tests ?? [])
     .filter((entity) => classify(entity) === owner && hasValidPath(entity, target))
-    .filter((entity) => (entity.feature_ids ?? []).every((id) => candidateFeatureIds.has(id)));
+    .filter((entity) => (entity.feature_ids ?? []).some((id) => candidateFeatureIds.has(id)));
   const candidateTestIds = new Set(candidateTests.map((entity) => entity.id));
 
   const candidateEvidence = (sourceRegistry.evidence ?? [])
     .filter((entity) => classify(entity) === owner && hasValidPath(entity, target))
-    .filter((entity) => (entity.test_ids ?? []).every((id) => candidateTestIds.has(id)));
+    .filter((entity) => (entity.test_ids ?? []).some((id) => candidateTestIds.has(id)));
   const candidateEvidenceIds = new Set(candidateEvidence.map((entity) => entity.id));
 
   const candidateClaims = (sourceRegistry.claims ?? [])
     .filter((entity) => classify(entity) === owner)
     .filter((entity) => {
       return (
-        (entity.feature_ids ?? []).every((id) => candidateFeatureIds.has(id)) &&
-        (entity.test_ids ?? []).every((id) => candidateTestIds.has(id)) &&
-        (entity.evidence_ids ?? []).every((id) => candidateEvidenceIds.has(id))
+        (entity.feature_ids ?? []).some((id) => candidateFeatureIds.has(id)) &&
+        ((entity.test_ids ?? []).length === 0 || (entity.test_ids ?? []).some((id) => candidateTestIds.has(id))) &&
+        ((entity.evidence_ids ?? []).length === 0 || (entity.evidence_ids ?? []).some((id) => candidateEvidenceIds.has(id)))
       );
     });
   const candidateClaimIds = new Set(candidateClaims.map((entity) => entity.id));
@@ -331,7 +360,13 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
   const selectedEvidence = candidateEvidence.filter((entity) => (entity.test_ids ?? []).some((id) => selectedTestIds.has(id)));
   const selectedEvidenceIds = new Set(selectedEvidence.map((entity) => entity.id));
 
-  const selectedClaims = candidateClaims.filter((entity) => (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)));
+  const selectedClaims = candidateClaims.filter((entity) => {
+    return (
+      (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)) &&
+      ((entity.test_ids ?? []).length === 0 || (entity.test_ids ?? []).some((id) => selectedTestIds.has(id))) &&
+      ((entity.evidence_ids ?? []).length === 0 || (entity.evidence_ids ?? []).some((id) => selectedEvidenceIds.has(id)))
+    );
+  });
   const selectedClaimIds = new Set(selectedClaims.map((entity) => entity.id));
 
   const known = {
@@ -374,6 +409,23 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     unresolvedCounts.set(key, (unresolvedCounts.get(key) ?? 0) + 1);
   }
 
+  const remainingDirectRows = Object.values(targets).map((target) => {
+    const registry = readJson(join(target.root, '.ssot', 'registry.json'));
+    const idsByFamily = Object.fromEntries(
+      entityFamilies.map((family) => [family, new Set((registry[family] ?? []).map((entity) => entity.id))])
+    );
+    const remaining = ledger.filter((row) => {
+      return row.action === 'migrate' && row.proposed_owner === target.repo && !idsByFamily[row.entity_family]?.has(row.entity_id);
+    });
+    return {
+      repo: target.repo,
+      count: remaining.length,
+      byFamily: entityFamilies
+        .map((family) => [family, remaining.filter((row) => row.entity_family === family).length])
+        .filter(([, count]) => count > 0),
+    };
+  });
+
   const lines = [
     '# SSOT Registry Split Status',
     '',
@@ -381,11 +433,11 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     '',
     '## Imported Batches',
     '',
-    '| Repository | ADRs | SPECs | Features | Claims | Tests | Evidence |',
-    '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+    '| Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
     ...documentImports.map((docImport) => {
       const runtimeImport = runtimeImports.find((entry) => entry.repo === docImport.repo);
-      return `| \`${docImport.repo}\` | ${docImport.adrs} | ${docImport.specs} | ${runtimeImport?.features ?? 0} | ${runtimeImport?.claims ?? 0} | ${runtimeImport?.tests ?? 0} | ${runtimeImport?.evidence ?? 0} |`;
+      return `| \`${docImport.repo}\` | ${docImport.adrs} | ${docImport.supportingAdrs} | ${docImport.specs} | ${runtimeImport?.features ?? 0} | ${runtimeImport?.claims ?? 0} | ${runtimeImport?.tests ?? 0} | ${runtimeImport?.evidence ?? 0} |`;
     }),
     '',
     '## Direct Owner Ledger Work',
@@ -395,6 +447,15 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     ...Object.values(targets).map((target) => {
       const owner = target.repo;
       return `| \`${owner}\` | ${sumLedger(ledger, 'migrate', owner)} |`;
+    }),
+    '',
+    '## Remaining Direct Owner Rows',
+    '',
+    '| Repository | Remaining rows | Remaining families |',
+    '| --- | ---: | --- |',
+    ...remainingDirectRows.map((entry) => {
+      const families = entry.byFamily.map(([family, count]) => `${family}: ${count}`).join(', ') || 'none';
+      return `| \`${entry.repo}\` | ${entry.count} | ${families} |`;
     }),
     '',
     '## Unresolved Global Queues',
