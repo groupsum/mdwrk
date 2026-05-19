@@ -18,10 +18,10 @@ test('validates docs governance boundary and feature-owned docs', async () => {
   );
 });
 
-test('requires app and content-pack documentation roots', async () => {
+test('requires core documentation root', async () => {
   const result = await validateMdwrkDocsGovernance();
   const rootLabels = result.details.roots.map((root) => root.label);
 
   assert.equal(result.passed, true);
-  assert.deepEqual(rootLabels, ['app', 'content-pack']);
+  assert.deepEqual(rootLabels, ['core-docs']);
 });

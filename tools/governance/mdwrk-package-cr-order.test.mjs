@@ -10,20 +10,20 @@ import {
 
 test('orders change requests by package owner dependency order', () => {
   const ordered = orderChangeRequestsByOwner([
-    { id: 'CR-app', path: 'apps/client/src/App.tsx' },
     { id: 'CR-contract', path: 'packages/contracts/theme-contract/src/tokens.ts' },
     { id: 'CR-editor', path: 'packages/editor/markdown-editor-core/src/index.ts' },
+    { id: 'CR-extension', path: 'packages/extensions/extension-runtime/src/index.ts' },
     { id: 'CR-docs', path: 'docs/reference/package-boundary-map.md' },
   ]);
 
-  assert.deepEqual(ordered.map((entry) => entry.id), ['CR-contract', 'CR-editor', 'CR-app', 'CR-docs']);
-  assert.deepEqual(ordered.map((entry) => entry.owner), ['contracts', 'editor', 'client', 'docs']);
+  assert.deepEqual(ordered.map((entry) => entry.id), ['CR-contract', 'CR-editor', 'CR-extension', 'CR-docs']);
+  assert.deepEqual(ordered.map((entry) => entry.owner), ['contracts', 'editor', 'extensions', 'docs']);
 });
 
 test('maps repository paths to package owners', () => {
   assert.equal(packageOwnerForPath('packages/extensions/extension-runtime/src/index.ts').id, 'extensions');
-  assert.equal(packageOwnerForPath('packages/lander/lander-core/src/index.ts').id, 'lander');
-  assert.equal(packageOwnerForPath('apps/mdwrkcom/src/cli.mjs').id, 'mdwrkcom');
+  assert.equal(packageOwnerForPath('examples/editor-basic/App.tsx').id, 'examples');
+  assert.equal(packageOwnerForPath('tools/testing/prepare-workspace-links.mjs').id, 'governance');
   assert.equal(packageOwnerForPath('unknown/file.txt').id, 'unowned');
 });
 
@@ -47,5 +47,5 @@ test('validates the live first boundary runtime contract', async () => {
   ]);
   assert.ok(result.details.workspacePackageCount > 0);
   assert.ok(result.details.requiredAgentPaths.includes('AGENTS.md'));
-  assert.ok(result.details.requiredScreenshotTokens.includes('extension-manager-modal'));
+  assert.ok(result.details.orderedOwners.includes('extensions'));
 });

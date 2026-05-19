@@ -23,30 +23,17 @@ export const PACKAGE_OWNER_ORDER = [
   { id: 'renderer', order: 30, prefixes: ['packages/renderer/'] },
   { id: 'editor', order: 40, prefixes: ['packages/editor/'] },
   { id: 'extensions', order: 50, prefixes: ['packages/extensions/'] },
-  { id: 'client', order: 60, prefixes: ['apps/client/'] },
-  { id: 'desktop', order: 70, prefixes: ['apps/desktop/'] },
-  { id: 'lander', order: 80, prefixes: ['packages/lander/'] },
-  { id: 'content', order: 90, prefixes: ['packages/content/'] },
-  { id: 'mdwrkcom', order: 100, prefixes: ['apps/mdwrkcom/'] },
-  { id: 'examples', order: 110, prefixes: ['examples/'] },
-  { id: 'docs', order: 120, prefixes: ['docs/'] },
-  { id: 'governance', order: 130, prefixes: ['.ssot/', 'tools/governance/', 'AGENTS.md', 'package.json'] },
+  { id: 'examples', order: 60, prefixes: ['examples/'] },
+  { id: 'docs', order: 70, prefixes: ['docs/'] },
+  { id: 'governance', order: 80, prefixes: ['.ssot/', 'tools/governance/', 'tools/testing/', 'AGENTS.md', 'package.json'] },
 ];
 
 export const REQUIRED_AGENT_PATHS = [
   'AGENTS.md',
-  'packages/AGENTS.md',
   'packages/contracts/theme-contract/AGENTS.md',
   'packages/shared/ui-tokens/AGENTS.md',
   'packages/renderer/AGENTS.md',
   'packages/editor/AGENTS.md',
-  'packages/lander/lander-content-contract/AGENTS.md',
-  'packages/lander/lander-react/AGENTS.md',
-  'packages/lander/lander-theme/AGENTS.md',
-  'packages/content/mdwrkcom-content-pack/AGENTS.md',
-  'apps/client/styles/AGENTS.md',
-  'apps/mdwrkcom/data/markdown/AGENTS.md',
-  'apps/mdwrkcom/styles/AGENTS.md',
   'docs/AGENTS.md',
 ];
 
@@ -129,7 +116,6 @@ export async function validateMdwrkPackageCrOrder(options = {}) {
   await validateWorkspacePackageVersions(workspacePackageJsonPaths, failures);
   validateScripts(packageJson, failures);
   validateScopedAgents(root, failures);
-  validateScreenshotMatrix(root, failures);
 
   return {
     passed: failures.length === 0,

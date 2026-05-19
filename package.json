@@ -38,6 +38,10 @@
     "typecheck:extensions": "npm run typecheck -w @mdwrk/extension-runtime && npm run typecheck -w @mdwrk/extension-workspace-files && npm run typecheck -w @mdwrk/extension-git-ops && npm run typecheck -w @mdwrk/extension-manager && npm run typecheck -w @mdwrk/extension-gemini-agent && npm run typecheck -w @mdwrk/extension-theme-studio && npm run typecheck -w @mdwrk/extension-language-pack-studio && npm run typecheck -w @mdwrk/extension-catalog-hello",
     "typecheck:examples": "npm run typecheck -w @mdwrk/example-renderer-basic && npm run typecheck -w @mdwrk/example-editor-basic",
     "lint": "npm run typecheck",
+    "validate:mdwrk-package-cr-order": "node ./tools/governance/validate-mdwrk-package-cr-order.mjs",
+    "validate:mdwrk-docs-governance": "node ./tools/governance/validate-mdwrk-docs-governance.mjs",
+    "validate:mdwrk-extension-contributions": "node ./tools/governance/validate-mdwrk-extension-contributions.mjs",
+    "ci:governance": "npm run validate:mdwrk-package-cr-order && npm run validate:mdwrk-docs-governance && npm run validate:mdwrk-extension-contributions",
     "ci:install": "npm install --ignore-scripts",
     "pack:packages": "node ./tools/release/pack-workspaces.mjs",
     "publish:packages": "node ./tools/release/run-publish.mjs"

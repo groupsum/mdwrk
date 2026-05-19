@@ -50,7 +50,7 @@
     "build": "npm run build:deps && tsc -p tsconfig.json",
     "typecheck": "npm run build:deps && tsc --noEmit -p tsconfig.json",
     "lint": "npm run typecheck",
-    "test": "npm run build && vitest run tests/theme-studio.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1 && node ./tests/run-smoke.mjs",
+    "test": "npm run build && node ../../../tools/testing/prepare-workspace-links.mjs @mdwrk/testing @mdwrk/extension-host @mdwrk/extension-manifest @mdwrk/extension-runtime @mdwrk/markdown-renderer-react @mdwrk/markdown-renderer-core @mdwrk/markdown-editor-react @mdwrk/markdown-editor-core @mdwrk/ui-tokens @mdwrk/theme-contract && vitest run tests/theme-studio.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1 && node ./tests/run-smoke.mjs",
     "prepack": "npm run build"
   },
   "exports": {

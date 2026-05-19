@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { isCliEntry, readJson, repoRoot } from '../lib/workspace.mjs';
@@ -60,8 +59,7 @@ export const MDWRK_DOCS_GOVERNANCE_FEATURES = [
 ];
 
 const ROOTS = [
-  { label: 'app', root: 'apps/mdwrkcom' },
-  { label: 'content-pack', root: 'packages/content/mdwrkcom-content-pack' },
+  { label: 'core-docs', root: 'docs' },
 ];
 
 export async function validateMdwrkDocsGovernance(options = {}) {
@@ -124,7 +122,7 @@ function validateDocs(root, failures) {
   for (const feature of MDWRK_DOCS_GOVERNANCE_FEATURES) {
     const docs = ROOTS.map((entry) => ({
       ...entry,
-      absolutePath: path.join(root, entry.root, feature.path),
+      absolutePath: path.join(root, entry.root, feature.path.replace(/^data\/markdown\/docs\//, '')),
     }));
     for (const doc of docs) {
       if (!fs.existsSync(doc.absolutePath)) {
@@ -148,12 +146,6 @@ function validateDocs(root, failures) {
         }
       }
     }
-    if (docs.every((doc) => fs.existsSync(doc.absolutePath))) {
-      const [appDoc, packDoc] = docs;
-      if (hash(appDoc.absolutePath) !== hash(packDoc.absolutePath)) {
-        failures.push(`${feature.id}: app and content-pack docs must match byte-for-byte.`);
-      }
-    }
   }
 }
 
@@ -167,10 +159,6 @@ function readFrontmatter(content, filePath) {
       .filter(Boolean)
       .map((lineMatch) => [lineMatch[1].trim(), lineMatch[2].trim().replace(/^"|"$/g, '')]),
   );
-}
-
-function hash(filePath) {
-  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
 if (isCliEntry(import.meta.url)) {

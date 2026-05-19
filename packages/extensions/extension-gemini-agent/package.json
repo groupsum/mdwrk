@@ -37,7 +37,7 @@
     "build": "npm run build:deps && tsc -p tsconfig.json",
     "typecheck": "npm run build:deps && tsc --noEmit -p tsconfig.json",
     "lint": "npm run typecheck",
-    "test": "npm run build && node ./tests/run-smoke.mjs",
+    "test": "npm run build && node ../../../tools/testing/prepare-workspace-links.mjs @mdwrk/markdown-renderer-react @mdwrk/markdown-renderer-core @mdwrk/ui-tokens @mdwrk/theme-contract && node ./tests/run-smoke.mjs",
     "prepack": "npm run build"
   },
   "exports": {

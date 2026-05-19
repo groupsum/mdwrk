@@ -46,7 +46,7 @@
     "build": "npm run build:deps && tsc -p tsconfig.json",
     "typecheck": "npm run build:deps && tsc --noEmit -p tsconfig.json",
     "lint": "npm run typecheck",
-    "test": "vitest run tests/extension-manager.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1",
+    "test": "node ../../../tools/testing/prepare-workspace-links.mjs @mdwrk/testing @mdwrk/extension-host @mdwrk/extension-manifest @mdwrk/extension-runtime @mdwrk/theme-contract && vitest run tests/extension-manager.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1",
     "prepack": "npm run build"
   },
   "exports": {

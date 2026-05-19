@@ -39,7 +39,7 @@
     "build": "npm run build:deps && tsc -p tsconfig.json",
     "typecheck": "npm run build:deps && tsc --noEmit -p tsconfig.json",
     "lint": "npm run typecheck",
-    "test": "npm run build && vitest run tests/language-pack-studio-view.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1",
+    "test": "npm run build && node ../../../tools/testing/prepare-workspace-links.mjs @mdwrk/testing @mdwrk/extension-host @mdwrk/extension-manifest @mdwrk/extension-runtime && vitest run tests/language-pack-studio-view.test.tsx --pool=forks --minWorkers=1 --maxWorkers=1",
     "prepack": "npm run build"
   },
   "exports": {
