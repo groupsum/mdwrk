@@ -7,6 +7,8 @@ const sourceRegistryPath = join(sourceRepo, '.ssot', 'registry.json');
 const coordinatorRepo = join(workspaceRoot, 'mdwrk');
 const ledgerJsonPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-migration-ledger.json');
 const ledgerMarkdownPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-migration-ledger.md');
+const clarificationJsonPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-clarification-queue.json');
+const clarificationMarkdownPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-clarification-queue.md');
 
 const targets = {
   core: {
@@ -26,6 +28,9 @@ const targets = {
     root: join(workspaceRoot, 'mdwrk-com'),
   },
 };
+
+const ownerKeyToRepo = Object.fromEntries(Object.entries(targets).map(([owner, target]) => [owner, target.repo]));
+const repoToOwnerKey = Object.fromEntries(Object.entries(targets).map(([owner, target]) => [target.repo, owner]));
 
 const entityFamilies = [
   'adrs',
@@ -146,6 +151,19 @@ function actionFor(bucket) {
   return 'migrate';
 }
 
+function bucketIncludesOwner(bucket, owner) {
+  if (bucket === owner) return true;
+  if (!bucket.startsWith('mixed:')) return false;
+  return bucket
+    .slice('mixed:'.length)
+    .split('+')
+    .some((entry) => entry === owner);
+}
+
+function entityAppliesToOwner(entity, owner) {
+  return bucketIncludesOwner(classify(entity), owner);
+}
+
 function reasonFor(bucket) {
   if (bucket === 'origin') return 'SSOT-origin baseline already initialized in every split registry.';
   if (bucket === 'history') return 'Monorepo-wide historical closure or release context; archive rather than keep as active proof.';
@@ -217,6 +235,101 @@ function writeLedger(rows) {
   writeFileSync(ledgerMarkdownPath, `${lines.join('\n')}\n`, 'utf8');
 }
 
+function candidateReposForOwner(owner) {
+  if (targets[owner]) return [targets[owner].repo];
+  if (!owner.startsWith('mixed:')) return [];
+  return owner
+    .slice('mixed:'.length)
+    .split('+')
+    .map((entry) => ownerKeyToRepo[entry])
+    .filter(Boolean);
+}
+
+function currentTargetEntityLocations(entityFamily, entityId) {
+  return Object.values(targets)
+    .filter((target) => {
+      const registry = readJson(join(target.root, '.ssot', 'registry.json'));
+      return (registry[entityFamily] ?? []).some((entity) => entity.id === entityId);
+    })
+    .map((target) => target.repo);
+}
+
+function clarificationReason(row, locations) {
+  if (row.action === 'manual-review') {
+    return 'No single owner is clear from the entity ID, title, path, or links.';
+  }
+  if (row.action === 'archive') {
+    return 'Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo.';
+  }
+  if (row.action === 'split') {
+    if (locations.length > 0) {
+      return 'Partially copied as supporting proof, but the source row spans multiple repos and still needs an explicit split/copy decision.';
+    }
+    return 'Cross-repo row whose target repo-local proof graph is not confidently separable yet.';
+  }
+  if (row.action === 'migrate') {
+    return 'Single-owner row still lacks enough local proof closure, local paths, or imported dependencies to migrate safely.';
+  }
+  return row.reason;
+}
+
+function writeClarificationQueue(ledger) {
+  const rows = ledger
+    .filter((row) => row.action !== 'copy-origin')
+    .map((row) => {
+      const locations = currentTargetEntityLocations(row.entity_family, row.entity_id);
+      return {
+        ...row,
+        candidate_repos: candidateReposForOwner(row.proposed_owner),
+        migrated_to_repos: locations,
+        clarification_required: locations.length === 0 || row.action === 'manual-review' || row.action === 'archive' || row.action === 'split',
+        clarification_reason: clarificationReason(row, locations),
+      };
+    })
+    .filter((row) => row.clarification_required);
+
+  writeJson(clarificationJsonPath, rows, { trailingNewline: true });
+
+  const counts = new Map();
+  for (const row of rows) {
+    const key = `${row.action}|${row.proposed_owner}`;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  const lines = [
+    '# SSOT Registry Clarification Queue',
+    '',
+    'Generated from the current split registries after the latest migration pass.',
+    '',
+    'This queue contains source entities that were not confidently moved, split, or copied as complete repo-local proof. Some split rows may already exist as supporting rows in one or more repos, but still need an explicit ownership policy for the original monorepo entity.',
+    '',
+    '## Summary',
+    '',
+    '| Action | Proposed owner bucket | Count |',
+    '| --- | --- | ---: |',
+    ...[...counts.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, count]) => {
+        const [action, owner] = key.split('|');
+        return `| \`${action}\` | \`${owner}\` | ${count} |`;
+      }),
+    '',
+    '## Rows',
+    '',
+    '| Family | ID | Proposed owner | Candidate repos | Already copied to | Clarification reason |',
+    '| --- | --- | --- | --- | --- | --- |',
+    ...rows.map((row) => {
+      const candidateRepos = row.candidate_repos.length > 0 ? row.candidate_repos.map((repo) => `\`${repo}\``).join(', ') : 'none';
+      const locations = row.migrated_to_repos.length > 0 ? row.migrated_to_repos.map((repo) => `\`${repo}\``).join(', ') : 'none';
+      return `| \`${row.entity_family}\` | \`${row.entity_id}\` | \`${row.proposed_owner}\` | ${candidateRepos} | ${locations} | ${row.clarification_reason} |`;
+    }),
+    '',
+  ];
+  writeFileSync(clarificationMarkdownPath, `${lines.join('\n')}\n`, 'utf8');
+
+  return rows;
+}
+
 function copyRegistryDocument(entity, targetRoot) {
   if (!entity.path) return false;
   const sourcePath = join(sourceRepo, entity.path);
@@ -252,6 +365,7 @@ function importedEntity(entity, repo, known) {
   if (clone.test_ids) clone.test_ids = keepKnownIds(clone.test_ids, known.tests);
   if (clone.evidence_ids) clone.evidence_ids = keepKnownIds(clone.evidence_ids, known.evidence);
   if (clone.feature_ids) clone.feature_ids = keepKnownIds(clone.feature_ids, known.features);
+  if (clone.profile_ids && known.profiles) clone.profile_ids = keepKnownIds(clone.profile_ids, known.profiles);
   if (clone.requires) clone.requires = keepKnownIds(clone.requires, known.features);
   return clone;
 }
@@ -316,28 +430,28 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
   const targetRegistry = readJson(registryPath);
   const currentSpecIds = new Set((targetRegistry.specs ?? []).map((entity) => entity.id));
 
-  const ownedFeatureIds = new Set((sourceRegistry.features ?? []).filter((entity) => classify(entity) === owner).map((entity) => entity.id));
-  const ownedClaimIds = new Set((sourceRegistry.claims ?? []).filter((entity) => classify(entity) === owner).map((entity) => entity.id));
-  const ownedTestIds = new Set((sourceRegistry.tests ?? []).filter((entity) => classify(entity) === owner).map((entity) => entity.id));
-  const ownedEvidenceIds = new Set((sourceRegistry.evidence ?? []).filter((entity) => classify(entity) === owner).map((entity) => entity.id));
+  const scopedFeatureIds = new Set((sourceRegistry.features ?? []).filter((entity) => entityAppliesToOwner(entity, owner)).map((entity) => entity.id));
+  const scopedClaimIds = new Set((sourceRegistry.claims ?? []).filter((entity) => entityAppliesToOwner(entity, owner)).map((entity) => entity.id));
+  const scopedTestIds = new Set((sourceRegistry.tests ?? []).filter((entity) => entityAppliesToOwner(entity, owner)).map((entity) => entity.id));
+  const scopedEvidenceIds = new Set((sourceRegistry.evidence ?? []).filter((entity) => entityAppliesToOwner(entity, owner)).map((entity) => entity.id));
 
   const candidateFeatures = (sourceRegistry.features ?? [])
-    .filter((entity) => classify(entity) === owner)
+    .filter((entity) => entityAppliesToOwner(entity, owner))
     .filter((entity) => (entity.spec_ids ?? []).every((id) => currentSpecIds.has(id)));
   const candidateFeatureIds = new Set(candidateFeatures.map((entity) => entity.id));
 
   const candidateTests = (sourceRegistry.tests ?? [])
-    .filter((entity) => classify(entity) === owner && hasValidPath(entity, target))
+    .filter((entity) => entityAppliesToOwner(entity, owner) && hasValidPath(entity, target))
     .filter((entity) => (entity.feature_ids ?? []).some((id) => candidateFeatureIds.has(id)));
   const candidateTestIds = new Set(candidateTests.map((entity) => entity.id));
 
   const candidateEvidence = (sourceRegistry.evidence ?? [])
-    .filter((entity) => classify(entity) === owner && hasValidPath(entity, target))
+    .filter((entity) => entityAppliesToOwner(entity, owner) && hasValidPath(entity, target))
     .filter((entity) => (entity.test_ids ?? []).some((id) => candidateTestIds.has(id)));
   const candidateEvidenceIds = new Set(candidateEvidence.map((entity) => entity.id));
 
   const candidateClaims = (sourceRegistry.claims ?? [])
-    .filter((entity) => classify(entity) === owner)
+    .filter((entity) => entityAppliesToOwner(entity, owner))
     .filter((entity) => {
       return (
         (entity.feature_ids ?? []).some((id) => candidateFeatureIds.has(id)) &&
@@ -345,29 +459,65 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
         ((entity.evidence_ids ?? []).length === 0 || (entity.evidence_ids ?? []).some((id) => candidateEvidenceIds.has(id)))
       );
     });
-  const candidateClaimIds = new Set(candidateClaims.map((entity) => entity.id));
+  let selectedFeatures = candidateFeatures;
+  let selectedClaims = candidateClaims;
+  let selectedTests = candidateTests;
+  let selectedEvidence = candidateEvidence;
 
-  const selectedFeatures = candidateFeatures.filter((entity) => {
-    const localClaimIds = (entity.claim_ids ?? []).filter((id) => candidateClaimIds.has(id));
-    const localTestIds = (entity.test_ids ?? []).filter((id) => candidateTestIds.has(id));
-    return localClaimIds.length > 0 && localTestIds.length > 0;
-  });
+  for (let iteration = 0; iteration < 8; iteration += 1) {
+    const selectedFeatureIds = new Set(selectedFeatures.map((entity) => entity.id));
+    const candidateEvidenceIds = new Set(candidateEvidence.map((entity) => entity.id));
+
+    const claimsWithFeatures = candidateClaims.filter((entity) => (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)));
+    const claimsWithFeatureIds = new Set(claimsWithFeatures.map((entity) => entity.id));
+
+    const testsWithLocalProof = candidateTests.filter((entity) => {
+      return (
+        (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)) &&
+        (entity.claim_ids ?? []).some((id) => claimsWithFeatureIds.has(id)) &&
+        (entity.evidence_ids ?? []).some((id) => candidateEvidenceIds.has(id))
+      );
+    });
+    const testIds = new Set(testsWithLocalProof.map((entity) => entity.id));
+
+    const evidenceWithTests = candidateEvidence.filter((entity) => (entity.test_ids ?? []).some((id) => testIds.has(id)));
+    const evidenceIds = new Set(evidenceWithTests.map((entity) => entity.id));
+
+    const claimsWithProof = claimsWithFeatures.filter((entity) => {
+      return (
+        (entity.test_ids ?? []).some((id) => testIds.has(id)) &&
+        (entity.evidence_ids ?? []).some((id) => evidenceIds.has(id))
+      );
+    });
+    const claimIds = new Set(claimsWithProof.map((entity) => entity.id));
+
+    const testsWithClaims = testsWithLocalProof.filter((entity) => {
+      return (entity.claim_ids ?? []).some((id) => claimIds.has(id)) && (entity.evidence_ids ?? []).some((id) => evidenceIds.has(id));
+    });
+    const finalTestIds = new Set(testsWithClaims.map((entity) => entity.id));
+
+    const featuresWithProof = candidateFeatures.filter((entity) => {
+      return (entity.claim_ids ?? []).some((id) => claimIds.has(id)) && (entity.test_ids ?? []).some((id) => finalTestIds.has(id));
+    });
+
+    const stable =
+      featuresWithProof.length === selectedFeatures.length &&
+      claimsWithProof.length === selectedClaims.length &&
+      testsWithClaims.length === selectedTests.length &&
+      evidenceWithTests.length === selectedEvidence.length;
+
+    selectedFeatures = featuresWithProof;
+    selectedClaims = claimsWithProof;
+    selectedTests = testsWithClaims;
+    selectedEvidence = evidenceWithTests.filter((entity) => (entity.test_ids ?? []).some((id) => finalTestIds.has(id)));
+
+    if (stable) break;
+  }
+
   const selectedFeatureIds = new Set(selectedFeatures.map((entity) => entity.id));
-
-  const selectedTests = candidateTests.filter((entity) => (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)));
-  const selectedTestIds = new Set(selectedTests.map((entity) => entity.id));
-
-  const selectedEvidence = candidateEvidence.filter((entity) => (entity.test_ids ?? []).some((id) => selectedTestIds.has(id)));
-  const selectedEvidenceIds = new Set(selectedEvidence.map((entity) => entity.id));
-
-  const selectedClaims = candidateClaims.filter((entity) => {
-    return (
-      (entity.feature_ids ?? []).some((id) => selectedFeatureIds.has(id)) &&
-      ((entity.test_ids ?? []).length === 0 || (entity.test_ids ?? []).some((id) => selectedTestIds.has(id))) &&
-      ((entity.evidence_ids ?? []).length === 0 || (entity.evidence_ids ?? []).some((id) => selectedEvidenceIds.has(id)))
-    );
-  });
   const selectedClaimIds = new Set(selectedClaims.map((entity) => entity.id));
+  const selectedTestIds = new Set(selectedTests.map((entity) => entity.id));
+  const selectedEvidenceIds = new Set(selectedEvidence.map((entity) => entity.id));
 
   const known = {
     specs: currentSpecIds,
@@ -382,10 +532,62 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
   const importedTests = selectedTests.map((entity) => importedEntity(entity, target.repo, known));
   const importedEvidence = selectedEvidence.map((entity) => importedEntity(entity, target.repo, known));
 
-  targetRegistry.features = mergeById((targetRegistry.features ?? []).filter((entity) => !ownedFeatureIds.has(entity.id)), importedFeatures);
-  targetRegistry.claims = mergeById((targetRegistry.claims ?? []).filter((entity) => !ownedClaimIds.has(entity.id)), importedClaims);
-  targetRegistry.tests = mergeById((targetRegistry.tests ?? []).filter((entity) => !ownedTestIds.has(entity.id)), importedTests);
-  targetRegistry.evidence = mergeById((targetRegistry.evidence ?? []).filter((entity) => !ownedEvidenceIds.has(entity.id)), importedEvidence);
+  const sourceFeatureIds = new Set((sourceRegistry.features ?? []).map((entity) => entity.id));
+  const sourceClaimIds = new Set((sourceRegistry.claims ?? []).map((entity) => entity.id));
+  const sourceTestIds = new Set((sourceRegistry.tests ?? []).map((entity) => entity.id));
+  const sourceEvidenceIds = new Set((sourceRegistry.evidence ?? []).map((entity) => entity.id));
+  const sourceBoundaryIds = new Set((sourceRegistry.boundaries ?? []).map((entity) => entity.id).filter((id) => id !== 'bnd:default'));
+  const sourceProfileIds = new Set((sourceRegistry.profiles ?? []).map((entity) => entity.id));
+  const sourceIssueIds = new Set((sourceRegistry.issues ?? []).map((entity) => entity.id));
+
+  targetRegistry.features = mergeById((targetRegistry.features ?? []).filter((entity) => !sourceFeatureIds.has(entity.id)), importedFeatures);
+  targetRegistry.claims = mergeById((targetRegistry.claims ?? []).filter((entity) => !sourceClaimIds.has(entity.id)), importedClaims);
+  targetRegistry.tests = mergeById((targetRegistry.tests ?? []).filter((entity) => !sourceTestIds.has(entity.id)), importedTests);
+  targetRegistry.evidence = mergeById((targetRegistry.evidence ?? []).filter((entity) => !sourceEvidenceIds.has(entity.id)), importedEvidence);
+
+  const knownAfterRuntime = {
+    features: new Set(targetRegistry.features.map((entity) => entity.id)),
+    claims: new Set(targetRegistry.claims.map((entity) => entity.id)),
+    tests: new Set(targetRegistry.tests.map((entity) => entity.id)),
+    evidence: new Set(targetRegistry.evidence.map((entity) => entity.id)),
+    specs: currentSpecIds,
+  };
+
+  const selectedProfiles = (sourceRegistry.profiles ?? [])
+    .filter((entity) => entityAppliesToOwner(entity, owner))
+    .filter((entity) => (entity.feature_ids ?? []).some((id) => knownAfterRuntime.features.has(id)));
+  const knownProfiles = new Set([...(targetRegistry.profiles ?? []).map((entity) => entity.id), ...selectedProfiles.map((entity) => entity.id)]);
+  const importedProfiles = selectedProfiles.map((entity) => importedEntity(entity, target.repo, { ...knownAfterRuntime, profiles: knownProfiles }));
+
+  const importedBoundaries = (sourceRegistry.boundaries ?? [])
+    .filter((entity) => entityAppliesToOwner(entity, owner))
+    .filter((entity) => {
+      const featureHits = (entity.feature_ids ?? []).filter((id) => knownAfterRuntime.features.has(id)).length;
+      const profileHits = (entity.profile_ids ?? []).filter((id) => knownProfiles.has(id)).length;
+      return featureHits + profileHits > 0;
+    })
+    .map((entity) => importedEntity(entity, target.repo, { ...knownAfterRuntime, profiles: knownProfiles }));
+
+  const importedIssues = (sourceRegistry.issues ?? [])
+    .filter((entity) => entityAppliesToOwner(entity, owner))
+    .filter((entity) => (entity.feature_ids ?? []).length === 0 || (entity.feature_ids ?? []).some((id) => knownAfterRuntime.features.has(id)))
+    .map((entity) => importedEntity(entity, target.repo, knownAfterRuntime));
+
+  targetRegistry.profiles = mergeById((targetRegistry.profiles ?? []).filter((entity) => !sourceProfileIds.has(entity.id)), importedProfiles);
+  targetRegistry.boundaries = mergeById((targetRegistry.boundaries ?? []).filter((entity) => !sourceBoundaryIds.has(entity.id)), importedBoundaries);
+  targetRegistry.issues = mergeById((targetRegistry.issues ?? []).filter((entity) => !sourceIssueIds.has(entity.id)), importedIssues);
+  if (!targetRegistry.boundaries.some((entity) => entity.id === 'bnd:default')) {
+    targetRegistry.boundaries = mergeById(targetRegistry.boundaries, [
+      {
+        feature_ids: [],
+        frozen: false,
+        id: 'bnd:default',
+        profile_ids: [],
+        status: 'draft',
+        title: 'Default boundary',
+      },
+    ]);
+  }
 
   writeJson(registryPath, targetRegistry);
 
@@ -395,6 +597,9 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
     claims: importedClaims.length,
     tests: importedTests.length,
     evidence: importedEvidence.length,
+    profiles: importedProfiles.length,
+    boundaries: importedBoundaries.length,
+    issues: importedIssues.length,
   };
 }
 
@@ -433,11 +638,11 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     '',
     '## Imported Batches',
     '',
-    '| Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence |',
-    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
+    '| Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence | Profiles | Boundaries | Issues |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |',
     ...documentImports.map((docImport) => {
       const runtimeImport = runtimeImports.find((entry) => entry.repo === docImport.repo);
-      return `| \`${docImport.repo}\` | ${docImport.adrs} | ${docImport.supportingAdrs} | ${docImport.specs} | ${runtimeImport?.features ?? 0} | ${runtimeImport?.claims ?? 0} | ${runtimeImport?.tests ?? 0} | ${runtimeImport?.evidence ?? 0} |`;
+      return `| \`${docImport.repo}\` | ${docImport.adrs} | ${docImport.supportingAdrs} | ${docImport.specs} | ${runtimeImport?.features ?? 0} | ${runtimeImport?.claims ?? 0} | ${runtimeImport?.tests ?? 0} | ${runtimeImport?.evidence ?? 0} | ${runtimeImport?.profiles ?? 0} | ${runtimeImport?.boundaries ?? 0} | ${runtimeImport?.issues ?? 0} |`;
     }),
     '',
     '## Direct Owner Ledger Work',
@@ -482,11 +687,13 @@ function main() {
 
   const imports = Object.entries(targets).map(([owner, target]) => importOwnedDocuments(sourceRegistry, owner, target));
   const runtimeImports = Object.entries(targets).map(([owner, target]) => importOwnedRuntimeEntities(sourceRegistry, owner, target));
+  const clarificationRows = writeClarificationQueue(ledger);
   writeMigrationStatus(ledger, imports, runtimeImports);
   const reportLines = [
     'SSOT registry split ledger generated.',
     ...imports.map((entry) => `${entry.repo}: imported ${entry.adrs} ADRs and ${entry.specs} SPECs.`),
-    ...runtimeImports.map((entry) => `${entry.repo}: imported ${entry.features} features, ${entry.claims} claims, ${entry.tests} tests, and ${entry.evidence} evidence rows.`),
+    ...runtimeImports.map((entry) => `${entry.repo}: imported ${entry.features} features, ${entry.claims} claims, ${entry.tests} tests, ${entry.evidence} evidence, ${entry.profiles} profiles, ${entry.boundaries} boundaries, and ${entry.issues} issues.`),
+    `Clarification queue: ${clarificationRows.length} rows.`,
   ];
   console.log(reportLines.join('\n'));
 }
