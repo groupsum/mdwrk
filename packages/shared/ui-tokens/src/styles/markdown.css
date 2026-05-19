@@ -1,0 +1,418 @@
+/* MdWrk: Markdown & GFM Rendering */
+
+/* MARKDOWN STYLES (Scoped) */
+.markdown-body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  font-family: var(--font-ui);
+  line-height: var(--markdown-line-height);
+  font-size: calc(0.95rem * var(--ui-scale));
+  color: var(--fg-primary);
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-break: auto;
+  overflow-x: hidden;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  font-family: var(--font-head);
+  color: var(--fg-primary);
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  line-height: var(--markdown-heading-line-height);
+}
+
+.markdown-body h1 { font-size: calc(2em * var(--ui-scale)); border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; }
+.markdown-body h2 { font-size: calc(1.5em * var(--ui-scale)); }
+.markdown-body h3 { font-size: calc(1.2em * var(--ui-scale)); }
+.markdown-body h4 { font-size: calc(1.05em * var(--ui-scale)); }
+.markdown-body h5 { font-size: calc(0.95em * var(--ui-scale)); text-transform: uppercase; letter-spacing: 0.04em; }
+.markdown-body h6 { font-size: calc(0.85em * var(--ui-scale)); text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-muted); }
+.markdown-body p { margin-bottom: 1em; }
+.markdown-body strong { font-weight: 700; }
+.markdown-body em { font-style: italic; }
+.markdown-body u,
+.markdown-body ins {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.markdown-body del { color: var(--fg-muted); }
+.markdown-body code {
+  font-family: var(--font-mono);
+  background: var(--bg-inset);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: calc(0.85em * var(--ui-scale));
+  color: var(--fg-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.markdown-body pre {
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-inset);
+  padding: 1em;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+.markdown-body pre code {
+  display: block;
+  max-width: 100%;
+  background: transparent;
+  padding: 0;
+  font-size: calc(0.85em * var(--ui-scale));
+  color: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.markdown-body blockquote { border-left: 4px solid var(--accent); padding-left: 1em; color: var(--fg-muted); margin-left: 0; }
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 2em 0;
+}
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0.6em 0 1em;
+  padding-left: 1.8em;
+}
+.markdown-body ul {
+  list-style: disc outside;
+}
+.markdown-body ol {
+  list-style: decimal outside;
+}
+.markdown-body li {
+  display: list-item;
+  margin: 0.3em 0;
+  padding-left: 0.15em;
+}
+.markdown-body li > p {
+  margin: 0.2em 0;
+}
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ul,
+.markdown-body ol ol {
+  margin: 0.35em 0 0.15em;
+  padding-left: 1.5em;
+}
+.markdown-body ul ul { list-style-type: circle; }
+.markdown-body ul ul ul { list-style-type: square; }
+.markdown-body ol ol { list-style-type: lower-alpha; }
+.markdown-body ol ol ol { list-style-type: lower-roman; }
+.markdown-body .md-task-list-item {
+  list-style: none;
+  padding-left: 0.1em;
+}
+.markdown-body .md-task-list-item > .md-checkbox,
+.markdown-body .md-task-list-item > input[type="checkbox"] {
+  margin: 0.15em 0.6em 0 0;
+  transform: translateX(-0.35em);
+}
+.markdown-body .md-checkbox,
+.markdown-body input[type="checkbox"] {
+  vertical-align: middle;
+}
+.markdown-body li::marker {
+  color: var(--fg-muted);
+}
+.markdown-body li[data-has-nested-list="true"]::marker {
+  content: "";
+}
+.markdown-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.markdown-body a:visited { color: var(--fg-secondary); }
+.markdown-body a:hover,
+.markdown-body a:focus-visible {
+  color: var(--fg-primary);
+  text-decoration-color: var(--accent);
+}
+.markdown-body a::selection {
+  background: var(--accent);
+  color: var(--bg-panel);
+}
+.markdown-body img { max-width: 100%; }
+.markdown-body figure { margin: 1.5em 0; }
+.markdown-body figcaption { color: var(--fg-muted); font-size: calc(0.85em * var(--ui-scale)); text-align: center; }
+.markdown-body sup,
+.markdown-body sub {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.markdown-body sup {
+  top: -0.4em;
+}
+.markdown-body sub {
+  bottom: -0.2em;
+}
+
+.markdown-body .md-footnote-reference {
+  margin-left: 0.1em;
+}
+
+.markdown-body .md-footnotes {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--fg-secondary);
+  font-size: calc(0.9rem * var(--ui-scale));
+}
+
+.markdown-body .md-footnotes ol {
+  padding-left: 1.5rem;
+}
+
+.markdown-body .md-footnote-backlink {
+  margin-left: 0.5rem;
+  font-size: 0.9em;
+}
+
+.markdown-body .md-definition-list {
+  display: grid;
+  grid-template-columns: minmax(10rem, 16rem) 1fr;
+  gap: 0.5rem 1rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.markdown-body .md-definition-term {
+  font-weight: 700;
+}
+
+.markdown-body .md-definition-description {
+  margin: 0;
+}
+
+.markdown-body .md-definition-description > *:first-child {
+  margin-top: 0;
+}
+
+.markdown-body .md-math-inline code,
+.markdown-body .md-math-block code {
+  font-family: var(--font-mono);
+}
+
+.markdown-body .md-math-inline {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.2em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.markdown-body .md-math-block {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-inset);
+}
+
+.markdown-body .md-math-block pre {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.markdown-body .md-citation {
+  font-style: normal;
+  color: var(--fg-secondary);
+  background: color-mix(in srgb, var(--fg-secondary) 12%, transparent);
+  border-radius: 4px;
+  padding: 0 0.25em;
+}
+
+/* Table Styles */
+.markdown-body table,
+.markdown-body .md-table {
+  max-width: 100%;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.markdown-body th,
+.markdown-body td,
+.markdown-body .md-table-header,
+.markdown-body .md-table-cell {
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+  white-space: normal;
+}
+
+.markdown-body th,
+.markdown-body .md-table-header {
+  background-color: var(--table-header-bg);
+  color: var(--table-header-fg);
+  font-weight: 700;
+  text-align: left;
+}
+
+.markdown-body caption,
+.markdown-body .md-table-caption {
+  caption-side: top;
+  text-align: left;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  color: var(--fg-secondary);
+}
+
+.markdown-body thead th,
+.markdown-body .md-table-head .md-table-header {
+  background: var(--table-header-bg);
+  color: var(--table-header-fg);
+}
+
+.markdown-body tbody tr:nth-child(even),
+.markdown-body .md-table-body .md-table-row:nth-child(even) {
+  background: var(--table-row-secondary-bg);
+}
+
+.markdown-body tbody tr:nth-child(odd),
+.markdown-body .md-table-body .md-table-row:nth-child(odd) {
+  background: var(--table-row-primary-bg);
+}
+
+/* Syntax Highlighting overrides */
+.markdown-body pre > div {
+  background: transparent !important;
+  padding: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+.md-code-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg-panel);
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 1em;
+  overflow: hidden;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.md-code-header {
+  background: var(--bg-inset);
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: calc(0.7rem * var(--ui-scale));
+  border-bottom: 1px solid var(--border-color);
+  color: var(--fg-muted);
+  text-transform: uppercase;
+}
+
+.md-code-surface {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--code-block-bg, var(--bg-inset));
+  padding: 12px 14px;
+  border-radius: 6px;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.md-code-surface pre,
+.md-code-surface pre > code,
+.md-code-surface > div {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+@media print {
+  .markdown-body {
+    font-size: var(--pdf-content-font-size, 10.5pt);
+    line-height: var(--pdf-content-line-height, 1.5);
+  }
+
+  .markdown-body h1,
+  .markdown-body h2,
+  .markdown-body h3,
+  .markdown-body h4,
+  .markdown-body h5,
+  .markdown-body h6 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .markdown-body .page-break,
+  .markdown-body [data-page-break="always"],
+  .markdown-body hr.md-page-break {
+    display: block;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .markdown-body [data-break-before="page"] {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  .markdown-body [data-break-after="page"] {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .markdown-body [data-break-inside="avoid"] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .markdown-body table,
+  .markdown-body pre,
+  .markdown-body blockquote,
+  .markdown-body ul,
+  .markdown-body ol,
+  .markdown-body img,
+  .markdown-body .md-code-block,
+  .markdown-body .md-table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

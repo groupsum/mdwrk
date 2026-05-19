@@ -1,0 +1,189 @@
+import type { I18nLabel } from "@mdwrk/extension-manifest";
+import type {
+  ActiveDocument,
+  ExtensionContext,
+  ExtensionConfigurationStore,
+  SelectionRange,
+  WorkspaceFileSummary,
+  WorkspaceProjectSummary,
+} from "@mdwrk/extension-host";
+
+export type GeminiAgentIntent = "idle" | "summarize-current-file" | "rewrite-selection" | "custom-prompt";
+export type GeminiAgentWritebackMode = "selection" | "document";
+export type GeminiAgentAuthMode = "api-key" | "oidc" | "none";
+export type GeminiAgentOidcProviderId = "github" | "gitlab" | "gitea";
+
+export interface GeminiAgentOidcCredential {
+  readonly provider: GeminiAgentOidcProviderId;
+  readonly tokenBoundary: "agent";
+  readonly subject: string;
+  readonly username: string;
+  readonly accessToken: string;
+}
+
+export interface GeminiAgentOidcBridge {
+  connect(provider: GeminiAgentOidcProviderId): Promise<void>;
+  disconnect(): Promise<void>;
+  readCredential(provider: GeminiAgentOidcProviderId): Promise<GeminiAgentOidcCredential | null>;
+}
+
+export interface GeminiAgentResolvedSettings {
+  readonly endpoint: string;
+  readonly model: string;
+  readonly authMode: GeminiAgentAuthMode;
+  readonly apiKey: string;
+  readonly oidcProvider: GeminiAgentOidcProviderId;
+  readonly oidcAccessToken?: string;
+  readonly oidcSubject?: string;
+  readonly systemPrompt: string;
+  readonly temperature: number;
+  readonly requestTimeoutMs: number;
+  readonly autoAttachDocument: boolean;
+  readonly autoAttachSelection: boolean;
+  readonly allowWriteBack: boolean;
+}
+
+export interface GeminiAgentContextSnapshot {
+  readonly project: WorkspaceProjectSummary | null;
+  readonly file: WorkspaceFileSummary | null;
+  readonly document: ActiveDocument | null;
+  readonly selections: readonly SelectionRange[];
+}
+
+export interface GeminiMentionedFile {
+  readonly path: string;
+  readonly name: string;
+  readonly content: string;
+}
+
+export interface GeminiPromptMention {
+  readonly path: string;
+  readonly name: string;
+}
+
+export interface GeminiAgentRunOptions {
+  readonly mentionPaths?: readonly string[];
+}
+
+export interface GeminiAgentRequest {
+  readonly intent: GeminiAgentIntent;
+  readonly prompt: string;
+  readonly context: GeminiAgentContextSnapshot;
+  readonly settings: GeminiAgentResolvedSettings;
+  readonly mentions?: readonly GeminiMentionedFile[];
+}
+
+export interface GeminiAgentUsage {
+  readonly promptTokens?: number;
+  readonly responseTokens?: number;
+  readonly totalTokens?: number;
+}
+
+export interface GeminiAgentResponse {
+  readonly text: string;
+  readonly model: string;
+  readonly usage?: GeminiAgentUsage;
+  readonly raw?: unknown;
+}
+
+export type GeminiChatMessageRole = "user" | "assistant" | "system";
+
+export interface GeminiChatMessage {
+  readonly id: string;
+  readonly role: GeminiChatMessageRole;
+  readonly text: string;
+  readonly createdAt: string;
+  readonly intent?: GeminiAgentIntent;
+}
+
+export interface GeminiChatThread {
+  readonly id: string;
+  readonly title: string;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly messages: readonly GeminiChatMessage[];
+}
+
+export interface GeminiAgentServiceSnapshot {
+  readonly busy: boolean;
+  readonly lastIntent: GeminiAgentIntent;
+  readonly lastPrompt: string;
+  readonly lastContext: GeminiAgentContextSnapshot | null;
+  readonly lastResponse: GeminiAgentResponse | null;
+  readonly pendingDraft: string | null;
+  readonly lastError: string | null;
+  readonly writebackBlockedReason: string | null;
+  readonly infoMessage: string | null;
+  readonly threads: readonly GeminiChatThread[];
+  readonly activeThreadId: string | null;
+}
+
+export interface GeminiAgentService {
+  getSnapshot(): GeminiAgentServiceSnapshot;
+  subscribe(listener: () => void): () => void;
+  loadSettings(): Promise<GeminiAgentResolvedSettings>;
+  refreshContext(): Promise<GeminiAgentContextSnapshot>;
+  listMentionableFiles(query?: string): Promise<readonly WorkspaceFileSummary[]>;
+  runIntent(intent: GeminiAgentIntent, prompt?: string, options?: GeminiAgentRunOptions): Promise<GeminiAgentResponse>;
+  updateDraft(nextDraft: string): void;
+  clearDraft(): void;
+  clearResult(): void;
+  applyDraft(mode: GeminiAgentWritebackMode): Promise<boolean>;
+  createThread(): GeminiChatThread;
+  selectThread(threadId: string): void;
+}
+
+export interface GeminiTextProvider {
+  readonly id: string;
+  generate(request: GeminiAgentRequest): Promise<GeminiAgentResponse>;
+}
+
+export interface GeminiProviderCreateOptions {
+  readonly fetchImpl?: GeminiFetchLike;
+}
+
+export interface GeminiAgentEntryOptions {
+  readonly provider?: GeminiTextProvider;
+  readonly oidc?: GeminiAgentOidcBridge;
+}
+
+export interface GeminiAgentViewInput {
+  readonly intent?: GeminiAgentIntent;
+  readonly prompt?: string;
+}
+
+export interface GeminiAgentViewProps {
+  readonly close: () => Promise<void>;
+  readonly formatLabel: (label: I18nLabel | string) => string;
+  readonly service: GeminiAgentService;
+  readonly input?: GeminiAgentViewInput | null;
+  readonly shellSidebarOpen?: boolean;
+  readonly onShellSidebarToggle?: (open: boolean) => void;
+  readonly embedBrowserInShellSidebar?: boolean;
+  readonly initialLayoutMode?: "single" | "split";
+  readonly initialPaneFocus?: "conversation" | "preview" | "draft";
+}
+
+export type GeminiFetchLike = (input: string, init?: {
+  readonly method?: string;
+  readonly headers?: Record<string, string>;
+  readonly body?: string;
+  readonly signal?: AbortSignal;
+}) => Promise<{
+  readonly ok: boolean;
+  readonly status: number;
+  readonly statusText: string;
+  json(): Promise<unknown>;
+  text(): Promise<string>;
+}>;
+
+export interface GeminiAgentServiceDependencies {
+  readonly context: ExtensionContext;
+  readonly provider: GeminiTextProvider;
+  readonly formatLabel: (label: I18nLabel | string) => string;
+  readonly oidc?: GeminiAgentOidcBridge;
+}
+
+export interface GeminiSettingsReadOptions {
+  readonly config: ExtensionConfigurationStore;
+}

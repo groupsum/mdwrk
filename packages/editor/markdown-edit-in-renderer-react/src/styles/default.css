@@ -1,0 +1,327 @@
+.markdown-edit-in-renderer-host {
+  position: relative;
+  box-sizing: border-box;
+  color: var(--mwir-fg);
+  background: var(--mwir-bg);
+  cursor: text;
+  font-family: var(--mwir-font-ui);
+}
+
+.markdown-edit-in-renderer-host *,
+.markdown-edit-in-renderer-host *::before,
+.markdown-edit-in-renderer-host *::after {
+  box-sizing: border-box;
+}
+
+.markdown-edit-in-renderer-surface {
+  min-height: inherit;
+  width: 100%;
+  padding: clamp(1rem, 3vw, 3rem);
+  color: var(--mwir-fg);
+  background: var(--mwir-bg-active);
+  border: 1px solid var(--mwir-border);
+  border-radius: 0;
+  cursor: text;
+  outline: none;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.6;
+  pointer-events: none;
+  user-select: none;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.markdown-edit-in-renderer-surface:focus {
+  border-color: var(--mwir-border-active);
+  box-shadow: var(--mwir-shadow);
+}
+
+.markdown-edit-in-renderer-surface:empty::before {
+  content: attr(data-placeholder);
+  color: var(--mwir-fg-muted);
+}
+
+.markdown-edit-in-renderer-surface pre,
+.markdown-edit-in-renderer-surface code {
+  font-family: var(--mwir-font-mono);
+}
+
+.markdown-edit-in-renderer-surface h1,
+.markdown-edit-in-renderer-surface h2,
+.markdown-edit-in-renderer-surface h3,
+.markdown-edit-in-renderer-surface h4,
+.markdown-edit-in-renderer-surface h5,
+.markdown-edit-in-renderer-surface h6 {
+  margin: 1.25em 0 0.45em;
+  color: var(--mwir-fg);
+  font-weight: 750;
+  line-height: 1.16;
+}
+
+.markdown-edit-in-renderer-surface h1:first-child,
+.markdown-edit-in-renderer-surface h2:first-child,
+.markdown-edit-in-renderer-surface h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-edit-in-renderer-surface h1 {
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--mwir-border);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+.markdown-edit-in-renderer-surface h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid color-mix(in srgb, var(--mwir-border) 74%, transparent);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.markdown-edit-in-renderer-surface h3 {
+  font-size: 1.2rem;
+}
+
+.markdown-edit-in-renderer-surface p,
+.markdown-edit-in-renderer-surface blockquote,
+.markdown-edit-in-renderer-surface ul,
+.markdown-edit-in-renderer-surface ol,
+.markdown-edit-in-renderer-surface pre,
+.markdown-edit-in-renderer-surface table,
+.markdown-edit-in-renderer-code-block {
+  margin: 0.9em 0;
+}
+
+.markdown-edit-in-renderer-surface img {
+  display: inline;
+  max-width: min(100%, 48rem);
+  height: auto;
+  vertical-align: middle;
+  overflow-wrap: normal;
+}
+
+.markdown-edit-in-renderer-surface p > img:only-child {
+  display: block;
+  margin: 0.75em 0;
+}
+
+.markdown-edit-in-renderer-surface ul,
+.markdown-edit-in-renderer-surface ol {
+  padding-left: 1.5rem;
+}
+
+.markdown-edit-in-renderer-surface blockquote {
+  padding: 0.15rem 0 0.15rem 1rem;
+  color: var(--mwir-fg-muted);
+  border-left: 4px solid var(--mwir-accent);
+}
+
+.markdown-edit-in-renderer-surface pre {
+  padding: 0.875rem 1rem;
+  overflow: auto;
+  color: #182235;
+  background: #eef3f8;
+  border: 1px solid var(--mwir-border);
+}
+
+.markdown-edit-in-renderer-code-block {
+  overflow: hidden;
+  color: #182235;
+  background: #e8eef5;
+  border: 1px solid color-mix(in srgb, var(--mwir-border) 72%, #1d4ed8 28%);
+}
+
+.markdown-edit-in-renderer-code-block .markdown-edit-in-renderer-code-header {
+  display: flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+  color: color-mix(in srgb, var(--mwir-fg-muted) 80%, #0f172a 20%);
+  background: #dbe6f1;
+  border-bottom: 1px solid color-mix(in srgb, var(--mwir-border) 72%, #1d4ed8 28%);
+  font-family: var(--mwir-font-ui);
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.markdown-edit-in-renderer-code-language {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.15rem;
+  padding: 0 0.4rem;
+  color: #0f3a75;
+  background: color-mix(in srgb, var(--mwir-accent) 11%, #ffffff 89%);
+  border: 1px solid color-mix(in srgb, var(--mwir-accent) 28%, transparent);
+  font-size: 0.68rem;
+}
+
+.markdown-edit-in-renderer-code-block pre,
+.markdown-edit-in-renderer-surface pre.md-code-block {
+  margin: 0;
+  background: #eef3f8;
+  border: 0;
+}
+
+.markdown-edit-in-renderer-code-block code {
+  color: #182235;
+}
+
+.markdown-edit-in-renderer-code-block .token.comment,
+.markdown-edit-in-renderer-code-block .token.prolog,
+.markdown-edit-in-renderer-code-block .token.doctype,
+.markdown-edit-in-renderer-code-block .token.cdata {
+  color: #64748b;
+}
+
+.markdown-edit-in-renderer-code-block .token.keyword,
+.markdown-edit-in-renderer-code-block .token.atrule,
+.markdown-edit-in-renderer-code-block .token.selector {
+  color: #0b5cad;
+  font-weight: 700;
+}
+
+.markdown-edit-in-renderer-code-block .token.string,
+.markdown-edit-in-renderer-code-block .token.attr-value {
+  color: #12633d;
+}
+
+.markdown-edit-in-renderer-code-block .token.number,
+.markdown-edit-in-renderer-code-block .token.boolean,
+.markdown-edit-in-renderer-code-block .token.constant {
+  color: #8a3ffc;
+}
+
+.markdown-edit-in-renderer-code-block .token.function,
+.markdown-edit-in-renderer-code-block .token.class-name {
+  color: #9a4d00;
+}
+
+.markdown-edit-in-renderer-code-block .token.property,
+.markdown-edit-in-renderer-code-block .token.attr-name,
+.markdown-edit-in-renderer-code-block .token.tag {
+  color: #a8324a;
+}
+
+.markdown-edit-in-renderer-code-block .token.operator,
+.markdown-edit-in-renderer-code-block .token.punctuation {
+  color: #334155;
+}
+
+.markdown-edit-in-renderer-surface :not(pre) > code {
+  padding: 0.12rem 0.32rem;
+  color: #0f172a;
+  background: #e8eef6;
+  border: 1px solid color-mix(in srgb, var(--mwir-border) 70%, transparent);
+}
+
+.markdown-edit-in-renderer-surface table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.markdown-edit-in-renderer-surface th,
+.markdown-edit-in-renderer-surface td {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--mwir-border);
+  vertical-align: top;
+}
+
+.markdown-edit-in-renderer-surface th {
+  background: #f8fafc;
+  font-weight: 700;
+  text-align: left;
+}
+
+.markdown-edit-in-renderer-blank-line {
+  min-height: 1.6em;
+}
+
+.markdown-edit-in-renderer-plaintext {
+  position: fixed;
+  top: -1000px;
+  left: -1000px;
+  z-index: -1;
+  box-sizing: border-box;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: transparent;
+  background: transparent;
+  border: 0;
+  cursor: text;
+  outline: 0;
+  opacity: 0;
+  pointer-events: none;
+  resize: none;
+  overflow: hidden;
+  font: inherit;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  clip-path: inset(50%);
+}
+
+.markdown-edit-in-renderer-plaintext::placeholder {
+  color: transparent;
+}
+
+.markdown-edit-in-renderer-plaintext::selection {
+  color: transparent;
+  background: transparent;
+}
+
+.markdown-edit-in-renderer-selection-layer,
+.markdown-edit-in-renderer-composition-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.markdown-edit-in-renderer-selection {
+  position: absolute;
+  display: block;
+  min-width: 1px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--mwir-accent) 24%, transparent);
+}
+
+.markdown-edit-in-renderer-composition {
+  position: absolute;
+  display: block;
+  min-width: 8px;
+  background: var(--mwir-accent);
+}
+
+.markdown-edit-in-renderer-caret {
+  position: absolute;
+  z-index: 3;
+  display: none;
+  width: 2px;
+  min-height: 1em;
+  pointer-events: none;
+  background: var(--mwir-accent);
+  animation: markdown-edit-in-renderer-caret-blink 1.1s steps(1) infinite;
+}
+
+.markdown-edit-in-renderer-caret[data-visible="true"] {
+  display: block;
+}
+
+@keyframes markdown-edit-in-renderer-caret-blink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "name": "@mdwrk/markdown-renderer-react",
+  "version": "1.1.6",
+  "type": "module",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "files": [
+    "dist",
+    "src/styles",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./src/styles/default.css"
+  ],
+  "keywords": [
+    "markdown-workspace",
+    "renderer",
+    "markdown",
+    "react"
+  ],
+  "description": "React bindings for the MdWrk self-contained markdown renderer checkpoint.",
+  "dependencies": {
+    "@mdwrk/markdown-renderer-core": "^1.1.6",
+    "@mdwrk/ui-tokens": "^1.2.4"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@mdwrk/testing": "^1.0.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
+  },
+  "scripts": {
+    "build:deps": "npm run build -w @mdwrk/markdown-renderer-core && npm run build -w @mdwrk/ui-tokens",
+    "build": "npm run build:deps && tsc -p tsconfig.json",
+    "typecheck": "npm run build:deps && tsc --noEmit -p tsconfig.json",
+    "lint": "npm run typecheck",
+    "test": "node ./tests/prepare-workspace-links.mjs && node ./tests/gfm-surface.mjs && node ./tests/optional-profile-surface.mjs && node ./tests/preview-export-policy.mjs && node ./tests/run-smoke.mjs",
+    "prepack": "npm run build",
+    "test:optional-profiles": "node ./tests/optional-profile-surface.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "import": "./dist/version.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./theme": {
+      "types": "./dist/theme.d.ts",
+      "import": "./dist/theme.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./styles/default.css": "./src/styles/default.css"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Jacob Stewart <jacob@swarmauri.com>",
+  "homepage": "https://mdwrk.com"
+}

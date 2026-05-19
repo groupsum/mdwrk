@@ -1,0 +1,85 @@
+{
+  "name": "@mdwrk/markdown-renderer-core",
+  "version": "1.1.6",
+  "type": "module",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "keywords": [
+    "markdown-workspace",
+    "renderer",
+    "markdown",
+    "portable",
+    "core"
+  ],
+  "description": "Self-contained markdown parsing, CommonMark-core-oriented HTML rendering, heading extraction, and HTML document serialization for MdWrk.",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "npm run typecheck",
+    "test": "node ./tests/run-smoke.mjs && node ./tests/commonmark-core-corpus.mjs && node ./tests/gfm-default-profile.mjs && node ./tests/optional-profiles.mjs && node ./tests/custom-parser-profile.mjs && node ./tests/custom-previewer-profiles.mjs && node ./tests/preview-export-policy.mjs && node ./tests/negative-cases.mjs",
+    "prepack": "npm run build",
+    "test:gfm": "node ./tests/gfm-default-profile.mjs",
+    "test:optional-profiles": "node ./tests/optional-profiles.mjs",
+    "test:custom-profiles": "node ./tests/custom-parser-profile.mjs && node ./tests/custom-previewer-profiles.mjs",
+    "test:commonmark:official": "node ./tests/commonmark-official-corpus.mjs",
+    "test:gfm:official": "node ./tests/gfm-official-corpus.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "import": "./dist/version.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./class-names": {
+      "types": "./dist/class-names.d.ts",
+      "import": "./dist/class-names.js"
+    },
+    "./slug": {
+      "types": "./dist/slug.d.ts",
+      "import": "./dist/slug.js"
+    },
+    "./frontmatter": {
+      "types": "./dist/frontmatter.d.ts",
+      "import": "./dist/frontmatter.js"
+    },
+    "./headings": {
+      "types": "./dist/headings.d.ts",
+      "import": "./dist/headings.js"
+    },
+    "./pipeline": {
+      "types": "./dist/pipeline.d.ts",
+      "import": "./dist/pipeline.js"
+    },
+    "./html": {
+      "types": "./dist/html.d.ts",
+      "import": "./dist/html.js"
+    },
+    "./engine": {
+      "types": "./dist/engine.d.ts",
+      "import": "./dist/engine.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Jacob Stewart <jacob@swarmauri.com>",
+  "homepage": "https://mdwrk.com"
+}
