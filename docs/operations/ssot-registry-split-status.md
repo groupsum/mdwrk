@@ -6,10 +6,10 @@ Date: 2026-05-19
 
 | Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence | Profiles | Boundaries | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `mdwrk` | 15 | 32 | 56 | 139 | 24 | 20 | 20 | 5 | 8 | 1 |
-| `mdwrk-studio` | 30 | 28 | 92 | 294 | 29 | 41 | 41 | 4 | 18 | 3 |
-| `mdwrk-pages` | 19 | 18 | 43 | 315 | 26 | 47 | 9 | 1 | 16 | 3 |
-| `mdwrk-com` | 9 | 22 | 32 | 242 | 20 | 10 | 8 | 1 | 13 | 2 |
+| `mdwrk` | 15 | 34 | 58 | 143 | 24 | 20 | 20 | 5 | 8 | 1 |
+| `mdwrk-studio` | 30 | 30 | 93 | 298 | 29 | 41 | 41 | 4 | 18 | 3 |
+| `mdwrk-pages` | 19 | 18 | 44 | 316 | 26 | 47 | 9 | 1 | 16 | 3 |
+| `mdwrk-com` | 9 | 22 | 33 | 243 | 20 | 10 | 8 | 1 | 13 | 2 |
 
 ## Proof Policy Pass
 
@@ -17,16 +17,16 @@ The latest pass keeps feature scope rows in the owning split repo, but only keep
 
 | Repository | Proof-backed implemented features | Features needing new local proof | Out-of-bounds features |
 | --- | ---: | ---: | ---: |
-| `mdwrk` | 102 | 37 | 0 |
-| `mdwrk-studio` | 136 | 152 | 0 |
-| `mdwrk-pages` | 176 | 137 | 2 |
-| `mdwrk-com` | 27 | 213 | 2 |
+| `mdwrk` | 102 | 41 | 0 |
+| `mdwrk-studio` | 139 | 153 | 0 |
+| `mdwrk-pages` | 176 | 138 | 2 |
+| `mdwrk-com` | 27 | 214 | 2 |
 
 ## Direct Owner Ledger Work
 
 | Repository | High-confidence migrate rows |
 | --- | ---: |
-| `mdwrk` | 66 |
+| `mdwrk` | 68 |
 | `mdwrk-studio` | 221 |
 | `mdwrk-pages` | 247 |
 | `mdwrk-com` | 18 |
@@ -36,7 +36,7 @@ The latest pass keeps feature scope rows in the owning split repo, but only keep
 | Repository | Remaining rows | Remaining families |
 | --- | ---: | --- |
 | `mdwrk` | 18 | claims: 2, tests: 13, evidence: 3 |
-| `mdwrk-studio` | 4 | specs: 1, features: 2, claims: 1 |
+| `mdwrk-studio` | 1 | claims: 1 |
 | `mdwrk-pages` | 95 | claims: 95 |
 | `mdwrk-com` | 1 | tests: 1 |
 
@@ -45,12 +45,12 @@ The latest pass keeps feature scope rows in the owning split repo, but only keep
 | Action | Proposed owner bucket | Count |
 | --- | --- | ---: |
 | `archive` | `history` | 15 |
-| `manual-review` | `review` | 66 |
+| `manual-review` | `review` | 58 |
 | `split` | `mixed:mdwrk-com+core` | 2 |
 | `split` | `mixed:mdwrk-com+pages` | 271 |
 | `split` | `mixed:mdwrk-com+pages+core` | 2 |
 | `split` | `mixed:mdwrk-com+pages+studio` | 117 |
-| `split` | `mixed:mdwrk-com+pages+studio+core` | 6 |
+| `split` | `mixed:mdwrk-com+pages+studio+core` | 7 |
 | `split` | `mixed:mdwrk-com+studio` | 10 |
 | `split` | `mixed:mdwrk-com+studio+core` | 4 |
 | `split` | `mixed:pages+core` | 5 |

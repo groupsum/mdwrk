@@ -9,11 +9,11 @@ This queue contains source entities that were not confidently moved, split, or c
 | Action | Proposed owner bucket | Count |
 | --- | --- | ---: |
 | `archive` | `history` | 15 |
-| `manual-review` | `review` | 66 |
+| `manual-review` | `review` | 58 |
 | `migrate` | `mdwrk` | 18 |
 | `migrate` | `mdwrk-com` | 1 |
 | `migrate` | `mdwrk-pages` | 95 |
-| `migrate` | `mdwrk-studio` | 4 |
+| `migrate` | `mdwrk-studio` | 1 |
 | `split` | `mixed:mdwrk-com+core` | 2 |
 | `split` | `mixed:mdwrk-com+pages` | 93 |
 | `split` | `mixed:mdwrk-com+pages+core` | 1 |
@@ -24,7 +24,7 @@ This queue contains source entities that were not confidently moved, split, or c
 | `split` | `mixed:pages+core` | 2 |
 | `split` | `mixed:pages+studio` | 9 |
 | `split` | `mixed:pages+studio+core` | 2 |
-| `split` | `mixed:studio+core` | 93 |
+| `split` | `mixed:studio+core` | 92 |
 
 ## Rows
 
@@ -38,11 +38,11 @@ This queue contains source entities that were not confidently moved, split, or c
 | `adrs` | `adr:1013` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages` | No single owner is clear from the entity ID, title, path, or links. |
 | `adrs` | `adr:1016` | `review` | none | `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `adrs` | `adr:1018` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
-| `adrs` | `adr:1019` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
+| `adrs` | `adr:1019` | `history` | none | `mdwrk`, `mdwrk-studio` | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1020` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1021` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1023` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
-| `adrs` | `adr:1024` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
+| `adrs` | `adr:1024` | `history` | none | `mdwrk`, `mdwrk-studio` | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1025` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1026` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
 | `adrs` | `adr:1027` | `history` | none | none | Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo. |
@@ -53,13 +53,12 @@ This queue contains source entities that were not confidently moved, split, or c
 | `adrs` | `adr:1045` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:1000` | `review` | none | `mdwrk` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2001` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `specs` | `spc:2002` | `review` | none | `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
+| `specs` | `spc:2002` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2005` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2008` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2016` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2017` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2022` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
-| `specs` | `spc:2031` | `mdwrk-studio` | none | none | Single-owner row still lacks enough local proof closure, local paths, or imported dependencies to migrate safely. |
 | `specs` | `spc:2033` | `review` | none | `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2039` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2040` | `review` | none | `mdwrk`, `mdwrk-studio` | No single owner is clear from the entity ID, title, path, or links. |
@@ -85,17 +84,6 @@ This queue contains source entities that were not confidently moved, split, or c
 | `specs` | `spc:2079` | `review` | none | `mdwrk-studio`, `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2095` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2099` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:docs-text-wrap-previewer` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:docs-checkbox-autocomplete` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:ssot-registry-model-governance` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:ssot-graph-export-governance` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:ssot-release-snapshot-reports` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:repo-governance-validation` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:spec-coverage-index` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:browser-e2e-conformance-matrix` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | none | Split policy is known, but no target repo currently has enough local proof to carry this row. |
-| `features` | `feat:shell-evidence-matrix` | `mdwrk-studio` | none | none | Single-owner row still lacks enough local proof closure, local paths, or imported dependencies to migrate safely. |
-| `features` | `feat:uix-responsive-layout-matrix` | `mdwrk-studio` | none | none | Single-owner row still lacks enough local proof closure, local paths, or imported dependencies to migrate safely. |
-| `features` | `feat:repository-top-level-hygiene` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
 | `features` | `feat:mdwrk-scoped-agent-ownership-instructions` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
 | `claims` | `clm:client-diagnostics` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | `mdwrk` | Split policy is known, but local proof was only valid in mdwrk; remaining candidate repos without valid local rows: mdwrk-studio. |
 | `claims` | `clm:client-editor` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | `mdwrk` | Split policy is known, but local proof was only valid in mdwrk; remaining candidate repos without valid local rows: mdwrk-studio. |

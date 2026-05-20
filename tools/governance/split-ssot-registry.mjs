@@ -48,6 +48,22 @@ const entityFamilies = [
   'risks',
 ];
 
+const featureOwnerOverrides = {
+  'feat:docs-text-wrap-previewer': 'core',
+  'feat:docs-checkbox-autocomplete': 'core',
+  'feat:shell-evidence-matrix': 'studio',
+};
+
+const featureCopyToAll = new Set(['feat:repository-top-level-hygiene']);
+
+const featureOriginLikeExclusions = new Set([
+  'feat:ssot-registry-model-governance',
+  'feat:ssot-graph-export-governance',
+  'feat:ssot-release-snapshot-reports',
+  'feat:repo-governance-validation',
+  'feat:spec-coverage-index',
+]);
+
 const ownerRules = [
   [
     'mdwrk-com',
@@ -105,6 +121,15 @@ function entityText(entity) {
 }
 
 function classify(entity) {
+  if (featureOriginLikeExclusions.has(entity?.id)) {
+    return 'origin';
+  }
+  if (featureCopyToAll.has(entity?.id)) {
+    return 'mixed:mdwrk-com+pages+studio+core';
+  }
+  if (featureOwnerOverrides[entity?.id]) {
+    return featureOwnerOverrides[entity.id];
+  }
   if (entity?.origin === 'ssot-origin' || /^(adr|spc):06/.test(entity?.id ?? '')) {
     return 'origin';
   }
@@ -481,7 +506,7 @@ function importOwnedDocuments(sourceRegistry, owner, target) {
   const supportingAdrs = [...requiredAdrIds]
     .filter((id) => !ownedAdrs.some((entity) => entity.id === id))
     .map((id) => entityById(sourceRegistry, 'adrs', id))
-    .filter((entity) => entity && classify(entity) !== 'history');
+    .filter((entity) => entity && classify(entity) !== 'origin');
 
   const availableAdrIds = new Set([
     ...existingAdrIds,
