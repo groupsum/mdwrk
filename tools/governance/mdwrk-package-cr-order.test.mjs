@@ -42,8 +42,8 @@ test('validates the live first boundary runtime contract', async () => {
   assert.deepEqual(MDWRK_PACKAGE_CR_FEATURE_IDS, [
     'feat:mdwrk-package-change-request-execution',
     'feat:mdwrk-package-owned-version-bump-governance',
-    'feat:mdwrk-scoped-agent-ownership-instructions',
-    'feat:mdwrk-package-screenshot-evidence-matrix',
+    'feat:mdwrk.scoped-agent-ownership-instructions',
+    'feat:mdwrk.cr-037.package-visual-proof',
   ]);
   assert.ok(result.details.workspacePackageCount > 0);
   assert.ok(result.details.requiredAgentPaths.includes('AGENTS.md'));

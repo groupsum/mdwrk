@@ -13,8 +13,8 @@ export const MDWRK_PACKAGE_CR_BOUNDARY_ID = 'bnd:mdwrk-package-cr-order-next';
 export const MDWRK_PACKAGE_CR_FEATURE_IDS = [
   'feat:mdwrk-package-change-request-execution',
   'feat:mdwrk-package-owned-version-bump-governance',
-  'feat:mdwrk-scoped-agent-ownership-instructions',
-  'feat:mdwrk-package-screenshot-evidence-matrix',
+  'feat:mdwrk.scoped-agent-ownership-instructions',
+  'feat:mdwrk.cr-037.package-visual-proof',
 ];
 
 export const PACKAGE_OWNER_ORDER = [
