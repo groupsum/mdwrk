@@ -33,11 +33,15 @@ body: |-
   
   # Decision
   MdWrk change requests shall be ordered by package ownership. Cross-package governance, ADR/SPEC linkage, versioning, and screenshot proof come first. Contracts and shared tokens come before package implementations. Editor and renderer package changes come before app adoption. Extension manifest and host contracts come before first-party extension changes. Portable lander contracts and packages come before mdwrkcom host adoption.
+
+  After the repository split, every non-empty `mdwrk` cell in the split CR matrix is tracked as a repo-local CR feature. The CR feature is a planning and traceability row, not proof that the package work is complete. The feature must link to this ADR's execution SPEC, a T0 claim, a T0 test row, and a planned evidence row before it can be used for implementation planning.
   
   Repo-owned mdwrkcom work includes host code, content-pack adoption, static build outputs, portable discovery artifact generation, and validation of generated artifacts. Repo-owned mdwrkcom work excludes redeploying unrelated existing sites and submitting sitemap.xml to Google Search Console or any equivalent external console.
   
   # Boundaries
   The order is a governance and execution contract, not a release guarantee. A package may still ship independently when its dependencies are already satisfied. Cross-package work must name all owners explicitly and must not hide product-host obligations inside reusable package work.
+
+  Repo-local CR matrix features use `feat:mdwrk.cr-<number>.<slug>` IDs. Their associated T0 test, claim, and evidence rows use the same CR number. These rows validate that the CR exists, has an owner, links to the governing execution contract, and has an executable T0 proof hook. They do not replace package-specific implementation features.
   
   Internal sitemap.xml generation and validation can remain a lander-seo or mdwrkcom feature. External submission of that sitemap to a third-party search console is an operational deployment task and is out of scope for this repo-owned feature checklist.
   
