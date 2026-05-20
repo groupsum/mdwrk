@@ -9,6 +9,8 @@ const ledgerJsonPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registr
 const ledgerMarkdownPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-migration-ledger.md');
 const clarificationJsonPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-clarification-queue.json');
 const clarificationMarkdownPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-clarification-queue.md');
+const remainingFeaturesJsonPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-remaining-feature-directions.json');
+const remainingFeaturesMarkdownPath = join(coordinatorRepo, 'docs', 'operations', 'ssot-registry-remaining-feature-directions.md');
 
 const targets = {
   core: {
@@ -262,10 +264,12 @@ function clarificationReason(row, locations) {
     return 'Historical monorepo or release-checkpoint row; needs an explicit archive-versus-copy policy before becoming active in a split repo.';
   }
   if (row.action === 'split') {
-    if (locations.length > 0) {
-      return 'Partially copied as supporting proof, but the source row spans multiple repos and still needs an explicit split/copy decision.';
+    const candidateRepos = candidateReposForOwner(row.proposed_owner);
+    const missingRepos = candidateRepos.filter((repo) => !locations.includes(repo));
+    if (missingRepos.length > 0 && locations.length > 0) {
+      return `Split policy is known, but local proof was only valid in ${locations.join(', ')}; remaining candidate repos without valid local rows: ${missingRepos.join(', ')}.`;
     }
-    return 'Cross-repo row whose target repo-local proof graph is not confidently separable yet.';
+    return 'Split policy is known, but no target repo currently has enough local proof to carry this row.';
   }
   if (row.action === 'migrate') {
     return 'Single-owner row still lacks enough local proof closure, local paths, or imported dependencies to migrate safely.';
@@ -278,11 +282,18 @@ function writeClarificationQueue(ledger) {
     .filter((row) => row.action !== 'copy-origin')
     .map((row) => {
       const locations = currentTargetEntityLocations(row.entity_family, row.entity_id);
+      const candidateRepos = candidateReposForOwner(row.proposed_owner);
+      const splitFullyMigrated =
+        row.action === 'split' && candidateRepos.length > 0 && candidateRepos.every((repo) => locations.includes(repo));
       return {
         ...row,
-        candidate_repos: candidateReposForOwner(row.proposed_owner),
+        candidate_repos: candidateRepos,
         migrated_to_repos: locations,
-        clarification_required: locations.length === 0 || row.action === 'manual-review' || row.action === 'archive' || row.action === 'split',
+        clarification_required:
+          locations.length === 0 ||
+          row.action === 'manual-review' ||
+          row.action === 'archive' ||
+          (row.action === 'split' && !splitFullyMigrated),
         clarification_reason: clarificationReason(row, locations),
       };
     })
@@ -330,6 +341,50 @@ function writeClarificationQueue(ledger) {
   return rows;
 }
 
+function writeRemainingFeatureDirections(clarificationRows) {
+  const featureRows = clarificationRows.filter((row) => row.entity_family === 'features');
+  writeJson(remainingFeaturesJsonPath, featureRows, { trailingNewline: true });
+
+  const counts = new Map();
+  for (const row of featureRows) {
+    const key = `${row.action}|${row.proposed_owner}`;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  const lines = [
+    '# SSOT Registry Remaining Feature Directions',
+    '',
+    'Generated after applying the policy that mixed monorepo rows should be split into separate repo-local rows when they can validate with local proof.',
+    '',
+    'These are the remaining feature entities that still need direction because they cannot yet be confidently represented as complete repo-local proof rows.',
+    '',
+    '## Summary',
+    '',
+    '| Action | Proposed owner bucket | Count |',
+    '| --- | --- | ---: |',
+    ...[...counts.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, count]) => {
+        const [action, owner] = key.split('|');
+        return `| \`${action}\` | \`${owner}\` | ${count} |`;
+      }),
+    '',
+    '## Features',
+    '',
+    '| Feature ID | Title | Proposed owner | Candidate repos | Already migrated to | Direction needed |',
+    '| --- | --- | --- | --- | --- | --- |',
+    ...featureRows.map((row) => {
+      const candidateRepos = row.candidate_repos.length > 0 ? row.candidate_repos.map((repo) => `\`${repo}\``).join(', ') : 'none';
+      const locations = row.migrated_to_repos.length > 0 ? row.migrated_to_repos.map((repo) => `\`${repo}\``).join(', ') : 'none';
+      return `| \`${row.entity_id}\` | ${row.title ?? ''} | \`${row.proposed_owner}\` | ${candidateRepos} | ${locations} | ${row.clarification_reason} |`;
+    }),
+    '',
+  ];
+  writeFileSync(remainingFeaturesMarkdownPath, `${lines.join('\n')}\n`, 'utf8');
+
+  return featureRows;
+}
+
 function copyRegistryDocument(entity, targetRoot) {
   if (!entity.path) return false;
   const sourcePath = join(sourceRepo, entity.path);
@@ -355,6 +410,16 @@ function keepKnownIds(ids, knownIds) {
   return (ids ?? []).filter((id) => knownIds.has(id));
 }
 
+function tierRank(tier) {
+  const ranks = { T0: 0, T1: 1, T2: 2, T3: 3, T4: 4 };
+  return ranks[tier] ?? 0;
+}
+
+function claimHasPassingEvidenceAtTier(claim, evidenceRows) {
+  const requiredTier = tierRank(claim.tier);
+  return evidenceRows.some((evidence) => evidence.status === 'passed' && tierRank(evidence.tier) >= requiredTier);
+}
+
 function importedEntity(entity, repo, known) {
   const clone = structuredClone(entity);
   clone.origin ??= 'repo-local';
@@ -373,11 +438,11 @@ function importedEntity(entity, repo, known) {
 function importOwnedDocuments(sourceRegistry, owner, target) {
   const registryPath = join(target.root, '.ssot', 'registry.json');
   const targetRegistry = readJson(registryPath);
-  const ownedAdrs = (sourceRegistry.adrs ?? []).filter((entity) => classify(entity) === owner);
+  const ownedAdrs = (sourceRegistry.adrs ?? []).filter((entity) => entityAppliesToOwner(entity, owner) && classify(entity) !== 'history');
   const existingAdrIds = new Set((targetRegistry.adrs ?? []).map((entity) => entity.id));
 
-  const ownedFeatures = (sourceRegistry.features ?? []).filter((entity) => classify(entity) === owner);
-  const directlyOwnedSpecs = (sourceRegistry.specs ?? []).filter((entity) => classify(entity) === owner);
+  const ownedFeatures = (sourceRegistry.features ?? []).filter((entity) => entityAppliesToOwner(entity, owner));
+  const directlyOwnedSpecs = (sourceRegistry.specs ?? []).filter((entity) => entityAppliesToOwner(entity, owner));
   const featureRequiredSpecs = ownedFeatures
     .flatMap((entity) => entity.spec_ids ?? [])
     .map((id) => entityById(sourceRegistry, 'specs', id))
@@ -484,9 +549,11 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
     const evidenceIds = new Set(evidenceWithTests.map((entity) => entity.id));
 
     const claimsWithProof = claimsWithFeatures.filter((entity) => {
+      const localEvidenceRows = evidenceWithTests.filter((evidence) => (entity.evidence_ids ?? []).includes(evidence.id));
       return (
         (entity.test_ids ?? []).some((id) => testIds.has(id)) &&
-        (entity.evidence_ids ?? []).some((id) => evidenceIds.has(id))
+        (entity.evidence_ids ?? []).some((id) => evidenceIds.has(id)) &&
+        claimHasPassingEvidenceAtTier(entity, localEvidenceRows)
       );
     });
     const claimIds = new Set(claimsWithProof.map((entity) => entity.id));
@@ -688,12 +755,14 @@ function main() {
   const imports = Object.entries(targets).map(([owner, target]) => importOwnedDocuments(sourceRegistry, owner, target));
   const runtimeImports = Object.entries(targets).map(([owner, target]) => importOwnedRuntimeEntities(sourceRegistry, owner, target));
   const clarificationRows = writeClarificationQueue(ledger);
+  const remainingFeatureRows = writeRemainingFeatureDirections(clarificationRows);
   writeMigrationStatus(ledger, imports, runtimeImports);
   const reportLines = [
     'SSOT registry split ledger generated.',
     ...imports.map((entry) => `${entry.repo}: imported ${entry.adrs} ADRs and ${entry.specs} SPECs.`),
     ...runtimeImports.map((entry) => `${entry.repo}: imported ${entry.features} features, ${entry.claims} claims, ${entry.tests} tests, ${entry.evidence} evidence, ${entry.profiles} profiles, ${entry.boundaries} boundaries, and ${entry.issues} issues.`),
     `Clarification queue: ${clarificationRows.length} rows.`,
+    `Remaining feature directions: ${remainingFeatureRows.length} rows.`,
   ];
   console.log(reportLines.join('\n'));
 }

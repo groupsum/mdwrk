@@ -6,10 +6,10 @@ Date: 2026-05-19
 
 | Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence | Profiles | Boundaries | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `mdwrk` | 11 | 16 | 15 | 29 | 15 | 9 | 9 | 5 | 6 | 1 |
-| `mdwrk-studio` | 18 | 15 | 45 | 97 | 28 | 39 | 39 | 2 | 12 | 0 |
-| `mdwrk-pages` | 8 | 14 | 19 | 154 | 7 | 45 | 8 | 0 | 3 | 1 |
-| `mdwrk-com` | 3 | 9 | 10 | 2 | 3 | 2 | 2 | 0 | 4 | 1 |
+| `mdwrk` | 15 | 32 | 56 | 102 | 24 | 20 | 20 | 5 | 7 | 1 |
+| `mdwrk-studio` | 30 | 28 | 92 | 142 | 29 | 41 | 41 | 2 | 13 | 0 |
+| `mdwrk-pages` | 19 | 18 | 43 | 176 | 26 | 47 | 9 | 0 | 5 | 2 |
+| `mdwrk-com` | 9 | 22 | 32 | 27 | 20 | 10 | 8 | 1 | 7 | 2 |
 
 ## Direct Owner Ledger Work
 
@@ -26,8 +26,8 @@ Date: 2026-05-19
 | --- | ---: | --- |
 | `mdwrk` | 22 | features: 3, claims: 2, tests: 13, evidence: 3, boundaries: 1 |
 | `mdwrk-studio` | 12 | specs: 1, features: 7, claims: 1, boundaries: 1, issues: 2 |
-| `mdwrk-pages` | 100 | features: 2, claims: 95, tests: 1, boundaries: 2 |
-| `mdwrk-com` | 6 | features: 3, tests: 2, evidence: 1 |
+| `mdwrk-pages` | 99 | features: 2, claims: 95, boundaries: 2 |
+| `mdwrk-com` | 4 | features: 3, tests: 1 |
 
 ## Unresolved Global Queues
 
