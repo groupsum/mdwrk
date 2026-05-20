@@ -57,12 +57,40 @@ const featureOwnerOverrides = {
 const featureCopyToAll = new Set(['feat:repository-top-level-hygiene']);
 
 const featureOriginLikeExclusions = new Set([
+  'feat:mdwrk-scoped-agent-ownership-instructions',
   'feat:ssot-registry-model-governance',
   'feat:ssot-graph-export-governance',
   'feat:ssot-release-snapshot-reports',
   'feat:repo-governance-validation',
   'feat:spec-coverage-index',
 ]);
+
+const scopedAgentInstructionFeatures = {
+  'mdwrk': {
+    id: 'feat:mdwrk.scoped-agent-ownership-instructions',
+    title: 'mdwrk scoped Codex agent ownership instructions',
+    description:
+      'Defines root and folder-local AGENTS.md guidance for Codex work in mdwrk, including package ownership boundaries, nested instruction precedence, verification commands, and role-specific expectations for shared contracts, renderer, editor, extension, UI token, and documentation work.',
+  },
+  'mdwrk-studio': {
+    id: 'feat:mdwrk-studio.scoped-agent-ownership-instructions',
+    title: 'mdwrk-studio scoped Codex agent ownership instructions',
+    description:
+      'Defines root and folder-local AGENTS.md guidance for Codex work in mdwrk-studio, including ownership boundaries, nested instruction precedence, verification commands, and role-specific expectations for PWA, desktop shell, client renderer, Playwright, browser smoke, and evidence-generation work.',
+  },
+  'mdwrk-pages': {
+    id: 'feat:mdwrk-pages.scoped-agent-ownership-instructions',
+    title: 'mdwrk-pages scoped Codex agent ownership instructions',
+    description:
+      'Defines root and folder-local AGENTS.md guidance for Codex work in mdwrk-pages, including ownership boundaries, nested instruction precedence, verification commands, and role-specific expectations for lander packages, page templates, structured content contracts, theme packages, and publishing helpers.',
+  },
+  'mdwrk-com': {
+    id: 'feat:mdwrk-com.scoped-agent-ownership-instructions',
+    title: 'mdwrk-com scoped Codex agent ownership instructions',
+    description:
+      'Defines root and folder-local AGENTS.md guidance for Codex work in mdwrk-com, including ownership boundaries, nested instruction precedence, verification commands, and role-specific expectations for public website content, metadata, styles, site content packs, and deployment-sensitive surfaces.',
+  },
+};
 
 const ownerRules = [
   [
@@ -484,6 +512,33 @@ function importedFeatureEntity(entity, repo, known, proofBackedFeatureIds) {
   return clone;
 }
 
+function scopedAgentInstructionFeature(repo) {
+  const feature = scopedAgentInstructionFeatures[repo];
+  if (!feature) return null;
+  return {
+    claim_ids: [],
+    description: feature.description,
+    id: feature.id,
+    implementation_status: 'absent',
+    lifecycle: {
+      note: 'Created during the SSOT split as repo-local backlog scope. Add repo-local AGENTS.md proof before moving to current or explicit.',
+      replacement_feature_ids: [],
+      stage: 'active',
+    },
+    origin: 'repo-local',
+    plan: {
+      horizon: 'backlog',
+      slot: null,
+      target_claim_tier: 'T2',
+      target_lifecycle_stage: 'active',
+    },
+    requires: [],
+    spec_ids: [],
+    test_ids: [],
+    title: feature.title,
+  };
+}
+
 function importOwnedDocuments(sourceRegistry, owner, target) {
   const registryPath = join(target.root, '.ssot', 'registry.json');
   const targetRegistry = readJson(registryPath);
@@ -645,7 +700,11 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
     evidence: selectedEvidenceIds,
   };
 
-  const importedFeatures = plannedFeatures.map((entity) => importedFeatureEntity(entity, target.repo, known, proofBackedFeatureIds));
+  const syntheticFeatures = [scopedAgentInstructionFeature(target.repo)].filter(Boolean);
+  const importedFeatures = [
+    ...plannedFeatures.map((entity) => importedFeatureEntity(entity, target.repo, known, proofBackedFeatureIds)),
+    ...syntheticFeatures,
+  ];
   const importedClaims = selectedClaims.map((entity) => importedEntity(entity, target.repo, known));
   const importedTests = selectedTests.map((entity) => importedEntity(entity, target.repo, known));
   const importedEvidence = selectedEvidence.map((entity) => importedEntity(entity, target.repo, known));

@@ -7,8 +7,8 @@ Generated from `E:\swarmauri_github\markdown_workspace\.ssot\registry.json`.
 | Action | Proposed owner | Count |
 | --- | --- | ---: |
 | `archive` | `history` | 15 |
-| `copy-origin` | `origin` | 53 |
-| `manual-review` | `review` | 58 |
+| `copy-origin` | `origin` | 54 |
+| `manual-review` | `review` | 57 |
 | `migrate` | `mdwrk` | 68 |
 | `migrate` | `mdwrk-com` | 18 |
 | `migrate` | `mdwrk-pages` | 247 |

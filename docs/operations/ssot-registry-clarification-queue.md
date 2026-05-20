@@ -9,7 +9,7 @@ This queue contains source entities that were not confidently moved, split, or c
 | Action | Proposed owner bucket | Count |
 | --- | --- | ---: |
 | `archive` | `history` | 15 |
-| `manual-review` | `review` | 58 |
+| `manual-review` | `review` | 57 |
 | `migrate` | `mdwrk` | 18 |
 | `migrate` | `mdwrk-com` | 1 |
 | `migrate` | `mdwrk-pages` | 95 |
@@ -84,7 +84,6 @@ This queue contains source entities that were not confidently moved, split, or c
 | `specs` | `spc:2079` | `review` | none | `mdwrk-studio`, `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2095` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-pages`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
 | `specs` | `spc:2099` | `review` | none | `mdwrk`, `mdwrk-studio`, `mdwrk-com` | No single owner is clear from the entity ID, title, path, or links. |
-| `features` | `feat:mdwrk-scoped-agent-ownership-instructions` | `review` | none | none | No single owner is clear from the entity ID, title, path, or links. |
 | `claims` | `clm:client-diagnostics` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | `mdwrk` | Split policy is known, but local proof was only valid in mdwrk; remaining candidate repos without valid local rows: mdwrk-studio. |
 | `claims` | `clm:client-editor` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | `mdwrk` | Split policy is known, but local proof was only valid in mdwrk; remaining candidate repos without valid local rows: mdwrk-studio. |
 | `claims` | `clm:client-preferences` | `mixed:studio+core` | `mdwrk-studio`, `mdwrk` | `mdwrk-studio` | Split policy is known, but local proof was only valid in mdwrk-studio; remaining candidate repos without valid local rows: mdwrk. |

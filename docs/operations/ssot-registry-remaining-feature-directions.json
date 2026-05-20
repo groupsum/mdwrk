@@ -1,1 +1,1 @@
-[{"action":"manual-review","blocking_missing_paths":[],"candidate_repos":[],"clarification_reason":"No single owner is clear from the entity ID, title, path, or links.","clarification_required":true,"entity_family":"features","entity_id":"feat:mdwrk-scoped-agent-ownership-instructions","existing_target_paths":{"mdwrk":[],"mdwrk-com":[],"mdwrk-pages":[],"mdwrk-studio":[]},"migrated_to_repos":[],"proposed_owner":"review","reason":"No high-confidence owner from ID, title, path, or relationships.","source_path":null,"title":"MdWrk scoped agent ownership instructions"}]
+[]

@@ -6,10 +6,10 @@ Date: 2026-05-19
 
 | Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence | Profiles | Boundaries | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `mdwrk` | 15 | 34 | 58 | 143 | 24 | 20 | 20 | 5 | 8 | 1 |
-| `mdwrk-studio` | 30 | 30 | 93 | 298 | 29 | 41 | 41 | 4 | 18 | 3 |
-| `mdwrk-pages` | 19 | 18 | 44 | 316 | 26 | 47 | 9 | 1 | 16 | 3 |
-| `mdwrk-com` | 9 | 22 | 33 | 243 | 20 | 10 | 8 | 1 | 13 | 2 |
+| `mdwrk` | 15 | 34 | 58 | 144 | 24 | 20 | 20 | 5 | 8 | 1 |
+| `mdwrk-studio` | 30 | 30 | 93 | 299 | 29 | 41 | 41 | 4 | 18 | 3 |
+| `mdwrk-pages` | 19 | 18 | 44 | 317 | 26 | 47 | 9 | 1 | 16 | 3 |
+| `mdwrk-com` | 9 | 22 | 33 | 244 | 20 | 10 | 8 | 1 | 13 | 2 |
 
 ## Proof Policy Pass
 
@@ -17,10 +17,10 @@ The latest pass keeps feature scope rows in the owning split repo, but only keep
 
 | Repository | Proof-backed implemented features | Features needing new local proof | Out-of-bounds features |
 | --- | ---: | ---: | ---: |
-| `mdwrk` | 102 | 41 | 0 |
-| `mdwrk-studio` | 139 | 153 | 0 |
-| `mdwrk-pages` | 176 | 138 | 2 |
-| `mdwrk-com` | 27 | 214 | 2 |
+| `mdwrk` | 102 | 42 | 0 |
+| `mdwrk-studio` | 139 | 154 | 0 |
+| `mdwrk-pages` | 176 | 139 | 2 |
+| `mdwrk-com` | 27 | 215 | 2 |
 
 ## Direct Owner Ledger Work
 
@@ -45,7 +45,7 @@ The latest pass keeps feature scope rows in the owning split repo, but only keep
 | Action | Proposed owner bucket | Count |
 | --- | --- | ---: |
 | `archive` | `history` | 15 |
-| `manual-review` | `review` | 58 |
+| `manual-review` | `review` | 57 |
 | `split` | `mixed:mdwrk-com+core` | 2 |
 | `split` | `mixed:mdwrk-com+pages` | 271 |
 | `split` | `mixed:mdwrk-com+pages+core` | 2 |
