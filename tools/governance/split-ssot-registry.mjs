@@ -435,6 +435,30 @@ function importedEntity(entity, repo, known) {
   return clone;
 }
 
+function importedFeatureEntity(entity, repo, known, proofBackedFeatureIds) {
+  const clone = importedEntity(entity, repo, known);
+  clone.requires = keepKnownIds(clone.requires, proofBackedFeatureIds);
+  if (proofBackedFeatureIds.has(entity.id)) return clone;
+
+  clone.implementation_status = 'absent';
+  clone.claim_ids = [];
+  clone.test_ids = [];
+  clone.requires = [];
+  clone.plan ??= {};
+  if (entity.plan?.horizon === 'out_of_bounds') {
+    clone.plan.horizon = 'out_of_bounds';
+  } else {
+    clone.plan.horizon = 'backlog';
+    delete clone.plan.out_of_bounds_disposition;
+  }
+  clone.plan.slot = null;
+  clone.lifecycle ??= { stage: 'active', replacement_feature_ids: [], note: null };
+  clone.lifecycle.effective_release_id = null;
+  clone.lifecycle.note =
+    'Migrated as repo-local scope from the monorepo; split-repo claims, tests, evidence, and certification must be regenerated before moving back to current or explicit.';
+  return clone;
+}
+
 function importOwnedDocuments(sourceRegistry, owner, target) {
   const registryPath = join(target.root, '.ssot', 'registry.json');
   const targetRegistry = readJson(registryPath);
@@ -524,6 +548,7 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
         ((entity.evidence_ids ?? []).length === 0 || (entity.evidence_ids ?? []).some((id) => candidateEvidenceIds.has(id)))
       );
     });
+  const plannedFeatures = candidateFeatures;
   let selectedFeatures = candidateFeatures;
   let selectedClaims = candidateClaims;
   let selectedTests = candidateTests;
@@ -581,7 +606,8 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
     if (stable) break;
   }
 
-  const selectedFeatureIds = new Set(selectedFeatures.map((entity) => entity.id));
+  const proofBackedFeatureIds = new Set(selectedFeatures.map((entity) => entity.id));
+  const selectedFeatureIds = new Set(plannedFeatures.map((entity) => entity.id));
   const selectedClaimIds = new Set(selectedClaims.map((entity) => entity.id));
   const selectedTestIds = new Set(selectedTests.map((entity) => entity.id));
   const selectedEvidenceIds = new Set(selectedEvidence.map((entity) => entity.id));
@@ -594,7 +620,7 @@ function importOwnedRuntimeEntities(sourceRegistry, owner, target) {
     evidence: selectedEvidenceIds,
   };
 
-  const importedFeatures = selectedFeatures.map((entity) => importedEntity(entity, target.repo, known));
+  const importedFeatures = plannedFeatures.map((entity) => importedFeatureEntity(entity, target.repo, known, proofBackedFeatureIds));
   const importedClaims = selectedClaims.map((entity) => importedEntity(entity, target.repo, known));
   const importedTests = selectedTests.map((entity) => importedEntity(entity, target.repo, known));
   const importedEvidence = selectedEvidence.map((entity) => importedEntity(entity, target.repo, known));
@@ -698,6 +724,31 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     };
   });
 
+  const proofPolicyRows = Object.values(targets).map((target) => {
+    const registry = readJson(join(target.root, '.ssot', 'registry.json'));
+    const features = registry.features ?? [];
+    return {
+      repo: target.repo,
+      proofBacked: features.filter((feature) => {
+        return (
+          feature.implementation_status === 'implemented' &&
+          (feature.claim_ids ?? []).length > 0 &&
+          (feature.test_ids ?? []).length > 0
+        );
+      }).length,
+      proofToRedo: features.filter((feature) => {
+        return (
+          feature.implementation_status === 'absent' &&
+          feature.plan?.horizon === 'backlog' &&
+          (feature.claim_ids ?? []).length === 0 &&
+          (feature.test_ids ?? []).length === 0
+        );
+      }).length,
+      outOfBounds: features.filter((feature) => feature.implementation_status === 'absent' && feature.plan?.horizon === 'out_of_bounds')
+        .length,
+    };
+  });
+
   const lines = [
     '# SSOT Registry Split Status',
     '',
@@ -710,6 +761,16 @@ function writeMigrationStatus(ledger, documentImports, runtimeImports) {
     ...documentImports.map((docImport) => {
       const runtimeImport = runtimeImports.find((entry) => entry.repo === docImport.repo);
       return `| \`${docImport.repo}\` | ${docImport.adrs} | ${docImport.supportingAdrs} | ${docImport.specs} | ${runtimeImport?.features ?? 0} | ${runtimeImport?.claims ?? 0} | ${runtimeImport?.tests ?? 0} | ${runtimeImport?.evidence ?? 0} | ${runtimeImport?.profiles ?? 0} | ${runtimeImport?.boundaries ?? 0} | ${runtimeImport?.issues ?? 0} |`;
+    }),
+    '',
+    '## Proof Policy Pass',
+    '',
+    'The latest pass keeps feature scope rows in the owning split repo, but only keeps monorepo claims, tests, and evidence when the local target path and tier proof validate in that repo. Proofless rows are moved to `implementation_status: absent` and `plan.horizon: backlog` so split-repo proof artifacts and certifications can be regenerated without carrying stale monorepo certification state.',
+    '',
+    '| Repository | Proof-backed implemented features | Features needing new local proof | Out-of-bounds features |',
+    '| --- | ---: | ---: | ---: |',
+    ...proofPolicyRows.map((entry) => {
+      return `| \`${entry.repo}\` | ${entry.proofBacked} | ${entry.proofToRedo} | ${entry.outOfBounds} |`;
     }),
     '',
     '## Direct Owner Ledger Work',

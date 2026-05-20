@@ -6,10 +6,21 @@ Date: 2026-05-19
 
 | Repository | Owned ADRs | Supporting ADRs | SPECs | Features | Claims | Tests | Evidence | Profiles | Boundaries | Issues |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `mdwrk` | 15 | 32 | 56 | 102 | 24 | 20 | 20 | 5 | 7 | 1 |
-| `mdwrk-studio` | 30 | 28 | 92 | 142 | 29 | 41 | 41 | 2 | 13 | 0 |
-| `mdwrk-pages` | 19 | 18 | 43 | 176 | 26 | 47 | 9 | 0 | 5 | 2 |
-| `mdwrk-com` | 9 | 22 | 32 | 27 | 20 | 10 | 8 | 1 | 7 | 2 |
+| `mdwrk` | 15 | 32 | 56 | 139 | 24 | 20 | 20 | 5 | 8 | 1 |
+| `mdwrk-studio` | 30 | 28 | 92 | 294 | 29 | 41 | 41 | 4 | 18 | 3 |
+| `mdwrk-pages` | 19 | 18 | 43 | 315 | 26 | 47 | 9 | 1 | 16 | 3 |
+| `mdwrk-com` | 9 | 22 | 32 | 242 | 20 | 10 | 8 | 1 | 13 | 2 |
+
+## Proof Policy Pass
+
+The latest pass keeps feature scope rows in the owning split repo, but only keeps monorepo claims, tests, and evidence when the local target path and tier proof validate in that repo. Proofless rows are moved to `implementation_status: absent` and `plan.horizon: backlog` so split-repo proof artifacts and certifications can be regenerated without carrying stale monorepo certification state.
+
+| Repository | Proof-backed implemented features | Features needing new local proof | Out-of-bounds features |
+| --- | ---: | ---: | ---: |
+| `mdwrk` | 102 | 37 | 0 |
+| `mdwrk-studio` | 136 | 152 | 0 |
+| `mdwrk-pages` | 176 | 137 | 2 |
+| `mdwrk-com` | 27 | 213 | 2 |
 
 ## Direct Owner Ledger Work
 
@@ -24,10 +35,10 @@ Date: 2026-05-19
 
 | Repository | Remaining rows | Remaining families |
 | --- | ---: | --- |
-| `mdwrk` | 22 | features: 3, claims: 2, tests: 13, evidence: 3, boundaries: 1 |
-| `mdwrk-studio` | 12 | specs: 1, features: 7, claims: 1, boundaries: 1, issues: 2 |
-| `mdwrk-pages` | 99 | features: 2, claims: 95, boundaries: 2 |
-| `mdwrk-com` | 4 | features: 3, tests: 1 |
+| `mdwrk` | 18 | claims: 2, tests: 13, evidence: 3 |
+| `mdwrk-studio` | 4 | specs: 1, features: 2, claims: 1 |
+| `mdwrk-pages` | 95 | claims: 95 |
+| `mdwrk-com` | 1 | tests: 1 |
 
 ## Unresolved Global Queues
 
