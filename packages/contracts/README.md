@@ -3,8 +3,8 @@
 **Theme and extension API foundations**
 
 <p align="center">
-  <a href="https://github.com/groupsum/markdown_workspace/blob/master/packages/contracts/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.markdown_workspace.packages_contracts_README&amp;left_text=hits" /></a>
-  <a href="https://github.com/groupsum/markdown_workspace/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/markdown_workspace/total?label=downloads" /></a>
+  <a href="https://github.com/groupsum/mdwrk/blob/master/packages/contracts/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.mdwrk.packages_contracts_README&amp;left_text=hits" /></a>
+  <a href="https://github.com/groupsum/mdwrk/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/mdwrk/total?label=downloads" /></a>
   <a href="../../package.json"><img alt="Node" src="https://img.shields.io/badge/node-20.x%20%7C%2021.x%20%7C%2022.x-339933?logo=node.js&amp;logoColor=white" /></a>
   <a href="../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
@@ -36,3 +36,4 @@ Use these packages when you are defining compatibility, not when you are running
 ## Related
 - [Extensions family](../extensions/README.md) - runtime and bundled extensions
 - [Shared family](../shared/README.md) - token and i18n consumers
+

@@ -3,8 +3,8 @@
 **Architecture, conformance, and operations**
 
 <p align="center">
-  <a href="https://github.com/groupsum/markdown_workspace/blob/master/docs/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.markdown_workspace.docs_README&amp;left_text=hits" /></a>
-  <a href="https://github.com/groupsum/markdown_workspace/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/markdown_workspace/total?label=downloads" /></a>
+  <a href="https://github.com/groupsum/mdwrk/blob/master/docs/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.mdwrk.docs_README&amp;left_text=hits" /></a>
+  <a href="https://github.com/groupsum/mdwrk/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/mdwrk/total?label=downloads" /></a>
   <a href="../package.json"><img alt="Node" src="https://img.shields.io/badge/node-20.x%20%7C%2021.x%20%7C%2022.x-339933?logo=node.js&amp;logoColor=white" /></a>
   <a href="../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
@@ -39,3 +39,4 @@ Read the docs alongside the relevant README surface:
 - [Root README](../README.md) - repo-level overview
 - [Packages Index](../packages/README.md) - family-level package navigation
 - [Tooling](../tools/README.md) - scripts that enforce these docs
+

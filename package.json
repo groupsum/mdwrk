@@ -48,6 +48,13 @@
   },
   "description": "MdWrk core packages for markdown rendering, editing, extension contracts, extension runtime packages, and shared platform primitives.",
   "homepage": "https://mdwrk.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groupsum/mdwrk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/groupsum/mdwrk/issues"
+  },
   "license": "Apache-2.0",
   "author": "Jacob Stewart <jacob@swarmauri.com>"
 }

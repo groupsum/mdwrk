@@ -3,7 +3,7 @@
 **Gemini workflow extension**
 
 <p align="center">
-  <a href="https://github.com/groupsum/markdown_workspace/blob/master/packages/extensions/extension-gemini-agent/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.markdown_workspace.packages_extensions_extension_gemini_agent_README&amp;left_text=hits" /></a>
+  <a href="https://github.com/groupsum/mdwrk/blob/master/packages/extensions/extension-gemini-agent/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.mdwrk.packages_extensions_extension_gemini_agent_README&amp;left_text=hits" /></a>
   <a href="https://www.npmjs.com/package/@mdwrk/extension-gemini-agent"><img alt="Downloads" src="https://img.shields.io/npm/dm/%40mdwrk%2Fextension-gemini-agent?label=downloads" /></a>
   <a href="../../../package.json"><img alt="Node" src="https://img.shields.io/badge/node-20.x%20%7C%2021.x%20%7C%2022.x-339933?logo=node.js&amp;logoColor=white" /></a>
   <a href="../../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
@@ -32,3 +32,4 @@ Register the package as a bundled extension in a host that exposes editor, works
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview
+

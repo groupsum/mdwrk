@@ -1,0 +1,33 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": false,
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    [
+      "@mdwrk/markdown-renderer-core",
+      "@mdwrk/markdown-renderer-react"
+    ],
+    [
+      "@mdwrk/markdown-editor-core",
+      "@mdwrk/markdown-editor-react"
+    ],
+    [
+      "@mdwrk/i18n",
+      "@mdwrk/ui-tokens"
+    ],
+    [
+      "@mdwrk/extension-runtime",
+      "@mdwrk/extension-workspace-files",
+      "@mdwrk/extension-git-ops",
+      "@mdwrk/extension-manager",
+      "@mdwrk/extension-theme-studio",
+      "@mdwrk/extension-gemini-agent",
+      "@mdwrk/extension-catalog-hello"
+    ]
+  ],
+  "access": "public",
+  "baseBranch": "master",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}

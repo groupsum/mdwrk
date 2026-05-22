@@ -3,8 +3,8 @@ import path from "node:path";
 
 const root = process.cwd();
 const rootPkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
-const repoUrl = "https://github.com/groupsum/markdown_workspace";
-const repoSlug = "groupsum/markdown_workspace";
+const repoUrl = "https://github.com/groupsum/mdwrk";
+const repoSlug = "groupsum/mdwrk";
 const npmOrgUrl = "https://www.npmjs.com/org/mdwrk";
 const nodeBadge = "20.x%20%7C%2021.x%20%7C%2022.x";
 const rootLicenseLink = "LICENSE";
@@ -23,7 +23,7 @@ function writeReadme(relPath, content) {
 }
 
 function pageId(relPath) {
-  return `groupsum.markdown_workspace.${relPath.replaceAll("/", ".").replaceAll("-", "_").replaceAll(".md", "").replaceAll(".", "_")}`;
+  return `groupsum.mdwrk.${relPath.replaceAll("/", ".").replaceAll("-", "_").replaceAll(".md", "").replaceAll(".", "_")}`;
 }
 
 function blobUrl(relPath) {

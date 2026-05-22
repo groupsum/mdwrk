@@ -1,6 +1,7 @@
 import { isCliEntry, loadWorkspacePackages } from '../lib/workspace.mjs';
 
 const INTERNAL_PACKAGE_PREFIX = '@mdwrk/';
+const LOCAL_WORKSPACE_PROTOCOLS = ['workspace:', 'file:', 'link:'];
 const EXCLUDED_PUBLISH_WORKSPACE_DIRS = new Set([
   'apps/mdwrkcom',
   'packages/content/mdwrkcom-content-pack',
@@ -33,8 +34,15 @@ function dependencyEntries(packageJson, includeDevDependencies) {
     if (!dependencies || typeof dependencies !== 'object') {
       return [];
     }
-    return Object.keys(dependencies).map((name) => ({ name, kind }));
+    return Object.entries(dependencies).map(([name, spec]) => ({ name, kind, spec }));
   });
+}
+
+function requiresLocalWorkspace(spec) {
+  if (typeof spec !== 'string') {
+    return false;
+  }
+  return LOCAL_WORKSPACE_PROTOCOLS.some((prefix) => spec.startsWith(prefix));
 }
 
 function topoSort(nodes, edges) {
@@ -95,11 +103,16 @@ export function buildPackagePublishGraph(workspaces, options = {}) {
         });
         continue;
       }
-      if (!dependencyWorkspace && dependency.name.startsWith(INTERNAL_PACKAGE_PREFIX)) {
+      if (
+        !dependencyWorkspace &&
+        dependency.name.startsWith(INTERNAL_PACKAGE_PREFIX) &&
+        requiresLocalWorkspace(dependency.spec)
+      ) {
         missingInternalDependencies.push({
           packageName: workspacePackage.packageJson.name,
           dependencyName: dependency.name,
           dependencyKind: dependency.kind,
+          dependencySpec: dependency.spec,
         });
       }
     }

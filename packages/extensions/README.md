@@ -3,8 +3,8 @@
 **Runtime and first-party bundled extensions**
 
 <p align="center">
-  <a href="https://github.com/groupsum/markdown_workspace/blob/master/packages/extensions/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.markdown_workspace.packages_extensions_README&amp;left_text=hits" /></a>
-  <a href="https://github.com/groupsum/markdown_workspace/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/markdown_workspace/total?label=downloads" /></a>
+  <a href="https://github.com/groupsum/mdwrk/blob/master/packages/extensions/README.md"><img alt="Hits" src="https://visitor-badge.laobi.icu/badge?page_id=groupsum.mdwrk.packages_extensions_README&amp;left_text=hits" /></a>
+  <a href="https://github.com/groupsum/mdwrk/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/groupsum/mdwrk/total?label=downloads" /></a>
   <a href="../../package.json"><img alt="Node" src="https://img.shields.io/badge/node-20.x%20%7C%2021.x%20%7C%2022.x-339933?logo=node.js&amp;logoColor=white" /></a>
   <a href="../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
@@ -40,3 +40,4 @@ Use the runtime when you are building or hosting extensions. Use the individual 
 ## Related
 - [Contracts family](../contracts/README.md) - manifest, host, and theme API contracts
 - [Client app](../../apps/client/README.md) - first-party extension host
+
