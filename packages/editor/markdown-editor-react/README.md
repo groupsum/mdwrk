@@ -9,7 +9,7 @@
   <a href="../../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
 
-This package provides the textarea-based MdWrk source editor component on top of the editor core primitives.
+This package provides the textarea-based MdWrk source editor component on top of the editor core primitives, without taking ownership of any application shell chrome.
 
 ## Why
 Use it when you need a React authoring surface with built-in commands, line numbers, selection handling, and history.
@@ -18,6 +18,7 @@ Use it when you need a React authoring surface with built-in commands, line numb
 - A `MarkdownSourceEditor` React component.
 - Theme-style helpers and public editor types.
 - Re-exported editor-core primitives for convenience.
+- Styling that targets the portable MdWrk markdown token contract rather than studio-only shell selectors.
 
 ## Installation
 Node.js 20.x through 22.x, matching the workspace engine contract in the root package manifest.

@@ -60,6 +60,73 @@ export const MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES = [
 
 export type MarkdownWorkspaceThemeTokenName = typeof MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES[number];
 
+export const MARKDOWN_PACKAGE_THEME_TOKEN_NAMES = [
+  "ui-scale",
+  "bg-panel",
+  "bg-inset",
+  "border-color",
+  "border-width",
+  "fg-primary",
+  "fg-secondary",
+  "fg-muted",
+  "accent",
+  "table-header-bg",
+  "table-header-fg",
+  "table-row-primary-bg",
+  "table-row-secondary-bg",
+  "editor-padding",
+  "editor-line-height",
+  "editor-line-rhythm",
+  "markdown-line-height",
+  "markdown-heading-line-height",
+  "pdf-page-size",
+  "pdf-page-margin-block",
+  "pdf-page-margin-inline",
+  "pdf-content-font-size",
+  "pdf-content-line-height",
+  "pdf-heading-keep-with-next",
+  "line-number-gutter-width",
+  "editor-content-width",
+  "font-ui",
+  "font-mono",
+  "font-head",
+] as const satisfies readonly MarkdownWorkspaceThemeTokenName[];
+
+export type MarkdownPackageThemeTokenName = typeof MARKDOWN_PACKAGE_THEME_TOKEN_NAMES[number];
+
+export const STUDIO_SHELL_THEME_TOKEN_NAMES = [
+  "header-height",
+  "rail-width",
+  "rail-height",
+  "sidebar-width",
+  "status-height",
+  "tab-height",
+  "panel-header-height",
+  "rail-btn-size",
+  "bg-app",
+  "status-ok",
+  "status-warn",
+  "status-error",
+  "app-gap",
+  "texture-opacity",
+  "mobile-rail-expanded-width",
+  "mobile-expandable-rail-width",
+  "mobile-action-rail-flow",
+  "mobile-portrait-action-rail-flow",
+  "mobile-landscape-action-rail-flow",
+  "toolbar-footer-gap",
+  "toolbar-footer-offset",
+  "file-indent-base",
+  "file-indent-unit",
+  "c-explorer-hover",
+  "c-explorer-selected",
+  "c-explorer-selected-text",
+  "c-explorer-drag-bg",
+  "lander-theme-compatible",
+] as const satisfies readonly MarkdownWorkspaceThemeTokenName[];
+
+export type StudioShellThemeTokenName = typeof STUDIO_SHELL_THEME_TOKEN_NAMES[number];
+
 export type ThemeTokenCategory =
   | "layout"
   | "color"
@@ -138,3 +205,5 @@ export const MARKDOWN_WORKSPACE_THEME_TOKENS = [
 ] as const satisfies readonly ThemeTokenDefinition[];
 
 export type MarkdownWorkspaceThemeTokenMap = Readonly<Record<MarkdownWorkspaceThemeTokenName, string>>;
+export type MarkdownPackageThemeTokenMap = Readonly<Record<MarkdownPackageThemeTokenName, string>>;
+export type StudioShellThemeTokenMap = Readonly<Record<StudioShellThemeTokenName, string>>;

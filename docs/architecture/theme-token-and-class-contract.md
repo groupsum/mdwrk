@@ -29,6 +29,12 @@ The contract package makes that styling surface portable so it can be reused by:
 
 ## Token model
 
+The token contract is now interpreted in three ownership bands:
+
+- `mdwrk` owns the package-facing markdown/editor/renderer token subset.
+- `mdwrk-studio` owns application shell and chassis token implementation.
+- `mdwrk-pages` implements the shared markdown subset and may extend it with Pages-only tokens.
+
 The token contract publishes canonical names such as:
 - `bg-app`
 - `bg-panel`
@@ -48,6 +54,73 @@ The token contract publishes canonical names such as:
 - `markdown-heading-line-height`
 - `mobile-rail-expanded-width`
 - `mobile-expandable-rail-width`
+
+### Package-owned MdWrk token subset
+
+These are the tokens that portable `mdwrk` packages are allowed to require directly:
+
+- `ui-scale`
+- `bg-panel`
+- `bg-inset`
+- `border-color`
+- `border-width`
+- `fg-primary`
+- `fg-secondary`
+- `fg-muted`
+- `accent`
+- `table-header-bg`
+- `table-header-fg`
+- `table-row-primary-bg`
+- `table-row-secondary-bg`
+- `editor-padding`
+- `editor-line-height`
+- `editor-line-rhythm`
+- `markdown-line-height`
+- `markdown-heading-line-height`
+- `pdf-page-size`
+- `pdf-page-margin-block`
+- `pdf-page-margin-inline`
+- `pdf-content-font-size`
+- `pdf-content-line-height`
+- `pdf-heading-keep-with-next`
+- `line-number-gutter-width`
+- `editor-content-width`
+- `font-ui`
+- `font-mono`
+- `font-head`
+
+### Studio-owned shell token subset
+
+These tokens remain in the shared contract for compatibility, but the implementation responsibility belongs to `mdwrk-studio`:
+
+- `header-height`
+- `rail-width`
+- `rail-height`
+- `sidebar-width`
+- `status-height`
+- `tab-height`
+- `panel-header-height`
+- `rail-btn-size`
+- `bg-app`
+- `status-ok`
+- `status-warn`
+- `status-error`
+- `app-gap`
+- `texture-opacity`
+- `mobile-rail-expanded-width`
+- `mobile-expandable-rail-width`
+- `mobile-action-rail-flow`
+- `mobile-portrait-action-rail-flow`
+- `mobile-landscape-action-rail-flow`
+- `toolbar-footer-gap`
+- `toolbar-footer-offset`
+- `file-indent-base`
+- `file-indent-unit`
+- `c-explorer-hover`
+- `c-explorer-selected`
+- `c-explorer-selected-text`
+- `c-explorer-drag-bg`
+- `lander-theme-compatible`
 
 Each token definition includes:
 - canonical token name
@@ -135,11 +208,14 @@ The initial editor class contract is derived from:
 
 ## Consumer model
 
-### First-party app consumer
-The app maps its local theme implementation onto the shared contract and may export host CSS variables directly.
+### First-party studio consumer
+The studio maps its local shell implementation onto the shared contract and may export host CSS variables directly.
 
 ### Renderer/editor package consumer
 Reusable packages target the shared contract directly and remain independent of app-local stylesheets.
+
+### Pages consumer
+`mdwrk-pages` implements the shared markdown subset and can add Pages-level extension tokens for page chrome, hero spacing, cards, navigation, and other public-site concerns.
 
 ### Third-party consumer
 A third-party application can implement the same tokens/classes with its own styling system and either:

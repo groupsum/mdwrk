@@ -9,7 +9,7 @@
   <a href="../../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
 
-This package wraps the MdWrk renderer core in a React component with theme styles and link-interaction hooks.
+This package wraps the MdWrk renderer core in a React component with theme styles and link-interaction hooks, without depending on any app-shell layout layer.
 
 ## Why
 Use it when you want markdown rendering as a React component instead of a headless HTML string pipeline.
@@ -18,6 +18,7 @@ Use it when you want markdown rendering as a React component instead of a headle
 - A `MarkdownRenderer` React component.
 - Theme-style helpers for renderer output.
 - Link click interception and attribute injection hooks.
+- Styling that targets the portable MdWrk markdown token contract rather than studio-only shell selectors.
 
 ## Installation
 Node.js 20.x through 22.x, matching the workspace engine contract in the root package manifest.
