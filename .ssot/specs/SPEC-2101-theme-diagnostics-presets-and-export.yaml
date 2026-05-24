@@ -1,0 +1,47 @@
+schema_version: "0.2.0"
+kind: "spec"
+id: "spc:2101"
+number: 2101
+slug: "theme-diagnostics-presets-and-export"
+title: "Theme Diagnostics Presets And Export"
+status: "accepted"
+origin: "repo-local"
+decision_date: "2026-05-24"
+tags: []
+summary: "Define diagnostics, first-party presets, export artifacts, and preview specimens for MdWrk Theme Studio shared packages."
+supersedes: []
+superseded_by: []
+status_notes:
+  -
+    at: "2026-05-23T00:00:00Z"
+    note: "Created to specify diagnostics, presets, export, and specimen behavior for shared Theme Studio packages."
+    status: "draft"
+  -
+    at: "2026-05-24T00:00:00Z"
+    note: "Accepted after diagnostics, presets, export, and specimen packages shipped with package-local T0, T1, and T2 coverage and extension integration."
+    status: "accepted"
+references: []
+body: |-
+  # Theme Diagnostics Presets And Export
+  
+  ## Purpose
+  This specification defines the shared diagnostics, preset registry, export surfaces, and preview specimens used by MdWrk Theme Studio.
+  
+  ## Scope
+  The contract applies to `@mdwrk/theme-diagnostics`, `@mdwrk/theme-presets`, `@mdwrk/theme-export`, `@mdwrk/theme-specimens`, and Theme Studio consumers that depend on these shared outputs.
+  
+  ## Requirements
+  1. Diagnostics shall report unknown token keys, bridge-definition consistency, preset coverage gaps, and contrast-oriented checks through shared package APIs.
+  2. First-party presets shall be packaged as reusable registry entries with stable identifiers and metadata.
+  3. Theme export shall produce contract-aligned preset JSON, host CSS variable output, editor bridge CSS, renderer bridge CSS, and a bundle manifest.
+  4. Shared preview specimens shall provide canonical markdown, editor, and UI scenarios for Theme Studio previews and regression checks.
+  5. Theme Studio shall consume these shared packages rather than storing extension-local preset, export, or specimen authorities.
+  6. Export and preset behavior shall not redefine token names or bridge targets outside the existing theme contract.
+  
+  ## Verification
+  Passing evidence shall include package-local T0, T1, and T2 coverage for diagnostics reporting, preset registry lookup, export bundle generation, and specimen availability.
+spec_kind: "normative"
+adr_ids:
+  - "adr:1004"
+  - "adr:1018"
+  - "adr:1072"

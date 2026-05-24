@@ -4,14 +4,22 @@ id: "spc:2013"
 number: 2013
 slug: "theme-studio-extension"
 title: "Theme Studio Extension Specification"
-status: "draft"
+status: "accepted"
 origin: "repo-local"
-decision_date: null
+decision_date: "2026-05-24"
 tags: []
 summary: "Define requirements for the Theme Studio extension."
 supersedes: []
 superseded_by: []
-status_notes: []
+status_notes:
+  -
+    at: "2026-05-23T00:00:00Z"
+    note: "Updated to require Theme Studio to orchestrate shared package surfaces instead of owning draft, preview, diagnostics, preset, export, and specimen logic directly."
+    status: "draft"
+  -
+    at: "2026-05-24T00:00:00Z"
+    note: "Accepted after the extension was refactored onto the shared theme packages and verified by extension-local runtime, smoke, and T0/T1/T2 coverage."
+    status: "accepted"
 references: []
 body: |-
   # Theme Studio Extension Specification
@@ -27,5 +35,10 @@ body: |-
   - Theme relationship and preview behavior must be deterministic.
   - Theme settings must persist through extension-scoped settings.
   - Theme Studio must not bypass the shared UIX token contract.
+  - Theme Studio must consume shared package owners for draft state, preview runtime, diagnostics, presets, export, and preview specimens.
+  - Theme Studio may orchestrate authoring flow and extension UX, but it must not become a second theme authority outside `@mdwrk/theme-contract` and `@mdwrk/ui-tokens`.
 spec_kind: "normative"
-adr_ids: []
+adr_ids:
+  - "adr:1004"
+  - "adr:1030"
+  - "adr:1072"

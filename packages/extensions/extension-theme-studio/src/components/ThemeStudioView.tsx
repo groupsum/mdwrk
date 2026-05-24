@@ -2,6 +2,7 @@ import { type CSSProperties, type FC, useEffect, useMemo, useState, useSyncExter
 import { MarkdownSourceEditor, createMarkdownEditorThemeStyleFromThemeTokens } from "@mdwrk/markdown-editor-react";
 import { MarkdownRenderer, createMarkdownRendererThemeStyleFromThemeTokens } from "@mdwrk/markdown-renderer-react";
 import type { I18nLabel } from "@mdwrk/extension-manifest";
+import { THEME_PREVIEW_SCENARIOS } from "@mdwrk/theme-specimens";
 import {
   Download,
   Eye,
@@ -17,7 +18,6 @@ import {
   SwatchBook,
   X,
 } from "lucide-react";
-import { THEME_STUDIO_SAMPLE_MARKDOWN } from "../constants.js";
 import { themeStudioLabels } from "../i18n.js";
 import { sanitizePackageName, sanitizeThemeIdentifier } from "../export.js";
 import type { ThemeStudioService } from "../types.js";
@@ -623,10 +623,10 @@ export const ThemeStudioView: FC<ThemeStudioViewProps> = ({
       </div>
       <div style={{ display: "grid", gap: 12 }}>
         <div style={{ border: "1px solid var(--border-primary)", borderRadius: 8, padding: 12 }}>
-          <MarkdownRenderer markdown={THEME_STUDIO_SAMPLE_MARKDOWN} themeStyle={rendererThemeStyle} />
+          <MarkdownRenderer markdown={THEME_PREVIEW_SCENARIOS[0]?.markdown ?? "# Theme Studio"} themeStyle={rendererThemeStyle} />
         </div>
         <div style={{ border: "1px solid var(--border-primary)", borderRadius: 8, overflow: "hidden" }}>
-          <MarkdownSourceEditor value={THEME_STUDIO_SAMPLE_MARKDOWN} disabled showLineNumbers themeStyle={editorThemeStyle} />
+          <MarkdownSourceEditor value={THEME_PREVIEW_SCENARIOS[0]?.editor ?? "# Theme Studio"} disabled showLineNumbers themeStyle={editorThemeStyle} />
         </div>
       </div>
     </div>

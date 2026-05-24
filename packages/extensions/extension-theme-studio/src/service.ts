@@ -1,4 +1,7 @@
 import type { MarkdownWorkspaceThemeTokenMap, MarkdownWorkspaceThemeTokenName } from "@mdwrk/theme-contract";
+import { collectThemeDiagnostics } from "@mdwrk/theme-diagnostics";
+import { createThemeDraft, mergeThemeDraft, unsetThemeDraftTokens } from "@mdwrk/theme-draft";
+import { parseThemePackageArtifact } from "@mdwrk/theme-export";
 import { buildThemeStudioExports, sanitizePackageName, sanitizeThemeIdentifier } from "./export.js";
 import { themeStudioLabels } from "./i18n.js";
 import { buildThemeStudioClassRelationships } from "./relationship.js";
@@ -130,7 +133,7 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
     },
     async setDraftToken(token, value) {
       const settings = await readThemeStudioSettings(deps.context.config);
-      const nextDraft = { ...snapshot.draftTokens, [token]: value };
+      const nextDraft = mergeThemeDraft(createThemeDraft(snapshot.draftTokens), { [token]: value }).tokens;
       setSnapshot({ draftTokens: nextDraft, lastError: null });
       if (settings.autoPreviewOnEdit) {
         await deps.context.host.theme.previewTheme(nextDraft);
@@ -140,7 +143,7 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
     },
     async setDraftTokens(tokens) {
       const settings = await readThemeStudioSettings(deps.context.config);
-      const nextDraft = { ...snapshot.draftTokens, ...tokens };
+      const nextDraft = mergeThemeDraft(createThemeDraft(snapshot.draftTokens), tokens).tokens;
       setSnapshot({ draftTokens: nextDraft, lastError: null });
       if (settings.autoPreviewOnEdit) {
         await deps.context.host.theme.previewTheme(nextDraft);
@@ -150,8 +153,7 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
     },
     async clearDraftToken(token) {
       const settings = await readThemeStudioSettings(deps.context.config);
-      const nextDraft = { ...snapshot.draftTokens };
-      delete nextDraft[token];
+      const nextDraft = unsetThemeDraftTokens(createThemeDraft(snapshot.draftTokens), [token]).tokens;
       setSnapshot({ draftTokens: nextDraft, lastError: null });
       if (settings.autoPreviewOnEdit) {
         await deps.context.host.theme.discardDraft();
@@ -163,6 +165,10 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
     async preview() {
       setSnapshot({ busy: true, infoMessage: format(themeStudioLabels.statusBusy), lastError: null });
       try {
+        const diagnostics = collectThemeDiagnostics({ tokens: snapshot.draftTokens });
+        if (!diagnostics.ok) {
+          throw new Error(diagnostics.diagnostics.map((entry) => entry.message).join(" "));
+        }
         await deps.context.host.theme.previewTheme(snapshot.draftTokens);
         const currentTokens = await deps.context.host.theme.getTokenMap();
         setSnapshot({ currentTokens, busy: false, infoMessage: format(themeStudioLabels.statusReady) });
@@ -177,6 +183,10 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
     async apply() {
       setSnapshot({ busy: true, infoMessage: format(themeStudioLabels.statusBusy), lastError: null });
       try {
+        const diagnostics = collectThemeDiagnostics({ tokens: snapshot.draftTokens });
+        if (!diagnostics.ok) {
+          throw new Error(diagnostics.diagnostics.map((entry) => entry.message).join(" "));
+        }
         await deps.context.host.theme.previewTheme(snapshot.draftTokens);
         await deps.context.host.theme.applyDraft();
         const currentTokens = await deps.context.host.theme.getTokenMap();
@@ -235,25 +245,29 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
       const settings = await readThemeStudioSettings(deps.context.config);
       const effectiveTokens = mergeTokens(snapshot.currentTokens, snapshot.draftTokens);
       const exports = buildThemeStudioExports(snapshot.metadata, effectiveTokens, settings);
+      const diagnostics = collectThemeDiagnostics(exports.preset);
+      if (!diagnostics.ok) {
+        const detail = diagnostics.diagnostics.map((entry) => entry.message).join(" ");
+        await publishDiagnostic("error", "EXT_THEME_STUDIO_EXPORT_INVALID", themeStudioLabels.diagnosticsFailed, detail);
+        throw new Error(detail);
+      }
       setSnapshot({ lastExports: exports, infoMessage: format(themeStudioLabels.statusExported), lastError: null });
       await publishDiagnostic("info", "EXT_THEME_STUDIO_EXPORTED", themeStudioLabels.diagnosticsExported);
       await deps.context.host.notifications.info(themeStudioLabels.notificationExported);
       return exports;
     },
     async importPackageArtifact(payload) {
-      const parsed = JSON.parse(payload) as { files?: Array<{ path?: string; content?: string }> };
-      const themeFile = parsed.files?.find((entry) => typeof entry.path === 'string' && entry.path.startsWith('themes/') && entry.path.endsWith('.json'));
-      if (!themeFile?.content) {
-        throw new Error('Theme package artifact is missing a themes/*.json preset payload.');
+      const preset = parseThemePackageArtifact(payload);
+      const diagnostics = collectThemeDiagnostics(preset);
+      if (!diagnostics.ok) {
+        const detail = diagnostics.diagnostics.map((entry) => entry.message).join(" ");
+        await publishDiagnostic("error", "EXT_THEME_STUDIO_IMPORT_INVALID", themeStudioLabels.diagnosticsFailed, detail);
+        throw new Error(detail);
       }
-      const preset = JSON.parse(themeFile.content) as {
-        metadata?: Partial<ThemeStudioMetadata> & { id?: string; name?: string };
-        tokens?: MarkdownWorkspaceThemeTokenMap;
-      };
       setSnapshot({
         metadata: {
-          themeId: sanitizeThemeIdentifier(preset.metadata?.themeId ?? preset.metadata?.id ?? snapshot.metadata.themeId),
-          themeName: preset.metadata?.themeName ?? preset.metadata?.name ?? snapshot.metadata.themeName,
+          themeId: sanitizeThemeIdentifier(preset.metadata?.id ?? snapshot.metadata.themeId),
+          themeName: preset.metadata?.name ?? snapshot.metadata.themeName,
           packageName: snapshot.metadata.packageName,
           author: preset.metadata?.author ?? snapshot.metadata.author,
           description: preset.metadata?.description ?? snapshot.metadata.description,
@@ -263,6 +277,7 @@ export function createThemeStudioService(deps: ThemeStudioServiceDependencies): 
         infoMessage: format(themeStudioLabels.statusReady),
       });
       await deps.context.host.theme.previewTheme(preset.tokens ?? {});
+      await publishDiagnostic("info", "EXT_THEME_STUDIO_IMPORTED", themeStudioLabels.diagnosticsReady);
     },
   };
 }

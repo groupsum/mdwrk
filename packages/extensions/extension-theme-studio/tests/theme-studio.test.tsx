@@ -33,11 +33,11 @@ const formatLabel = (label: I18nLabel | string): string => typeof label === "str
 function createMockThemeStudioService(snapshotPatch: Partial<ThemeStudioServiceSnapshot> = {}) {
   let snapshot: ThemeStudioServiceSnapshot = {
     busy: false,
-    tokenDefinitions: [{ name: "color.background.canvas", category: "color", description: "Canvas color", defaultValue: "#ffffff" } as any],
+    tokenDefinitions: [{ name: "bg-app", category: "color", description: "Application background", defaultValue: "#ffffff" } as any],
     classDefinitions: [],
     rendererBridge: [],
     editorBridge: [],
-    currentTokens: { "color.background.canvas": "#ffffff" } as any,
+    currentTokens: { "bg-app": "#ffffff" } as any,
     draftTokens: {},
     relationships: [],
     metadata: {
@@ -113,7 +113,7 @@ afterEach(() => {
 });
 
 describe("Theme Studio settings and view surfaces", () => {
-  it("renders the settings panel summary and opens the studio", () => {
+  it("t0 renders the settings panel summary and opens the studio", () => {
     const { service } = createMockThemeStudioService();
     const open = vi.fn(async () => {});
 
@@ -132,7 +132,7 @@ describe("Theme Studio settings and view surfaces", () => {
     expect(open).toHaveBeenCalledTimes(1);
   });
 
-  it("renders the workspace view, exposes the split resizer, and surfaces error state", () => {
+  it("t0 renders the workspace view, exposes the split resizer, and surfaces error state", () => {
     const { service } = createMockThemeStudioService({ lastError: "Theme Studio failed to refresh." });
 
     render(
@@ -155,12 +155,12 @@ describe("Theme Studio settings and view surfaces", () => {
 });
 
 describe("createThemeStudioService", () => {
-  it("applies the draft, clears it, and publishes diagnostics and notifications", async () => {
+  it("t1 applies the draft, clears it, and publishes diagnostics and notifications", async () => {
     const diagnostics: Array<{ severity: string; code: string; detail?: string }> = [];
     const notifications: string[] = [];
     const previewTheme = vi.fn(async () => {});
     const applyDraft = vi.fn(async () => {});
-    const getTokenMap = vi.fn(async () => ({ "color.background.canvas": "#111111" }));
+    const getTokenMap = vi.fn(async () => ({ "bg-app": "#111111" }));
     const getTokens = vi.fn(async () => []);
     const getClassNames = vi.fn(async () => []);
     const getThemeBridge = vi.fn(async () => []);
@@ -216,7 +216,7 @@ describe("createThemeStudioService", () => {
       formatLabel,
     });
 
-    await service.setDraftToken("color.background.canvas" as any, "#111111");
+    await service.setDraftToken("bg-app" as any, "#111111");
     await service.apply();
 
     expect(previewTheme).toHaveBeenCalled();
@@ -227,7 +227,7 @@ describe("createThemeStudioService", () => {
     expect(notifications).toContain("Theme draft applied.");
   });
 
-  it("captures refresh failures in snapshot state and diagnostics", async () => {
+  it("t2 captures refresh failures in snapshot state and diagnostics", async () => {
     const diagnostics: Array<{ severity: string; code: string; detail?: string }> = [];
     const service = createThemeStudioService({
       context: {
@@ -270,5 +270,107 @@ describe("createThemeStudioService", () => {
     await waitFor(() => {
       expect(diagnostics.some((record) => record.code === "EXT_THEME_STUDIO_REFRESH_FAILED")).toBe(true);
     });
+  });
+
+  it("t1 imports a valid package artifact and updates draft metadata", async () => {
+    const previewTheme = vi.fn(async () => {});
+    const service = createThemeStudioService({
+      context: {
+        extensionId: "core.theme-studio",
+        config: {
+          async get() { return null; },
+          async set() {},
+          async remove() {},
+          watch() { return { dispose() {} }; },
+        },
+        host: {
+          theme: {
+            getTokens: vi.fn(async () => []),
+            getClassNames: vi.fn(async () => []),
+            getThemeBridge: vi.fn(async () => []),
+            getTokenMap: vi.fn(async () => ({})),
+            exportTheme: vi.fn(async () => ({
+              metadata: { id: "test-theme", name: "Test Theme", author: "Test Author", description: "Theme description" },
+              compatibility: { contract: "1.0.0" },
+              tokens: {},
+            })),
+            previewTheme,
+          },
+          diagnostics: { publish: vi.fn(async () => {}) },
+          notifications: { info: vi.fn(async () => {}) },
+        },
+      } as any,
+      formatLabel,
+    });
+
+    await service.importPackageArtifact(JSON.stringify({
+      files: [
+        {
+          path: "themes/imported-theme.json",
+          content: JSON.stringify({
+            metadata: { id: "imported-theme", name: "Imported Theme", author: "Import Author", description: "Imported description" },
+            compatibility: { contract: "1.0.0" },
+            tokens: { accent: "#2563eb", "bg-panel": "#ffffff", "fg-primary": "#111111", "fg-secondary": "#333333" },
+          }),
+        },
+      ],
+    }));
+
+    expect(service.getSnapshot().metadata.themeId).toBe("imported-theme");
+    expect(service.getSnapshot().draftTokens.accent).toBe("#2563eb");
+    expect(previewTheme).toHaveBeenCalled();
+  });
+
+  it("t2 rejects invalid package artifacts before applying them", async () => {
+    const diagnostics: Array<{ code: string; detail?: string }> = [];
+    const service = createThemeStudioService({
+      context: {
+        extensionId: "core.theme-studio",
+        config: {
+          async get() { return null; },
+          async set() {},
+          async remove() {},
+          watch() { return { dispose() {} }; },
+        },
+        host: {
+          theme: {
+            getTokens: vi.fn(async () => []),
+            getClassNames: vi.fn(async () => []),
+            getThemeBridge: vi.fn(async () => []),
+            getTokenMap: vi.fn(async () => ({})),
+            exportTheme: vi.fn(async () => ({
+              metadata: { id: "test-theme", name: "Test Theme", author: "Test Author", description: "Theme description" },
+              compatibility: { contract: "1.0.0" },
+              tokens: {},
+            })),
+            previewTheme: vi.fn(async () => {}),
+          },
+          diagnostics: {
+            publish: vi.fn(async (_extensionId: string, record: { code: string; detail?: string }) => {
+              diagnostics.push(record);
+            }),
+          },
+          notifications: { info: vi.fn(async () => {}) },
+        },
+      } as any,
+      formatLabel,
+    });
+
+    await expect(service.importPackageArtifact(JSON.stringify({ files: [] }))).rejects.toThrow(/themes\/\*\.json/);
+    expect(diagnostics.some((record) => record.code === "EXT_THEME_STUDIO_IMPORT_INVALID")).toBe(false);
+
+    await expect(service.importPackageArtifact(JSON.stringify({
+      files: [
+        {
+          path: "themes/invalid.json",
+          content: JSON.stringify({
+            metadata: { id: "invalid", name: "Invalid" },
+            compatibility: { contract: "1.0.0" },
+            tokens: { unknown: "#fff" },
+          }),
+        },
+      ],
+    }))).rejects.toThrow(/Unknown theme token/);
+    expect(diagnostics.some((record) => record.code === "EXT_THEME_STUDIO_IMPORT_INVALID")).toBe(true);
   });
 });

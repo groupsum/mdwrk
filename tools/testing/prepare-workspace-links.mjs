@@ -17,6 +17,12 @@ const workspacePackages = new Map([
   ['@mdwrk/extension-runtime', 'packages/extensions/extension-runtime'],
   ['@mdwrk/testing', 'packages/shared/testing'],
   ['@mdwrk/ui-tokens', 'packages/shared/ui-tokens'],
+  ['@mdwrk/theme-draft', 'packages/shared/theme-draft'],
+  ['@mdwrk/theme-preview', 'packages/shared/theme-preview'],
+  ['@mdwrk/theme-diagnostics', 'packages/shared/theme-diagnostics'],
+  ['@mdwrk/theme-presets', 'packages/shared/theme-presets'],
+  ['@mdwrk/theme-export', 'packages/shared/theme-export'],
+  ['@mdwrk/theme-specimens', 'packages/shared/theme-specimens'],
 ]);
 
 const requestedPackages = process.argv.slice(2);

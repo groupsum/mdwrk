@@ -1,0 +1,58 @@
+schema_version: "0.4.0"
+kind: "adr"
+id: "adr:1072"
+number: 1072
+slug: "mdwrk-theme-studio-shared-package-ownership"
+title: "MdWrk Theme Studio Shared Package Ownership"
+status: "accepted"
+origin: "repo-local"
+decision_date: "2026-05-24"
+tags: []
+summary: "Theme Studio has grown beyond a single extension surface. Draft state, preview application, diagnostics, presets, export, and preview specimens now need reusable package owners so editor, renderer, extensions, and future app surfaces do not duplicate token logic or bypass the theme contract."
+supersedes: []
+superseded_by: []
+status_notes:
+  -
+    at: "2026-05-23T00:00:00Z"
+    note: "Created to govern Theme Studio shared package ownership and contract-first preview architecture."
+    status: "draft"
+  -
+    at: "2026-05-24T00:00:00Z"
+    note: "Accepted after the shared theme packages and extension integration were implemented with package-local T0, T1, and T2 runtime tests."
+    status: "accepted"
+references: []
+body: |-
+  # Context
+  Theme Studio currently depends on extension-local logic for token editing, preview rendering, diagnostics, preset handling, export behavior, and fixture coverage. That keeps the extension moving, but it makes the architecture harder to reuse and increases the risk that package consumers bypass the stable theme contract or reimplement bridge-variable behavior inconsistently.
+  
+  The MdWrk repository already has a contract-first theme surface in `@mdwrk/theme-contract` and bridge-aware token rendering in `@mdwrk/ui-tokens`. Theme Studio should build on those authorities instead of treating the extension package as the canonical owner of all theme behavior.
+  
+  # Decision
+  Theme Studio shared behavior shall be split into reusable shared packages:
+  
+  - `@mdwrk/theme-draft`
+  - `@mdwrk/theme-preview`
+  - `@mdwrk/theme-diagnostics`
+  - `@mdwrk/theme-presets`
+  - `@mdwrk/theme-export`
+  - `@mdwrk/theme-specimens`
+  
+  `@mdwrk/theme-contract` remains the authority for token names, bridge targets, preset compatibility, and draft-compatible shapes. `@mdwrk/ui-tokens` remains the authority for contract-aware token maps, CSS custom property rendering, and bridge-variable rendering.
+  
+  `@mdwrk/extension-theme-studio` becomes an orchestration surface that consumes the shared packages. It does not become a second theme authority.
+  
+  # Ownership Boundaries
+  `@mdwrk/theme-draft` owns draft state, patching, undo/redo, and import/export envelope behavior.
+  
+  `@mdwrk/theme-preview` owns preview-time CSS generation and application for host, renderer, and editor surfaces.
+  
+  `@mdwrk/theme-diagnostics` owns token validation, bridge coverage checks, preset diagnostics, and contrast-oriented checks.
+  
+  `@mdwrk/theme-presets` owns first-party preset registry and preset metadata.
+  
+  `@mdwrk/theme-export` owns exportable preset JSON, CSS variables, bridge CSS, and bundle manifests.
+  
+  `@mdwrk/theme-specimens` owns canonical preview fixtures and regression specimens.
+  
+  # Consequences
+  Theme behavior becomes reusable across extensions, apps, tests, and future package consumers without duplicating Theme Studio logic. Contract drift becomes easier to detect because preview, export, and diagnostics all run through shared package boundaries anchored to the existing theme contract.

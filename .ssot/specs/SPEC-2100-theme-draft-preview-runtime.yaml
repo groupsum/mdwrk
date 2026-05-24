@@ -1,0 +1,48 @@
+schema_version: "0.2.0"
+kind: "spec"
+id: "spc:2100"
+number: 2100
+slug: "theme-draft-preview-runtime"
+title: "Theme Draft And Preview Runtime"
+status: "accepted"
+origin: "repo-local"
+decision_date: "2026-05-24"
+tags: []
+summary: "Define the contract-valid draft, patch, history, and preview-runtime behavior used by MdWrk Theme Studio shared packages."
+supersedes: []
+superseded_by: []
+status_notes:
+  -
+    at: "2026-05-23T00:00:00Z"
+    note: "Created to specify draft-state and preview-runtime behavior for shared Theme Studio packages."
+    status: "draft"
+  -
+    at: "2026-05-24T00:00:00Z"
+    note: "Accepted after shared draft and preview runtimes shipped with package-local T0, T1, and T2 coverage and extension integration."
+    status: "accepted"
+references: []
+body: |-
+  # Theme Draft And Preview Runtime
+  
+  ## Purpose
+  This specification defines the shared runtime behavior for editable theme drafts and contract-aware preview application.
+  
+  ## Scope
+  The contract applies to `@mdwrk/theme-draft`, `@mdwrk/theme-preview`, and any package that consumes their outputs, including `@mdwrk/extension-theme-studio`.
+  
+  ## Requirements
+  1. Theme drafts shall remain compatible with `@mdwrk/theme-contract` token names and draft-compatible structures.
+  2. Draft editing shall support patch-style updates, token unsets, cloning, and deterministic resolution against contract defaults.
+  3. Draft history shall support snapshot capture plus undo and redo without mutating prior snapshots.
+  4. Preview application shall render host CSS custom properties and editor/renderer bridge variables from the same draft inputs.
+  5. Preview runtime helpers shall expose deterministic CSS text generation and direct style-application helpers.
+  6. Preview runtime helpers shall support multi-surface preview of host, editor, and renderer contexts without redefining the token contract.
+  7. Theme Studio shall consume the shared draft and preview packages instead of duplicating the same behaviors inside the extension package.
+  
+  ## Verification
+  Passing evidence shall include package-local T0, T1, and T2 coverage for draft patching and history, contract-valid token resolution, bridge CSS generation, and preview application helpers.
+spec_kind: "normative"
+adr_ids:
+  - "adr:1004"
+  - "adr:1030"
+  - "adr:1072"

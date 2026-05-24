@@ -61,6 +61,42 @@
       "@mdwrk/testing/*": [
         "packages/shared/testing/dist/*"
       ],
+      "@mdwrk/theme-draft": [
+        "packages/shared/theme-draft/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-draft/*": [
+        "packages/shared/theme-draft/dist/*"
+      ],
+      "@mdwrk/theme-preview": [
+        "packages/shared/theme-preview/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-preview/*": [
+        "packages/shared/theme-preview/dist/*"
+      ],
+      "@mdwrk/theme-diagnostics": [
+        "packages/shared/theme-diagnostics/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-diagnostics/*": [
+        "packages/shared/theme-diagnostics/dist/*"
+      ],
+      "@mdwrk/theme-presets": [
+        "packages/shared/theme-presets/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-presets/*": [
+        "packages/shared/theme-presets/dist/*"
+      ],
+      "@mdwrk/theme-export": [
+        "packages/shared/theme-export/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-export/*": [
+        "packages/shared/theme-export/dist/*"
+      ],
+      "@mdwrk/theme-specimens": [
+        "packages/shared/theme-specimens/dist/index.d.ts"
+      ],
+      "@mdwrk/theme-specimens/*": [
+        "packages/shared/theme-specimens/dist/*"
+      ],
       "@mdwrk/markdown-renderer-core": [
         "packages/renderer/markdown-renderer-core/dist/index.d.ts"
       ],
