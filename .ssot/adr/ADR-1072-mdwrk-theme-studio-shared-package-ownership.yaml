@@ -39,7 +39,11 @@ body: |-
   
   `@mdwrk/theme-contract` remains the authority for token names, bridge targets, preset compatibility, and draft-compatible shapes. `@mdwrk/ui-tokens` remains the authority for contract-aware token maps, CSS custom property rendering, and bridge-variable rendering.
   
+  Package-owned token authority is limited to markdown, editor, previewer, and renderer surfaces. Theme Studio consumers may preview and apply those shared surfaces, but shell/body/chassis token implementation remains outside the shared package authority.
+  
   `@mdwrk/extension-theme-studio` becomes an orchestration surface that consumes the shared packages. It does not become a second theme authority.
+  
+  The shared package split also means Theme Studio and future app shells must not treat extension-local or app-local shell tokens as if they were part of the package token contract. Host shell tokens stay with the app shell that renders them.
   
   # Ownership Boundaries
   `@mdwrk/theme-draft` owns draft state, patching, undo/redo, and import/export envelope behavior.

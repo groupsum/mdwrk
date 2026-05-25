@@ -1,0 +1,39 @@
+schema_version: "0.4.0"
+kind: "spec"
+id: "spc:2102"
+number: 2102
+slug: "shared-token-ownership-contract"
+title: "Shared Token Ownership Contract"
+status: "draft"
+origin: "repo-local"
+decision_date: null
+tags: []
+summary: "This SPEC governs token ownership inside the shared mdwrk package family."
+supersedes: []
+superseded_by: []
+status_notes: []
+references: []
+body: |-
+  # SPEC-2102: Shared Token Ownership Contract
+  
+  ## Scope
+  
+  This SPEC governs token ownership inside the shared mdwrk package family.
+  
+  ## Requirements
+  
+  1. `@mdwrk/theme-contract` shall define authoritative token names and named token subsets for shared package consumers.
+  2. Shared package token ownership shall be limited to markdown, editor, previewer, and renderer surfaces.
+  3. `@mdwrk/ui-tokens` shall publish defaults and helpers for the shared package token subsets without shipping app-shell body, chassis, rail, header, footer, or pane defaults.
+  4. Package stylesheets such as `@mdwrk/ui-tokens/styles/root.css` shall remain free of Studio-owned shell token implementation.
+  5. Downstream applications may implement the shared token contract, but they shall not treat host-shell token bands as shared package authority.
+  6. `mdwrk-studio` owns app-shell token implementation for chrome and chassis behavior.
+  7. `mdwrk-pages` may implement the shared token contract for public lander surfaces and may extend it with pages-only token names that do not redefine the shared contract.
+  
+  ## Acceptance
+  
+  Passing evidence shall include contract exports for token subsets, shared token defaults that exclude host-shell token ownership, and downstream adoption proof showing Studio and Pages consume the shared contract without collapsing ownership boundaries.
+spec_kind: "normative"
+adr_ids:
+  - "adr:1004"
+  - "adr:1072"
