@@ -17,6 +17,7 @@ Use it when you want theme editing to live inside the extension system and remai
 ## What
 - Theme drafting and export helpers.
 - Bundled views, services, and settings for theme authoring.
+- Standalone studio-owned controls such as the line-height rail for host-side typography adjustment.
 - A concrete consumer of the theme contract and shared token packages.
 
 ## Installation

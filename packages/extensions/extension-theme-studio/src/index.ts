@@ -8,3 +8,4 @@ export * from "./relationship.js";
 export * from "./export.js";
 export * from "./service.js";
 export * from "./createThemeStudioBundledEntry.js";
+export * from "./components/LineHeightRail.js";

@@ -9,6 +9,9 @@ import {
   ThemeStudioSettingsPanel,
 } from "../src/components/ThemeStudioSettingsPanel.js";
 import {
+  LineHeightRail,
+} from "../src/components/LineHeightRail.js";
+import {
   ThemeStudioView,
 } from "../src/components/ThemeStudioView.js";
 import { createThemeStudioService } from "../src/service.js";
@@ -113,6 +116,16 @@ afterEach(() => {
 });
 
 describe("Theme Studio settings and view surfaces", () => {
+  it("t1 renders the standalone line-height rail as a studio-owned control", () => {
+    const onChange = vi.fn();
+
+    render(<LineHeightRail value={1.5} onChange={onChange} />);
+
+    expect(screen.getByRole("slider", { name: "Line height" })).toHaveValue("1.5");
+    fireEvent.click(screen.getByRole("button", { name: "Relaxed" }));
+    expect(onChange).toHaveBeenCalledWith(1.7);
+  });
+
   it("t0 renders the settings panel summary and opens the studio", () => {
     const { service } = createMockThemeStudioService();
     const open = vi.fn(async () => {});

@@ -210,6 +210,7 @@ The initial editor class contract is derived from:
 
 ### First-party studio consumer
 The studio maps its local shell implementation onto the shared contract and may export host CSS variables directly.
+Studio-owned controls such as line-height rails belong here or in first-party studio extension packages, not in the reusable editor package surface.
 
 ### Renderer/editor package consumer
 Reusable packages target the shared contract directly and remain independent of app-local stylesheets.
