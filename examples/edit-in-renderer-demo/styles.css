@@ -1,0 +1,131 @@
+@import url("@mdwrk/ui-tokens/styles/root.css");
+@import url("@mdwrk/markdown-renderer-react/styles/default.css");
+@import url("@mdwrk/markdown-editor-react/styles/default.css");
+@import url("@mdwrk/markdown-edit-in-renderer-react/styles/default.css");
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.16), transparent 25%),
+    linear-gradient(180deg, #071914 0%, #0b1717 50%, #10131d 100%);
+  color: var(--fg-primary);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.demo-shell {
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.hero-card,
+.editor-card,
+.meta-card {
+  background: color-mix(in srgb, var(--bg-panel) 88%, white 12%);
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(3, 9, 18, 0.22);
+}
+
+.hero-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  font-size: 0.76rem;
+}
+
+.hero-card h1,
+.editor-card h2,
+.meta-card h2 {
+  margin: 0;
+  font-family: "Fraunces", "Georgia", serif;
+}
+
+.theme-picker {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.theme-picker select {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  background: color-mix(in srgb, var(--bg-inset) 88%, white 12%);
+  color: var(--fg-primary);
+}
+
+.surface-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.95fr);
+  gap: 20px;
+}
+
+.editor-card,
+.meta-card {
+  padding: 22px;
+}
+
+.meta-card {
+  display: grid;
+  gap: 20px;
+}
+
+.meta-card ol,
+.meta-card pre {
+  margin: 12px 0 0;
+}
+
+.meta-card ol {
+  padding-left: 20px;
+  color: var(--fg-secondary);
+}
+
+.meta-card pre {
+  overflow: auto;
+  padding: 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg-inset) 92%, transparent);
+  color: var(--fg-secondary);
+}
+
+.meta-card p {
+  margin: 12px 0 0;
+  color: var(--fg-secondary);
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-inset) 88%, white 12%);
+  border: 1px solid color-mix(in srgb, var(--border-color) 55%, transparent);
+}
+
+@media (max-width: 980px) {
+  .hero-card {
+    flex-direction: column;
+  }
+
+  .surface-grid {
+    grid-template-columns: 1fr;
+  }
+}

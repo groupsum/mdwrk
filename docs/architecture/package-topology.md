@@ -1,34 +1,26 @@
 # Package topology
 
-Date: 2026-03-27
+Date: 2026-05-26
 
 ## Decision summary
 
-The repository is a root npm workspace with explicit application, package, documentation, artifact, and example boundaries.
-Applications compose packages; packages do not depend on applications.
+The repository is a root npm workspace with explicit package, documentation, artifact, and example boundaries.
+Examples compose packages; packages do not depend on applications.
 
 ## Current repository structure
 
 ```text
-markdown_workspace/
+mdwrk/
   package.json
   package-lock.json
   tsconfig.base.json
   .changeset/
   .github/
   docs/
-  apps/
-    client/
-    lander/
   packages/
-    contracts/
-      extension-manifest/
-      extension-host/
-      theme-contract/
     shared/
       ui-tokens/
       icons/
-      i18n/
       testing/
     renderer/
       markdown-renderer-core/
@@ -36,46 +28,25 @@ markdown_workspace/
     editor/
       markdown-editor-core/
       markdown-editor-react/
-    extensions/
-      extension-runtime/
-      extension-workspace-files/
-      extension-git-ops/
-      extension-manager/
-      extension-gemini-agent/
-      extension-theme-studio/
-      extension-catalog-hello/
+      markdown-edit-in-renderer-react/
   examples/
     editor-basic/
     renderer-basic/
+    editor-demo/
+    previewer-demo/
+    edit-in-renderer-demo/
+    ui-tokens-demo/
   tools/
   artifacts/
 ```
 
 ## Package families
 
-### Applications
-Deployable products only.
-
-- `apps/client` → `@mdwrk/mdwrkspace`
-- `apps/mdwrkcom` → `@mdwrk/mdwrkcom`
-
-Applications may depend on packages. Packages may **not** depend on applications.
-
-### Contracts
-Normative interfaces and schemas.
-
-- `@mdwrk/extension-manifest`
-- `@mdwrk/extension-host`
-- `@mdwrk/theme-contract`
-
-These packages are intended to remain implementation-light and stable.
-
 ### Shared
 Cross-cutting primitives that remain app-agnostic.
 
 - `@mdwrk/ui-tokens`
 - `@mdwrk/icons`
-- `@mdwrk/i18n`
 - `@mdwrk/testing`
 
 ### Renderer
@@ -89,23 +60,24 @@ Portable markdown editing packages.
 
 - `@mdwrk/markdown-editor-core`
 - `@mdwrk/markdown-editor-react`
-
-### Extensions
-Publishable extension packages and extension runtime.
-
-- `@mdwrk/extension-runtime`
-- `@mdwrk/extension-workspace-files`
-- `@mdwrk/extension-git-ops`
-- `@mdwrk/extension-manager`
-- `@mdwrk/extension-gemini-agent`
-- `@mdwrk/extension-theme-studio`
-- `@mdwrk/extension-catalog-hello`
+- `@mdwrk/markdown-edit-in-renderer-react`
 
 ### Examples
 Validation and demo packages.
 
 - `@mdwrk/example-editor-basic`
 - `@mdwrk/example-renderer-basic`
+- `@mdwrk/example-editor-demo`
+- `@mdwrk/example-previewer-demo`
+- `@mdwrk/example-edit-in-renderer-demo`
+- `@mdwrk/example-ui-tokens-demo`
+
+## Sibling ownership
+
+These families are intentionally owned outside this repo:
+
+- `mdwrk-studio` owns `@mdwrk/extension-manifest`, `@mdwrk/extension-host`, `@mdwrk/theme-contract`, and the non-theme first-party extensions
+- `mdwrk-themes` owns `@mdwrk/theme-draft`, `@mdwrk/theme-preview`, `@mdwrk/theme-diagnostics`, `@mdwrk/theme-presets`, `@mdwrk/theme-export`, `@mdwrk/theme-specimens`, and `@mdwrk/extension-theme-studio`
 
 ## Naming rules
 
@@ -118,13 +90,13 @@ All workspace packages use the npm scope:
 Use lowercase kebab-case for package directories.
 
 Examples:
-- `packages/extensions/extension-runtime`
+- `packages/editor/markdown-edit-in-renderer-react`
 - `packages/renderer/markdown-renderer-react`
 
 ### Extension ids
 Extension ids are stable dot-separated identifiers independent of folder names.
 
-Examples:
+Examples that still exist in sibling repos:
 - `core.workspace-files`
 - `core.git-ops`
 - `core.extension-manager`
@@ -133,27 +105,22 @@ Examples:
 
 ## Ownership rules
 
-- `apps/*` own product composition, routing, deployment, and end-user assembly
-- `packages/contracts/*` own normative interfaces and schemas
 - `packages/shared/*` own reusable primitives
 - `packages/renderer/*` own markdown rendering
 - `packages/editor/*` own markdown editing
-- `packages/extensions/*` own the extension runtime or extension packages
 - `examples/*` own validation/demo surfaces only
+- sibling repos own contracts, themes, and studio extensions
 
 ## Import rules
 
 ### Allowed
-- apps → packages
-- package → package within allowed lower layers
-- examples → packages
+- package -> package within allowed lower layers
+- examples -> packages
 
 ### Forbidden
-- package → app
-- app → app
-- renderer/editor packages importing from extension packages
+- package -> app
+- renderer/editor packages importing from studio app internals
 - shared packages importing from apps
-- extension packages importing from app internals directly
 
 ## Current-state note
 

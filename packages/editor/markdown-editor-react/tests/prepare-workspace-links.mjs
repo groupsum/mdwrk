@@ -9,7 +9,7 @@ const nodeModulesRoot = path.join(packageRoot, 'node_modules', '@mdwrk');
 const links = {
   'markdown-editor-core': path.resolve(packageRoot, '../../editor/markdown-editor-core'),
   'testing': path.resolve(packageRoot, '../../shared/testing'),
-  'theme-contract': path.resolve(packageRoot, '../../contracts/theme-contract'),
+  'theme-contract': path.resolve(packageRoot, '../../../../mdwrk-studio/packages/contracts/theme-contract'),
   'ui-tokens': path.resolve(packageRoot, '../../shared/ui-tokens'),
 };
 

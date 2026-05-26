@@ -9,15 +9,15 @@
   <a href="../../../LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" /></a>
 </p>
 
-This package exposes the shared MdWrk token defaults, names, and CSS custom-property helpers used by the portable markdown, renderer, and editor packages.
+This package exposes the shared MdWrk token defaults, markdown class contracts, bridge variables, and CSS custom-property helpers used by the portable markdown, renderer, and editor packages.
 
 ## Why
-Use it when you need the package-owned markdown token contract directly without importing the full theme authoring surface.
+Use it when you need the package-owned markdown token, class-name, and renderer/editor bridge contract directly without importing the full theme authoring surface.
 
 ## What
 - Stable token names and defaults.
+- Stable markdown class names and renderer/editor bridge definitions.
 - CSS custom-property lists for the shared UI contract.
-- Theme-facing aliases built on top of the theme contract package.
 - Explicit subsets for package-owned markdown tokens and studio-owned shell tokens.
 - CSS defaults for markdown, renderer, and editor surfaces only. App-shell globals belong in `mdwrk-studio`, not here.
 

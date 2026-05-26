@@ -5,6 +5,7 @@ import {
   type MarkdownSourceEditorHandle,
 } from '@mdwrk/markdown-editor-react';
 import { MarkdownRenderer, createMarkdownRendererThemeStyle } from '@mdwrk/markdown-renderer-react';
+import { MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES, MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import './styles.css';
 
 type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes';
@@ -127,7 +128,8 @@ export default function App(): React.JSX.Element {
   return (
     <main className="example-shell">
       <h1>Portable Editor Example</h1>
-      <p>This example exercises the public editor package surface rather than private workspace wiring.</p>
+      <p>This example exercises the public editor package surface rather than private workspace wiring, with editor and preview bridge vars sourced from <code>@mdwrk/ui-tokens</code>.</p>
+      <p><small>Editor bridges: {MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES.length} · Renderer bridges: {MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES.length}</small></p>
       <div className="toolbar">
         <button onClick={() => editorRef.current?.executeCommand('bold')}>Bold</button>
         <button onClick={() => editorRef.current?.executeCommand('italic')}>Italic</button>

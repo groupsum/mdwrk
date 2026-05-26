@@ -16,7 +16,6 @@ They must not depend on app hosts.
 
 ### Shared packages
 
-- `@mdwrk/i18n`
 - `@mdwrk/icons`
 - `@mdwrk/testing`
 - `@mdwrk/ui-tokens`

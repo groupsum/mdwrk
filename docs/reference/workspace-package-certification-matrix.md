@@ -7,7 +7,6 @@ This matrix is generated in the Phase 11 checkpoint and records whether each wor
 | `@mdwrk/extension-host` | contract | yes | yes | yes | yes | yes | n/a |
 | `@mdwrk/extension-manifest` | contract | yes | yes | yes | yes | yes | n/a |
 | `@mdwrk/theme-contract` | contract | yes | yes | yes | yes | yes | n/a |
-| `@mdwrk/i18n` | shared | yes | yes | yes | yes | yes | n/a |
 | `@mdwrk/icons` | shared | yes | yes | yes | yes | yes | n/a |
 | `@mdwrk/testing` | shared | yes | yes | yes | yes | yes | n/a |
 | `@mdwrk/ui-tokens` | shared | yes | yes | yes | yes | yes | n/a |

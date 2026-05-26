@@ -1,0 +1,90 @@
+services:
+  renderer-basic:
+    build:
+      context: ./examples/renderer-basic
+      dockerfile: Dockerfile
+    container_name: mdwrk-renderer-basic
+    ports:
+      - "127.0.0.1:4300:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  editor-basic:
+    build:
+      context: ./examples/editor-basic
+      dockerfile: Dockerfile
+    container_name: mdwrk-editor-basic
+    ports:
+      - "127.0.0.1:4301:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  editor-demo:
+    build:
+      context: ./examples/editor-demo
+      dockerfile: Dockerfile
+    container_name: mdwrk-editor-demo
+    ports:
+      - "127.0.0.1:4302:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  previewer-demo:
+    build:
+      context: ./examples/previewer-demo
+      dockerfile: Dockerfile
+    container_name: mdwrk-previewer-demo
+    ports:
+      - "127.0.0.1:4303:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  edit-in-renderer-demo:
+    build:
+      context: ./examples/edit-in-renderer-demo
+      dockerfile: Dockerfile
+    container_name: mdwrk-edit-in-renderer-demo
+    ports:
+      - "127.0.0.1:4304:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  ui-tokens-demo:
+    build:
+      context: ./examples/ui-tokens-demo
+      dockerfile: Dockerfile
+    container_name: mdwrk-ui-tokens-demo
+    ports:
+      - "127.0.0.1:4305:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped

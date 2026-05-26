@@ -1,0 +1,30 @@
+{
+  "name": "@mdwrk/example-previewer-demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck"
+  },
+  "dependencies": {
+    "@mdwrk/markdown-renderer-react": "^1.1.7",
+    "@mdwrk/theme-presets": "^1.0.0",
+    "@mdwrk/theme-preview": "^1.0.0",
+    "@mdwrk/ui-tokens": "^1.2.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.4.1"
+  },
+  "license": "Apache-2.0",
+  "author": "Jacob Stewart <jacob@swarmauri.com>",
+  "homepage": "https://mdwrk.com"
+}

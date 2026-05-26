@@ -1,0 +1,156 @@
+@import url("@mdwrk/ui-tokens/styles/root.css");
+@import url("@mdwrk/markdown-editor-react/styles/default.css");
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.16), transparent 30%),
+    linear-gradient(180deg, #06111e 0%, #091522 55%, #0d1726 100%);
+  color: var(--fg-primary);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+.demo-shell {
+  min-height: 100vh;
+  padding: 32px;
+  color: var(--fg-primary);
+}
+
+.hero-card,
+.surface-card,
+.inspector-card {
+  background: color-mix(in srgb, var(--bg-panel) 86%, white 14%);
+  border: 1px solid color-mix(in srgb, var(--border-color) 72%, transparent);
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(3, 9, 18, 0.22);
+}
+
+.hero-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-card h1,
+.surface-header h2,
+.inspector-card h2 {
+  margin: 0;
+  font-family: "Fraunces", "Georgia", serif;
+}
+
+.hero-copy,
+.surface-header p,
+.inspector-card p,
+.heading-list,
+.meta-list {
+  color: var(--fg-secondary);
+}
+
+.hero-controls,
+.command-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.hero-controls label,
+.command-bar .toggle {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.hero-controls select,
+.command-bar button {
+  background: color-mix(in srgb, var(--bg-inset) 88%, white 12%);
+  color: var(--fg-primary);
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font: inherit;
+}
+
+.command-bar {
+  margin-bottom: 20px;
+}
+
+.command-bar button {
+  cursor: pointer;
+}
+
+.toggle {
+  grid-auto-flow: column;
+  align-items: center;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.9fr);
+  gap: 20px;
+}
+
+.surface-card,
+.inspector-card {
+  padding: 20px;
+}
+
+.surface-header,
+.status-pills {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-pills span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--fg-primary);
+  font-size: 0.8rem;
+}
+
+.inspector-card {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.heading-list,
+.meta-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.studio-control-section code {
+  font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
+}
+
+@media (max-width: 980px) {
+  .hero-card,
+  .surface-header,
+  .demo-grid {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .demo-grid {
+    display: grid;
+  }
+}

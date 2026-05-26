@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
 const nodeModulesRoot = path.join(packageRoot, 'node_modules', '@mdwrk');
 const links = {
-  'theme-contract': path.resolve(packageRoot, '../../contracts/theme-contract'),
+  'theme-contract': path.resolve(packageRoot, '../../../../mdwrk-studio/packages/contracts/theme-contract'),
 };
 
 await fs.mkdir(nodeModulesRoot, { recursive: true });

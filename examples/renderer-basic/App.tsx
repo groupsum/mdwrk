@@ -1,5 +1,6 @@
 import React from 'react';
 import { MarkdownRenderer, createMarkdownRendererThemeStyle } from '@mdwrk/markdown-renderer-react';
+import { MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES, MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import './styles.css';
 
 type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes';
@@ -90,6 +91,7 @@ export default function App(): React.JSX.Element {
     <main className="example-shell">
       <h1>Portable Markdown Renderer</h1>
       <p>This example validates the reusable renderer package directly, including default GFM and optional profile rendering.</p>
+      <p><small>Renderer bridges: {MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES.length} · Markdown helper classes: {MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES.length}</small></p>
       <div className="toolbar">
         <label className="toolbar-select">
           <span>Theme</span>
