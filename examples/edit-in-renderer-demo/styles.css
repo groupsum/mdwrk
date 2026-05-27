@@ -2,18 +2,21 @@
 @import url("@mdwrk/markdown-renderer-react/styles/default.css");
 @import url("@mdwrk/markdown-editor-react/styles/default.css");
 @import url("@mdwrk/markdown-edit-in-renderer-react/styles/default.css");
-
-:root {
-  color-scheme: dark;
-}
+@import url("@mdwrk/core-demo-react/styles/theme-selector.css");
 
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(34, 197, 94, 0.16), transparent 25%),
-    linear-gradient(180deg, #071914 0%, #0b1717 50%, #10131d 100%);
-  color: var(--fg-primary);
-  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 16%, transparent), transparent 25%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-app, var(--bg-panel)) 92%, white 8%) 0%, var(--bg-app, var(--bg-panel)) 100%);
+  color: inherit;
+  font-family: var(--font-ui);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 .demo-shell {
@@ -31,11 +34,17 @@ body {
 }
 
 .hero-card {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
   gap: 20px;
   padding: 28px;
   margin-bottom: 20px;
+}
+
+.selector-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .eyebrow {
@@ -50,21 +59,7 @@ body {
 .editor-card h2,
 .meta-card h2 {
   margin: 0;
-  font-family: "Fraunces", "Georgia", serif;
-}
-
-.theme-picker {
-  display: grid;
-  gap: 6px;
-  font-size: 0.82rem;
-}
-
-.theme-picker select {
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
-  background: color-mix(in srgb, var(--bg-inset) 88%, white 12%);
-  color: var(--fg-primary);
+  font-family: var(--font-head);
 }
 
 .surface-grid {
@@ -76,11 +71,25 @@ body {
 .editor-card,
 .meta-card {
   padding: 22px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .meta-card {
   display: grid;
   gap: 20px;
+}
+
+.surface-grid > * {
+  min-width: 0;
+}
+
+.editor-card .mw-editor,
+.editor-card .mw-editor-layout,
+.editor-card .mw-editor-textarea,
+.editor-card .markdown-body,
+.meta-card pre {
+  max-width: 100%;
 }
 
 .meta-card ol,
@@ -121,10 +130,6 @@ body {
 }
 
 @media (max-width: 980px) {
-  .hero-card {
-    flex-direction: column;
-  }
-
   .surface-grid {
     grid-template-columns: 1fr;
   }

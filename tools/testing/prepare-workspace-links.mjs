@@ -24,6 +24,8 @@ const workspacePackages = new Map([
   ['@mdwrk/extension-theme-studio', '../mdwrk-themes/packages/extensions/extension-theme-studio'],
   ['@mdwrk/testing', 'packages/shared/testing'],
   ['@mdwrk/ui-tokens', 'packages/shared/ui-tokens'],
+  ['@mdwrk/core-demo-themes', 'packages/shared/core-demo-themes'],
+  ['@mdwrk/core-demo-react', 'packages/shared/core-demo-react'],
   ['@mdwrk/icons', 'packages/shared/icons'],
   ['@mdwrk/theme-draft', '../mdwrk-themes/packages/shared/theme-draft'],
   ['@mdwrk/theme-preview', '../mdwrk-themes/packages/shared/theme-preview'],

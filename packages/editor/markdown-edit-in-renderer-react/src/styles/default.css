@@ -1,4 +1,27 @@
+@import url("@mdwrk/ui-tokens/styles/markdown.css");
+
 .markdown-edit-in-renderer-host {
+  --fg-primary: var(--mwir-fg);
+  --fg-secondary: var(--mwir-fg-muted);
+  --fg-muted: var(--mwir-fg-muted);
+  --bg-panel: var(--mwir-bg);
+  --bg-inset: color-mix(in srgb, var(--mwir-bg-active) 82%, var(--mwir-bg) 18%);
+  --border-color: var(--mwir-border);
+  --accent: var(--mwir-accent);
+  --font-ui: var(--mwir-font-ui);
+  --font-mono: var(--mwir-font-mono);
+  --code-inline-bg: #e8eef6;
+  --code-inline-fg: #0f172a;
+  --code-block-bg: #eef3f8;
+  --code-block-fg: #182235;
+  --code-header-bg: #e3ebf5;
+  --code-header-fg: #5b6b82;
+  --code-language-bg: #d6e4f7;
+  --code-language-fg: #0f3a75;
+  --table-header-bg: #f8fafc;
+  --table-header-fg: var(--mwir-fg);
+  --table-row-primary-bg: transparent;
+  --table-row-secondary-bg: color-mix(in srgb, var(--mwir-bg-active) 92%, var(--mwir-bg) 8%);
   position: relative;
   box-sizing: border-box;
   color: var(--mwir-fg);
@@ -89,7 +112,7 @@
 .markdown-edit-in-renderer-surface ol,
 .markdown-edit-in-renderer-surface pre,
 .markdown-edit-in-renderer-surface table,
-.markdown-edit-in-renderer-code-block {
+.markdown-edit-in-renderer-surface .md-code-block {
   margin: 0.9em 0;
 }
 
@@ -118,103 +141,74 @@
 }
 
 .markdown-edit-in-renderer-surface pre {
-  padding: 0.875rem 1rem;
-  overflow: auto;
-  color: #182235;
-  background: #eef3f8;
-  border: 1px solid var(--mwir-border);
-}
-
-.markdown-edit-in-renderer-code-block {
-  overflow: hidden;
-  color: #182235;
-  background: #e8eef5;
-  border: 1px solid color-mix(in srgb, var(--mwir-border) 72%, #1d4ed8 28%);
-}
-
-.markdown-edit-in-renderer-code-block .markdown-edit-in-renderer-code-header {
-  display: flex;
-  align-items: center;
-  min-height: 2rem;
-  padding: 0.35rem 0.75rem;
-  color: color-mix(in srgb, var(--mwir-fg-muted) 80%, #0f172a 20%);
-  background: #dbe6f1;
-  border-bottom: 1px solid color-mix(in srgb, var(--mwir-border) 72%, #1d4ed8 28%);
-  font-family: var(--mwir-font-ui);
-  font-size: 0.72rem;
-  font-weight: 750;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.markdown-edit-in-renderer-code-language {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.15rem;
-  padding: 0 0.4rem;
-  color: #0f3a75;
-  background: color-mix(in srgb, var(--mwir-accent) 11%, #ffffff 89%);
-  border: 1px solid color-mix(in srgb, var(--mwir-accent) 28%, transparent);
-  font-size: 0.68rem;
-}
-
-.markdown-edit-in-renderer-code-block pre,
-.markdown-edit-in-renderer-surface pre.md-code-block {
-  margin: 0;
-  background: #eef3f8;
+  padding: 0;
+  overflow: visible;
+  color: var(--code-block-fg);
+  background: transparent;
   border: 0;
 }
 
-.markdown-edit-in-renderer-code-block code {
-  color: #182235;
+.markdown-edit-in-renderer-surface .md-code-block .md-code-language {
+  color: var(--code-language-fg);
 }
 
-.markdown-edit-in-renderer-code-block .token.comment,
-.markdown-edit-in-renderer-code-block .token.prolog,
-.markdown-edit-in-renderer-code-block .token.doctype,
-.markdown-edit-in-renderer-code-block .token.cdata {
+.markdown-edit-in-renderer-surface .md-code-surface {
+  margin: 0;
+  color: var(--code-block-fg);
+  background: var(--code-block-bg);
+}
+
+.markdown-edit-in-renderer-surface .md-code-block code,
+.markdown-edit-in-renderer-surface .md-code-content {
+  color: var(--code-block-fg);
+}
+
+.markdown-edit-in-renderer-surface .md-code-block .token.comment,
+.markdown-edit-in-renderer-surface .md-code-block .token.prolog,
+.markdown-edit-in-renderer-surface .md-code-block .token.doctype,
+.markdown-edit-in-renderer-surface .md-code-block .token.cdata {
   color: #64748b;
 }
 
-.markdown-edit-in-renderer-code-block .token.keyword,
-.markdown-edit-in-renderer-code-block .token.atrule,
-.markdown-edit-in-renderer-code-block .token.selector {
+.markdown-edit-in-renderer-surface .md-code-block .token.keyword,
+.markdown-edit-in-renderer-surface .md-code-block .token.atrule,
+.markdown-edit-in-renderer-surface .md-code-block .token.selector {
   color: #0b5cad;
   font-weight: 700;
 }
 
-.markdown-edit-in-renderer-code-block .token.string,
-.markdown-edit-in-renderer-code-block .token.attr-value {
+.markdown-edit-in-renderer-surface .md-code-block .token.string,
+.markdown-edit-in-renderer-surface .md-code-block .token.attr-value {
   color: #12633d;
 }
 
-.markdown-edit-in-renderer-code-block .token.number,
-.markdown-edit-in-renderer-code-block .token.boolean,
-.markdown-edit-in-renderer-code-block .token.constant {
+.markdown-edit-in-renderer-surface .md-code-block .token.number,
+.markdown-edit-in-renderer-surface .md-code-block .token.boolean,
+.markdown-edit-in-renderer-surface .md-code-block .token.constant {
   color: #8a3ffc;
 }
 
-.markdown-edit-in-renderer-code-block .token.function,
-.markdown-edit-in-renderer-code-block .token.class-name {
+.markdown-edit-in-renderer-surface .md-code-block .token.function,
+.markdown-edit-in-renderer-surface .md-code-block .token.class-name {
   color: #9a4d00;
 }
 
-.markdown-edit-in-renderer-code-block .token.property,
-.markdown-edit-in-renderer-code-block .token.attr-name,
-.markdown-edit-in-renderer-code-block .token.tag {
+.markdown-edit-in-renderer-surface .md-code-block .token.property,
+.markdown-edit-in-renderer-surface .md-code-block .token.attr-name,
+.markdown-edit-in-renderer-surface .md-code-block .token.tag {
   color: #a8324a;
 }
 
-.markdown-edit-in-renderer-code-block .token.operator,
-.markdown-edit-in-renderer-code-block .token.punctuation {
+.markdown-edit-in-renderer-surface .md-code-block .token.operator,
+.markdown-edit-in-renderer-surface .md-code-block .token.punctuation {
   color: #334155;
 }
 
 .markdown-edit-in-renderer-surface :not(pre) > code {
   padding: 0.12rem 0.32rem;
-  color: #0f172a;
-  background: #e8eef6;
-  border: 1px solid color-mix(in srgb, var(--mwir-border) 70%, transparent);
+  color: var(--code-inline-fg);
+  background: var(--code-inline-bg);
+  border: 0;
 }
 
 .markdown-edit-in-renderer-surface table {

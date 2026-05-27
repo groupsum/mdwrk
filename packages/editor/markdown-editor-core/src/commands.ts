@@ -10,6 +10,7 @@ import type {
 export const BUILTIN_MARKDOWN_EDITOR_COMMANDS: readonly MarkdownEditorBuiltinCommandId[] = [
   "bold",
   "italic",
+  "underline",
   "strikethrough",
   "bullet-list",
   "task-list",
@@ -39,6 +40,8 @@ export function applyBuiltinMarkdownCommand(
       return wrapSelection(value, selection, "**", "**");
     case "italic":
       return wrapSelection(value, selection, "_", "_");
+    case "underline":
+      return wrapSelection(value, selection, "__", "__");
     case "strikethrough":
       return wrapSelection(value, selection, "~~", "~~");
     case "bullet-list":
@@ -65,7 +68,7 @@ export function applyBuiltinMarkdownCommand(
       };
     }
     case "footnote":
-      return wrapSelection(value, selection, "[^1]", "");
+      return applyFootnoteCommand(value, selection);
     case "inline-math":
       return wrapSelection(value, selection, "$", "$");
     case "block-math":
@@ -93,6 +96,58 @@ export function applyBuiltinMarkdownCommand(
       throw new Error(`Unsupported markdown editor command: ${String(exhaustiveCheck)}`);
     }
   }
+}
+
+function applyFootnoteCommand(
+  value: string,
+  selection: MarkdownEditorSelection,
+): MarkdownEditorEditResult {
+  const normalized = normalizeSelection(selection, value.length);
+  const nextIndex = getNextFootnoteIndex(value);
+  const reference = `[^${nextIndex}]`;
+  const insertionOffset = normalized.end;
+  const nextValueWithReference = `${value.slice(0, insertionOffset)}${reference}${value.slice(insertionOffset)}`;
+
+  const separator = resolveFootnoteSeparator(nextValueWithReference);
+  const definitionPrefix = `${separator}[^${nextIndex}]: `;
+  const nextValue = `${nextValueWithReference}${definitionPrefix}`;
+  const nextOffset = nextValue.length;
+
+  return {
+    value: nextValue,
+    selection: createSelection(nextOffset, nextOffset),
+    changed: nextValue !== value,
+  };
+}
+
+function getNextFootnoteIndex(value: string): number {
+  const pattern = /\[\^(\d+)\](?::)?/g;
+  let maxIndex = 0;
+
+  for (const match of value.matchAll(pattern)) {
+    const nextValue = Number.parseInt(match[1] ?? "0", 10);
+    if (Number.isFinite(nextValue)) {
+      maxIndex = Math.max(maxIndex, nextValue);
+    }
+  }
+
+  return maxIndex + 1;
+}
+
+function resolveFootnoteSeparator(value: string): string {
+  if (value.length === 0) {
+    return "\n\n";
+  }
+
+  if (value.endsWith("\n\n")) {
+    return "";
+  }
+
+  if (value.endsWith("\n")) {
+    return "\n";
+  }
+
+  return "\n\n";
 }
 
 interface MarkdownLinkRange {

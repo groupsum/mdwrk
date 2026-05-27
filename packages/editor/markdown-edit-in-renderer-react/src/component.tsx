@@ -1,5 +1,5 @@
 import React from "react";
-import { renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
+import { enhanceRenderedCodeBlocks, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
 import {
   getProjectedCaret,
   plaintextOffsetFromRenderedPoint,
@@ -29,36 +29,6 @@ function createBlankMarkdownSpacers(markdown: string): string {
     '<div class="markdown-edit-in-renderer-blank-line" aria-hidden="true"></div>'
   )).join("");
 }
-
-function escapeCodeBlockLabel(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function enhanceRenderedCodeBlocks(html: string): string {
-  const opened = html.replace(
-    /<pre([^>]*\bclass="[^"]*\bmd-code-block\b[^"]*"[^>]*)><code([^>]*\bclass="([^"]*\blanguage-([A-Za-z0-9_+-]+)\b[^"]*)"[^>]*)>/g,
-    (_match, preAttributes: string, codeAttributes: string, _codeClassName: string, rawLanguage: string) => {
-      const language = rawLanguage || "text";
-      const label = escapeCodeBlockLabel(language.toUpperCase());
-      return [
-        `<figure class="markdown-edit-in-renderer-code-block" data-code-language="${escapeCodeBlockLabel(language)}">`,
-        '<figcaption class="markdown-edit-in-renderer-code-header">',
-        `<span class="markdown-edit-in-renderer-code-language">${label}</span>`,
-        "</figcaption>",
-        `<pre${preAttributes}><code${codeAttributes}>`,
-      ].join("");
-    },
-  );
-  return opened.replace(
-    /(<figure class="markdown-edit-in-renderer-code-block"[\s\S]*?<pre[^>]*><code[\s\S]*?<\/code><\/pre>)(?!<\/figure>)/g,
-    "$1</figure>",
-  );
-}
-
 
 export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHandle, MarkdownEditInRendererProps>(
   function MarkdownEditInRenderer(

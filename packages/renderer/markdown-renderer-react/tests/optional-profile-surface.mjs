@@ -50,6 +50,7 @@ const checks = [
     test() {
       assert.match(componentHtml, /md-footnote-reference/);
       assert.match(componentHtml, /md-footnotes/);
+      assert.match(componentHtml, /<p[^>]*class="md-p"[^>]*>Footnote body <a[^>]*md-footnote-backlink/);
     },
   },
   {

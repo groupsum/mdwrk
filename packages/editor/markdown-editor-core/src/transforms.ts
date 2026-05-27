@@ -329,12 +329,16 @@ export function computeSelectionFormatState(
   const italic = normalized.start === normalized.end
     ? isCursorWithinWrapped(value, normalized.start, "_")
     : isSelectionWrappedBy(value, normalized, "_");
+  const underline = normalized.start === normalized.end
+    ? isCursorWithinWrapped(value, normalized.start, "__")
+    : isSelectionWrappedBy(value, normalized, "__");
   const strikethrough = normalized.start === normalized.end
     ? isCursorWithinWrapped(value, normalized.start, "~~")
     : isSelectionWrappedBy(value, normalized, "~~");
   return {
     bold,
     italic,
+    underline,
     strikethrough,
     bulletList: isBulletListLine(currentLine),
     taskList: isTaskListLine(currentLine),

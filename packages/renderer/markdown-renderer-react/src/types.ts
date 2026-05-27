@@ -13,9 +13,14 @@ export interface MarkdownRendererThemeVariables {
   readonly background?: string;
   readonly border?: string;
   readonly accent?: string;
-  readonly codeBackground?: string;
-  readonly codeForeground?: string;
-  readonly codeBorder?: string;
+  readonly codeInlineBackground?: string;
+  readonly codeInlineForeground?: string;
+  readonly codeBlockBackground?: string;
+  readonly codeBlockForeground?: string;
+  readonly codeHeaderBackground?: string;
+  readonly codeHeaderForeground?: string;
+  readonly codeLanguageBackground?: string;
+  readonly codeLanguageForeground?: string;
   readonly fontUi?: string;
   readonly fontMono?: string;
   readonly lineHeight?: string;

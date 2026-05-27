@@ -128,4 +128,20 @@ describe("builtin markdown editor commands", () => {
     expect(result.value).toBe("- [ ] alpha");
     expect(result.selection).toEqual({ start: 8, end: 8, direction: "none" });
   });
+
+  it("creates a footnote reference and appends the footnote definition at document end", () => {
+    const result = applyBuiltinMarkdownCommand("footnote", "Alpha", { start: 5, end: 5 });
+    expect(result.value).toBe("Alpha[^1]\n\n[^1]: ");
+    expect(result.selection).toEqual({ start: 17, end: 17, direction: "none" });
+  });
+
+  it("appends a footnote reference after selected text and increments the next numeric footnote id", () => {
+    const result = applyBuiltinMarkdownCommand(
+      "footnote",
+      "Alpha beta[^1]\n\n[^1]: prior note",
+      { start: 6, end: 10 },
+    );
+    expect(result.value).toBe("Alpha beta[^2][^1]\n\n[^1]: prior note\n\n[^2]: ");
+    expect(result.selection).toEqual({ start: 44, end: 44, direction: "none" });
+  });
 });

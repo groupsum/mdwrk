@@ -1,4 +1,5 @@
 import React from 'react';
+import { DropdownSelector } from '@mdwrk/core-demo-react';
 import { MarkdownSourceEditor } from '@mdwrk/markdown-editor-react';
 import { MarkdownRenderer } from '@mdwrk/markdown-renderer-react';
 import {
@@ -7,12 +8,12 @@ import {
   MARKDOWN_WORKSPACE_UI_TOKENS,
   MARKDOWN_WORKSPACE_TOKEN_DEFAULTS,
 } from '@mdwrk/ui-tokens';
-import { listThemePresets } from '@mdwrk/theme-presets/registry';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
+import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
 import './styles.css';
 
-const THEME_PRESETS = listThemePresets();
-const DEFAULT_THEME_ID = THEME_PRESETS[0]?.metadata.id ?? 'default';
+const THEME_PRESETS = DEMO_THEME_PRESETS;
+const DEFAULT_THEME_ID = DEFAULT_DEMO_THEME_ID;
 
 const SPECIMEN_MARKDOWN = `# Token Specimen
 
@@ -21,9 +22,61 @@ This preview reflects the active preset token overrides.
 - Accent and panel tones
 - Editor rhythm and gutter width
 - Heading and body contrast
+
+Inline formatting: **bold**, _italic_, __underline__, ~~strikethrough~~, X^2^, H~2~O.
+
+## H2 specimen
+
+### H3 specimen
+
+#### H4 specimen
+
+##### H5 specimen
+
+###### H6 specimen
+
+| Column | Header token | Value |
+| --- | --- | --- |
+| A | table-header-bg | active |
+| B | table-header-fg | active |
+
+> Quote blocks should reflect the active panel and border tokens.
+
+\`\`\`ts
+export const specimen = true;
+\`\`\`
+
+\`\`\`
+plain fenced block
+without a language
+\`\`\`
 `;
 
-const SPECIMEN_EDITOR = `# Tokens\n\nbody surfaces\naccent chips\nline rhythm\n`;
+const SPECIMEN_EDITOR = `# Tokens
+
+**bold** _italic_ __underline__ ~~strikethrough~~ X^2^ H~2~O
+
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+| Token | Purpose |
+| --- | --- |
+| table-header-bg | header fill |
+| line-number-gutter-width | gutter width |
+
+> token specimen quote
+
+\`\`\`ts
+const tokens = true;
+\`\`\`
+
+\`\`\`
+plain code
+\`\`\`
+`;
 
 function parseThemeId(): string {
   if (typeof window === 'undefined') return DEFAULT_THEME_ID;
@@ -35,6 +88,10 @@ export default function App(): React.JSX.Element {
   const [themeId, setThemeId] = React.useState(() => parseThemeId());
   const preset = React.useMemo(
     () => THEME_PRESETS.find((entry) => entry.metadata.id === themeId) ?? THEME_PRESETS[0],
+    [themeId],
+  );
+  const shellTheme = React.useMemo(
+    () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
   const selector = `.ui-tokens-demo-shell[data-theme="${themeId}"]`;
@@ -68,7 +125,7 @@ export default function App(): React.JSX.Element {
   );
 
   return (
-    <main className="demo-shell ui-tokens-demo-shell" data-theme={themeId}>
+    <main className="demo-shell ui-tokens-demo-shell" data-theme={themeId} style={shellTheme.style}>
       <style>{themeCss}</style>
       <section className="hero-card">
         <div>
@@ -76,14 +133,14 @@ export default function App(): React.JSX.Element {
           <h1>UI Tokens</h1>
           <p>Markdown tokens, renderer bridge variables, and markdown helper classes now source directly from <code>@mdwrk/ui-tokens</code>.</p>
         </div>
-        <label className="theme-picker">
-          <span>Theme</span>
-          <select value={themeId} onChange={(event) => setThemeId(event.target.value)}>
-            {THEME_PRESETS.map((entry) => (
-              <option key={entry.metadata.id} value={entry.metadata.id}>{entry.metadata.name}</option>
-            ))}
-          </select>
-        </label>
+        <div className="selector-row">
+          <DropdownSelector
+            label="Theme"
+            value={themeId}
+            onChange={setThemeId}
+            options={THEME_PRESETS.map((entry) => ({ id: entry.metadata.id, label: entry.metadata.name }))}
+          />
+        </div>
       </section>
 
       <section className="contract-strip">
@@ -103,12 +160,12 @@ export default function App(): React.JSX.Element {
 
       <section className="specimen-grid">
         <article className="specimen-card">
-          <h2>Renderer specimen</h2>
-          <MarkdownRenderer markdown={SPECIMEN_MARKDOWN} />
-        </article>
-        <article className="specimen-card">
           <h2>Editor specimen</h2>
           <MarkdownSourceEditor value={SPECIMEN_EDITOR} onChange={() => undefined} showLineNumbers />
+        </article>
+        <article className="specimen-card">
+          <h2>Renderer specimen</h2>
+          <MarkdownRenderer markdown={SPECIMEN_MARKDOWN} extensions={['superscript', 'subscript']} />
         </article>
       </section>
 

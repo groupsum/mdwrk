@@ -1,27 +1,32 @@
 import React from 'react';
+import { DropdownSelector, TogglePill } from '@mdwrk/core-demo-react';
 import { MarkdownRenderer } from '@mdwrk/markdown-renderer-react';
 import {
   MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES,
   MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
 } from '@mdwrk/ui-tokens';
-import { listThemePresets } from '@mdwrk/theme-presets/registry';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
+import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
 import './styles.css';
 
-type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes';
+type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes' | 'superscript' | 'subscript';
 
-const THEME_PRESETS = listThemePresets();
-const DEFAULT_THEME_ID = THEME_PRESETS[2]?.metadata.id ?? THEME_PRESETS[0]?.metadata.id ?? 'default';
+const THEME_PRESETS = DEMO_THEME_PRESETS;
+const DEFAULT_THEME_ID = DEFAULT_DEMO_THEME_ID;
 
 const OPTIONAL_EXTENSION_OPTIONS: readonly { id: OptionalExtensionId; label: string }[] = [
   { id: 'definition-lists', label: 'Definition lists' },
   { id: 'math', label: 'Math' },
   { id: 'footnotes', label: 'Footnotes' },
+  { id: 'superscript', label: 'Superscript' },
+  { id: 'subscript', label: 'Subscript' },
 ] as const;
 
 const MARKDOWN = `# Preview Review Deck
 
 The previewer demo focuses on **reading quality**, tokenized spacing, and optional markdown lanes.
+
+Inline formatting: **bold**, _italic_, __underline__, ~~strikethrough~~, X^2^, H~2~O.
 
 ## What to inspect
 
@@ -29,6 +34,14 @@ The previewer demo focuses on **reading quality**, tokenized spacing, and option
 - [x] table contrast
 - [x] code block framing
 - [x] footnote and math support when enabled
+
+### H3 reading lane
+
+#### H4 reading lane
+
+##### H5 reading lane
+
+###### H6 reading lane
 
 | Surface | Goal | Notes |
 | :--- | :--- | :--- |
@@ -47,9 +60,16 @@ export function PreviewPanel() {
 }
 \`\`\`
 
+\`\`\`
+plain code fence
+without a language label
+\`\`\`
+
 Footnote marker.[^1]
 
 [^1]: Optional extensions stay explicit and demo-scoped.
+
+> Preview mode should keep quote blocks distinct from adjacent paragraphs.
 `;
 
 function parseThemeFromQuery(): string {
@@ -60,9 +80,19 @@ function parseThemeFromQuery(): string {
 
 export default function App(): React.JSX.Element {
   const [themeId, setThemeId] = React.useState(() => parseThemeFromQuery());
-  const [extensions, setExtensions] = React.useState<OptionalExtensionId[]>(['definition-lists', 'math', 'footnotes']);
+  const [extensions, setExtensions] = React.useState<OptionalExtensionId[]>([
+    'definition-lists',
+    'math',
+    'footnotes',
+    'superscript',
+    'subscript',
+  ]);
   const preset = React.useMemo(
     () => THEME_PRESETS.find((entry) => entry.metadata.id === themeId) ?? THEME_PRESETS[0],
+    [themeId],
+  );
+  const shellTheme = React.useMemo(
+    () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
   const selector = `.previewer-demo-shell[data-theme="${themeId}"]`;
@@ -96,7 +126,7 @@ export default function App(): React.JSX.Element {
   };
 
   return (
-    <main className="demo-shell previewer-demo-shell" data-theme={themeId}>
+    <main className="demo-shell previewer-demo-shell" data-theme={themeId} style={shellTheme.style}>
       <style>{themeCss}</style>
       <section className="hero-card">
         <div>
@@ -104,24 +134,22 @@ export default function App(): React.JSX.Element {
           <h1>Previewer</h1>
           <p>Renderer-first review surface for markdown fidelity, optional profiles, and theme contrast.</p>
         </div>
+        <div className="selector-row">
+          <DropdownSelector
+            label="Theme"
+            value={themeId}
+            onChange={setThemeId}
+            options={THEME_PRESETS.map((entry) => ({ id: entry.metadata.id, label: entry.metadata.name }))}
+          />
+        </div>
         <div className="control-cluster">
-          <label>
-            <span>Theme</span>
-            <select value={themeId} onChange={(event) => setThemeId(event.target.value)}>
-              {THEME_PRESETS.map((entry) => (
-                <option key={entry.metadata.id} value={entry.metadata.id}>{entry.metadata.name}</option>
-              ))}
-            </select>
-          </label>
           {OPTIONAL_EXTENSION_OPTIONS.map((option) => (
-            <label key={option.id} className="toggle">
-              <input
-                type="checkbox"
-                checked={extensions.includes(option.id)}
-                onChange={() => toggleExtension(option.id)}
-              />
-              <span>{option.label}</span>
-            </label>
+            <TogglePill
+              key={option.id}
+              label={option.label}
+              checked={extensions.includes(option.id)}
+              onChange={() => toggleExtension(option.id)}
+            />
           ))}
         </div>
       </section>

@@ -1,0 +1,49 @@
+{
+  "name": "@mdwrk/core-demo-themes",
+  "version": "1.0.1",
+  "type": "module",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "description": "Shared demo theme presets and shell/theme adapters for MdWrk example applications.",
+  "sideEffects": false,
+  "keywords": [
+    "markdown-workspace",
+    "demo",
+    "themes"
+  ],
+  "dependencies": {
+    "@mdwrk/markdown-editor-react": "^1.1.9",
+    "@mdwrk/markdown-renderer-react": "^1.1.8",
+    "@mdwrk/ui-tokens": "^1.2.8",
+    "react": "^19.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "npm run typecheck",
+    "prepack": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "import": "./dist/version.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Jacob Stewart <jacob@swarmauri.com>",
+  "homepage": "https://mdwrk.com"
+}

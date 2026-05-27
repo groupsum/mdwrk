@@ -39,19 +39,22 @@
 .markdown-body p { margin-bottom: 1em; }
 .markdown-body strong { font-weight: 700; }
 .markdown-body em { font-style: italic; }
-.markdown-body u,
-.markdown-body ins {
+.markdown-body ins,
+.markdown-body .md-underline {
+  font-weight: 400;
+  font-style: normal;
   text-decoration: underline;
   text-underline-offset: 0.15em;
+  text-decoration-thickness: 1.5px;
 }
 .markdown-body del { color: var(--fg-muted); }
 .markdown-body code {
   font-family: var(--font-mono);
-  background: var(--bg-inset);
+  background: var(--code-inline-bg);
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-size: calc(0.85em * var(--ui-scale));
-  color: var(--fg-secondary);
+  color: var(--code-inline-fg);
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-break: normal;
@@ -59,25 +62,30 @@
 .markdown-body pre {
   max-width: 100%;
   box-sizing: border-box;
-  background: var(--bg-inset);
+  background: var(--code-block-bg);
   padding: 1em;
-  overflow-x: hidden;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: pre;
+  overflow-wrap: normal;
   word-break: normal;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  border: 0;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 42%, transparent) transparent;
 }
 .markdown-body pre code {
   display: block;
-  max-width: 100%;
+  min-width: max-content;
   background: transparent;
   padding: 0;
   font-size: calc(0.85em * var(--ui-scale));
   color: inherit;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  white-space: pre;
+  overflow-wrap: normal;
   word-break: normal;
+  line-height: 1.65;
+  tab-size: 2;
 }
 .markdown-body blockquote { border-left: 4px solid var(--accent); padding-left: 1em; color: var(--fg-muted); margin-left: 0; }
 .markdown-body hr {
@@ -184,28 +192,60 @@
   padding-left: 1.5rem;
 }
 
+.markdown-body .md-footnotes li > .md-p:only-child {
+  display: inline;
+  margin: 0;
+}
+
+.markdown-body .md-footnotes li > .md-p:only-child::after {
+  content: " ";
+}
+
 .markdown-body .md-footnote-backlink {
+  display: inline;
   margin-left: 0.5rem;
   font-size: 0.9em;
 }
 
+.markdown-body dl,
 .markdown-body .md-definition-list {
-  display: grid;
-  grid-template-columns: minmax(10rem, 16rem) 1fr;
-  gap: 0.5rem 1rem;
-  margin: 1rem 0 1.25rem;
+  margin: 1.1rem 0 1.35rem;
+  padding: 0;
 }
 
+.markdown-body dt,
 .markdown-body .md-definition-term {
+  margin: 0.9rem 0 0.2rem;
   font-weight: 700;
+  color: var(--fg-primary);
 }
 
+.markdown-body dt:first-child,
+.markdown-body .md-definition-term:first-child {
+  margin-top: 0;
+}
+
+.markdown-body dd,
 .markdown-body .md-definition-description {
-  margin: 0;
+  margin: 0 0 0.95rem 0;
+  padding: 0 0 0 1rem;
+  border-left: 3px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  color: var(--fg-secondary);
 }
 
+.markdown-body dd:last-child,
+.markdown-body .md-definition-description:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body dd > *:first-child,
 .markdown-body .md-definition-description > *:first-child {
   margin-top: 0;
+}
+
+.markdown-body dd > *:last-child,
+.markdown-body .md-definition-description > *:last-child {
+  margin-bottom: 0;
 }
 
 .markdown-body .md-math-inline code,
@@ -270,6 +310,7 @@
 
 .markdown-body th,
 .markdown-body .md-table-header {
+  border-color: var(--table-header-border-color);
   background-color: var(--table-header-bg);
   color: var(--table-header-fg);
   font-weight: 700;
@@ -305,47 +346,84 @@
 .markdown-body pre > div {
   background: transparent !important;
   padding: 0 !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  white-space: pre-wrap !important;
-  overflow-wrap: break-word !important;
+  min-width: max-content !important;
+  overflow-x: visible !important;
+  white-space: pre !important;
+  overflow-wrap: normal !important;
   word-break: normal !important;
 }
 
 .md-code-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px;
-  background: var(--bg-panel);
-  border: none;
-  border-radius: 6px;
-  margin-bottom: 1em;
+  gap: 0;
+  margin: 1.1rem 0 1.4rem;
   overflow: hidden;
   max-width: 100%;
   min-width: 0;
+  color: var(--code-block-fg);
+  background: color-mix(in srgb, var(--code-block-bg) 90%, var(--bg-panel) 10%);
+  border: 0;
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent),
+    0 14px 34px color-mix(in srgb, var(--fg-primary) 8%, transparent);
 }
 
 .md-code-header {
-  background: var(--bg-inset);
-  padding: 4px 12px;
-  font-family: var(--font-mono);
-  font-size: calc(0.7rem * var(--ui-scale));
-  border-bottom: 1px solid var(--border-color);
-  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2rem;
+  padding: 0.7rem 0.95rem 0.45rem;
+  color: var(--code-header-fg);
+  background: var(--code-header-bg);
+  border-bottom: 0;
+  font-family: var(--font-ui);
+  font-size: calc(0.72rem * var(--ui-scale));
+  font-weight: 750;
+  line-height: 1;
   text-transform: uppercase;
+}
+
+.md-code-language {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.15rem;
+  padding: 0.18rem 0.55rem;
+  color: var(--code-language-fg);
+  background: var(--code-language-bg);
+  border: 0;
+  border-radius: 999px;
+  font-size: calc(0.68rem * var(--ui-scale));
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .md-code-surface {
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  background: var(--code-block-bg, var(--bg-inset));
-  padding: 12px 14px;
-  border-radius: 6px;
-  overflow-x: hidden;
-  overflow-wrap: break-word;
+  background: var(--code-block-bg);
+  padding: 0.9rem 0.95rem 1rem;
+  border: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overflow-wrap: normal;
   word-break: normal;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 42%, transparent) transparent;
+}
+
+.md-code-content {
+  display: block;
+  min-width: max-content;
+  color: var(--code-block-fg);
+  white-space: pre;
+  overflow-wrap: normal;
+  word-break: normal;
+  line-height: 1.65;
+  tab-size: 2;
 }
 
 .md-code-surface pre,
@@ -354,10 +432,10 @@
   background: transparent !important;
   padding: 0 !important;
   margin: 0 !important;
-  max-width: 100% !important;
-  overflow-x: hidden !important;
-  white-space: pre-wrap !important;
-  overflow-wrap: break-word !important;
+  min-width: max-content !important;
+  overflow-x: visible !important;
+  white-space: pre !important;
+  overflow-wrap: normal !important;
   word-break: normal !important;
 }
 

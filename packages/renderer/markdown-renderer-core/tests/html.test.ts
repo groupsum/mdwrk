@@ -38,7 +38,7 @@ describe("@mdwrk/markdown-renderer-core", () => {
     expect(html).toContain('class="md-task-list-item"');
     expect(html).toContain('class="md-table"');
     expect(html).toContain('class="md-code-block"');
-    expect(html).toContain('class="language-ts"');
+    expect(html).toContain('class="md-code-content language-ts"');
     expect(html).toContain('class="token keyword"');
     expect(html).toContain('class="token number"');
   });
@@ -56,9 +56,16 @@ describe("@mdwrk/markdown-renderer-core", () => {
 
     for (const [language, source] of fixtures) {
       const html = await renderMarkdownToHtml(`\`\`\`${language}\n${source}\n\`\`\``);
-      expect(html).toContain(`class="language-${language}"`);
+      expect(html).toContain(`class="md-code-content language-${language}"`);
       expect(html).toMatch(/class="token (?:attr-name|boolean|comment|function|keyword|number|operator|property|punctuation|selector|string|tag)"/);
     }
+  });
+
+  it("renders double-underscore emphasis as underline rather than strong", async () => {
+    const html = await renderMarkdownToHtml("__underline__");
+    expect(html).toContain('<ins class="md-underline">underline</ins>');
+    expect(html).not.toContain("<strong");
+    expect(html).not.toContain('class="md-strong"');
   });
 
   it("serializes html documents", async () => {

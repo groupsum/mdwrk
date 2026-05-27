@@ -1,7 +1,7 @@
 {
   "name": "@mdwrk/example-editor-basic",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,9 +10,11 @@
     "lint": "npm run typecheck"
   },
   "dependencies": {
-    "@mdwrk/markdown-editor-react": "^1.1.1",
-    "@mdwrk/markdown-renderer-react": "^1.1.1",
-    "@mdwrk/ui-tokens": "^1.2.1",
+    "@mdwrk/core-demo-react": "^1.0.1",
+    "@mdwrk/core-demo-themes": "^1.0.1",
+    "@mdwrk/markdown-editor-react": "^1.1.9",
+    "@mdwrk/markdown-renderer-react": "^1.1.8",
+    "@mdwrk/ui-tokens": "^1.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

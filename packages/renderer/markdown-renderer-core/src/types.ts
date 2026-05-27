@@ -121,6 +121,7 @@ export type MarkdownRendererClassNames = Readonly<{
   paragraph: string;
   strong: string;
   emphasis: string;
+  underline: string;
   strikethrough: string;
   superscript: string;
   subscript: string;
@@ -153,7 +154,9 @@ export type MarkdownRendererClassNames = Readonly<{
   tableColumn: string;
   codeBlock: string;
   codeHeader: string;
+  codeLanguage: string;
   codeSurface: string;
+  codeContent: string;
 }>;
 
 export type MarkdownHtmlHandlingMode = 'escape' | 'sanitize' | 'allow-trusted';

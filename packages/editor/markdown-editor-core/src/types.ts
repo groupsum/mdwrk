@@ -27,6 +27,7 @@ export interface MarkdownEditorHistoryState {
 export type MarkdownEditorBuiltinCommandId =
   | "bold"
   | "italic"
+  | "underline"
   | "strikethrough"
   | "bullet-list"
   | "task-list"
@@ -62,6 +63,7 @@ export interface MarkdownEditorEditResult {
 export interface MarkdownEditorSelectionFormatState {
   readonly bold: boolean;
   readonly italic: boolean;
+  readonly underline: boolean;
   readonly strikethrough: boolean;
   readonly bulletList: boolean;
   readonly taskList: boolean;

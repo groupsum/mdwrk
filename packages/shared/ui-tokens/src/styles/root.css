@@ -10,8 +10,17 @@
   --fg-secondary: #333333;
   --fg-muted: #666666;
   --accent: #ff3e00;
+  --code-inline-bg: var(--bg-inset);
+  --code-inline-fg: var(--fg-secondary);
+  --code-block-bg: var(--bg-inset);
+  --code-block-fg: var(--fg-primary);
+  --code-header-bg: color-mix(in srgb, var(--bg-inset) 88%, var(--bg-panel) 12%);
+  --code-header-fg: var(--fg-muted);
+  --code-language-bg: color-mix(in srgb, var(--accent) 11%, var(--bg-panel) 89%);
+  --code-language-fg: color-mix(in srgb, var(--accent) 88%, var(--fg-primary) 12%);
   --table-header-bg: var(--bg-inset);
   --table-header-fg: var(--fg-primary);
+  --table-header-border-color: var(--border-color);
   --table-row-primary-bg: var(--bg-panel);
   --table-row-secondary-bg: var(--bg-inset);
   --editor-padding: calc(24px * var(--ui-scale));
@@ -25,7 +34,7 @@
   --pdf-content-font-size: 10.5pt;
   --pdf-content-line-height: 1.5;
   --pdf-heading-keep-with-next: avoid;
-  --line-number-gutter-width: calc(30px * var(--ui-scale));
+  --line-number-gutter-width: calc(26px * var(--ui-scale));
   --editor-content-width: 78ch;
   --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', Menlo, monospace;

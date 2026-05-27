@@ -20,8 +20,8 @@
 }
 
 .mw-editor-gutter {
-  width: var(--mwe-gutter-width, 48px);
-  flex: 0 0 var(--mwe-gutter-width, 48px);
+  width: var(--mwe-gutter-width, 42px);
+  flex: 0 0 var(--mwe-gutter-width, 42px);
   background: var(--mwe-bg-gutter, var(--bg-inset, #0d1117));
   border-right: 1px solid var(--mwe-border-color, var(--border-color, rgba(255,255,255,0.12)));
   color: var(--mwe-fg-muted, var(--fg-muted, #94a3b8));

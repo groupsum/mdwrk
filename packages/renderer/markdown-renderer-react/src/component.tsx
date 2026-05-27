@@ -1,5 +1,5 @@
 import React from "react";
-import { renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
+import { enhanceRenderedCodeBlocks, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
 import { createMarkdownRendererThemeStyle } from "./theme.js";
 import type { MarkdownRendererProps } from "./types.js";
 
@@ -33,14 +33,14 @@ export function MarkdownRenderer({
 }: MarkdownRendererProps): React.JSX.Element {
   const rendererStyle = themeStyle ?? createMarkdownRendererThemeStyle();
   const html = React.useMemo(
-    () => renderMarkdownToHtmlSync(markdown, {
+    () => enhanceRenderedCodeBlocks(renderMarkdownToHtmlSync(markdown, {
       htmlHandling,
       profile,
       extensions,
       sourcePositionAttributes,
       preserveSoftLineBreaks,
       getLinkAttributes,
-    }),
+    })),
     [markdown, htmlHandling, profile, extensions, sourcePositionAttributes, preserveSoftLineBreaks, getLinkAttributes],
   );
 

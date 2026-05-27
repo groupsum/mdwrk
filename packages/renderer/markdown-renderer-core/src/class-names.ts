@@ -11,6 +11,7 @@ const DEFAULT_MARKDOWN_RENDERER_CLASS_NAME_LITERAL = {
   paragraph: "md-p",
   strong: "md-strong",
   emphasis: "md-em",
+  underline: "md-underline",
   strikethrough: "md-strikethrough",
   superscript: "md-superscript",
   subscript: "md-subscript",
@@ -43,7 +44,9 @@ const DEFAULT_MARKDOWN_RENDERER_CLASS_NAME_LITERAL = {
   tableColumn: "md-table-column",
   codeBlock: "md-code-block",
   codeHeader: "md-code-header",
-  codeSurface: "md-code-surface"
+  codeLanguage: "md-code-language",
+  codeSurface: "md-code-surface",
+  codeContent: "md-code-content"
 } as const satisfies MarkdownRendererClassNames;
 
 export const DEFAULT_MARKDOWN_RENDERER_CLASS_NAMES: MarkdownRendererClassNames = Object.freeze(

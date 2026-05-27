@@ -1,0 +1,51 @@
+{
+  "name": "@mdwrk/core-demo-react",
+  "version": "1.0.1",
+  "type": "module",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "files": [
+    "dist",
+    "src/styles",
+    "README.md"
+  ],
+  "description": "Reusable React UI components for MdWrk example applications.",
+  "sideEffects": [
+    "./src/styles/*.css"
+  ],
+  "keywords": [
+    "markdown-workspace",
+    "demo",
+    "react"
+  ],
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "npm run typecheck",
+    "prepack": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "import": "./dist/version.js"
+    },
+    "./styles/theme-selector.css": "./src/styles/theme-selector.css"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "author": "Jacob Stewart <jacob@swarmauri.com>",
+  "homepage": "https://mdwrk.com"
+}

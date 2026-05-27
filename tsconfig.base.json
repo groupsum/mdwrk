@@ -43,6 +43,18 @@
                                           "@mdwrk/ui-tokens/*":  [
                                                                      "packages/shared/ui-tokens/dist/*"
                                                                  ],
+                                          "@mdwrk/core-demo-themes":  [
+                                                                          "packages/shared/core-demo-themes/dist/index.d.ts"
+                                                                      ],
+                                          "@mdwrk/core-demo-themes/*":  [
+                                                                            "packages/shared/core-demo-themes/dist/*"
+                                                                        ],
+                                          "@mdwrk/core-demo-react":  [
+                                                                         "packages/shared/core-demo-react/dist/index.d.ts"
+                                                                     ],
+                                          "@mdwrk/core-demo-react/*":  [
+                                                                           "packages/shared/core-demo-react/dist/*"
+                                                                       ],
                                           "@mdwrk/icons":  [
                                                                "packages/shared/icons/dist/index.d.ts"
                                                            ],

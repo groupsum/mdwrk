@@ -32,7 +32,7 @@ export function createMarkdownEditorThemeStyle(
     ["--mwe-editor-padding" as any]: variables.padding ?? "var(--editor-padding, 16px)",
     ["--mwe-line-height" as any]: variables.lineHeight ?? "var(--editor-line-rhythm, var(--editor-line-height, 1.5rem))",
     ["--mwe-font-size" as any]: variables.fontSize ?? "calc(13px * var(--ui-scale, 1))",
-    ["--mwe-gutter-width" as any]: variables.gutterWidth ?? "var(--line-number-gutter-width, 48px)",
+    ["--mwe-gutter-width" as any]: variables.gutterWidth ?? "var(--line-number-gutter-width, 42px)",
   };
 }
 
@@ -49,7 +49,7 @@ export function createMarkdownEditorThemeStyleFromThemeTokens(
     ...createMarkdownEditorThemeVariablesFromThemeTokens(overrides),
     ["--mwe-line-height" as any]: "var(--editor-line-rhythm, var(--editor-line-height, 1.5rem))",
     ["--mwe-font-size" as any]: "calc(13px * var(--ui-scale, 1))",
-    ["--mwe-gutter-width" as any]: "var(--line-number-gutter-width, 48px)",
+    ["--mwe-gutter-width" as any]: "var(--line-number-gutter-width, 42px)",
   };
 }
 

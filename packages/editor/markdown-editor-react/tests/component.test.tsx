@@ -106,4 +106,22 @@ describe("MarkdownSourceEditor", () => {
     expect(editor.selectionStart).toBe(12);
     expect(editor.selectionEnd).toBe(22);
   });
+
+  it("focuses the appended footnote definition when the footnote command is executed", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
+    render(<MarkdownSourceEditor ref={ref} defaultValue="Alpha" />);
+    const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
+    editor.focus();
+    editor.setSelectionRange(5, 5);
+    ref.current?.setSelection({ start: 5, end: 5 });
+
+    await act(async () => {
+      ref.current?.executeCommand("footnote");
+    });
+
+    expect(document.activeElement).toBe(editor);
+    expect(editor.value).toBe("Alpha[^1]\n\n[^1]: ");
+    expect(editor.selectionStart).toBe(17);
+    expect(editor.selectionEnd).toBe(17);
+  });
 });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ActionButton, DropdownSelector, TogglePill } from '@mdwrk/core-demo-react';
 import {
   MarkdownSourceEditor,
   type MarkdownSourceEditorHandle,
@@ -6,16 +7,16 @@ import {
 } from '@mdwrk/markdown-editor-react';
 import { MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import { LineHeightRail } from '@mdwrk/extension-theme-studio';
-import { listThemePresets } from '@mdwrk/theme-presets/registry';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
+import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
 import './styles.css';
 
-const THEME_PRESETS = listThemePresets();
-const DEFAULT_THEME_ID = THEME_PRESETS[0]?.metadata.id ?? 'default';
+const THEME_PRESETS = DEMO_THEME_PRESETS;
+const DEFAULT_THEME_ID = DEFAULT_DEMO_THEME_ID;
 
 const SAMPLE_DOCUMENTS = {
-  release: `# Release Brief\n\n## Summary\n\nShip the demo quartet as Docker-served workspaces.\n\n## Checks\n\n- [x] editor package wired\n- [x] preview package wired\n- [x] edit-in-renderer wired\n- [ ] screenshot sweep\n\n## Risks\n\n1. Docker Desktop access can still block deployment.\n2. Theme drift should stay visible in the inspector.\n\n> Keep authoring surface primary and avoid hiding the raw markdown model.\n`,
-  spec: `# Theme Contract Notes\n\n## Goals\n\nThe editor demo should exercise package-owned typography, spacing, and inspector behaviors.\n\n### Modes\n\n- Focused authoring\n- Outline review\n- Keyboard-heavy command flow\n\n\`\`\`ts\nexport const demoSurface = {\n  package: 'editor',\n  docker: true,\n};\n\`\`\`\n`,
+  release: `# Release Brief\n\n## Summary\n\nShip the demo quartet as Docker-served workspaces with **bold**, _italic_, __underline__, ~~strikethrough~~, X^2^, and H~2~O coverage.\n\n## Checks\n\n- [x] editor package wired\n- [x] preview package wired\n- [x] edit-in-renderer wired\n- [ ] screenshot sweep\n\n## Risks\n\n1. Docker Desktop access can still block deployment.\n2. Theme drift should stay visible in the inspector.\n\n### H3 checkpoint\n\n#### H4 checkpoint\n\n##### H5 checkpoint\n\n###### H6 checkpoint\n\n| Surface | Focus | Status |\n| --- | --- | --- |\n| Renderer | tables with header tokens | ready |\n| Editor | source-first authoring | ready |\n\n> Keep selector rows and command rails visually separate.\n\n\`\`\`ts\nexport const releaseDemo = {\n  shipped: false,\n};\n\`\`\`\n\n\`\`\`\nplain fenced code\nwith no language\n\`\`\`\n\n> Keep authoring surface primary and avoid hiding the raw markdown model.\n`,
+  spec: `# Theme Contract Notes\n\n## Goals\n\nThe editor demo should exercise package-owned typography, spacing, and inspector behaviors.\n\n### Modes\n\n- Focused authoring\n- Outline review\n- Keyboard-heavy command flow\n\nInline emphasis: **bold**, _italic_, __underline__, ~~strikethrough~~, X^2^, H~2~O.\n\nTerm\n: Definition lists should stay structurally obvious.\n\nFootnote note.[^1]\n\n[^1]: Footnotes should keep their backlink on the same line.\n\n> Code, tables, and quotes must all respect the card container.\n\n\`\`\`ts\nexport const demoSurface = {\n  package: 'editor',\n  docker: true,\n};\n\`\`\`\n\n\`\`\`\nplain code\nwithout syntax metadata\n\`\`\`\n`,
 } as const;
 
 type SampleId = keyof typeof SAMPLE_DOCUMENTS;
@@ -62,6 +63,10 @@ export default function App(): React.JSX.Element {
     () => THEME_PRESETS.find((entry) => entry.metadata.id === themeId) ?? THEME_PRESETS[0],
     [themeId],
   );
+  const shellTheme = React.useMemo(
+    () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
+    [themeId],
+  );
   const scopedSelector = `.demo-shell[data-theme="${themeId}"]`;
   const themeCss = React.useMemo(
     () => createPreviewStyleSheet(preset?.tokens ?? {}, {
@@ -82,7 +87,7 @@ export default function App(): React.JSX.Element {
   }, []);
 
   return (
-    <main className="demo-shell editor-demo-shell" data-theme={themeId}>
+    <main className="demo-shell editor-demo-shell" data-theme={themeId} style={shellTheme.style}>
       <style>{themeCss}</style>
       <section className="hero-card">
         <div>
@@ -93,21 +98,21 @@ export default function App(): React.JSX.Element {
           </p>
         </div>
         <div className="hero-controls">
-          <label>
-            <span>Theme</span>
-            <select value={themeId} onChange={(event) => setThemeId(event.target.value)}>
-              {THEME_PRESETS.map((entry) => (
-                <option key={entry.metadata.id} value={entry.metadata.id}>{entry.metadata.name}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>Sample</span>
-            <select value={sampleId} onChange={(event) => loadSample(event.target.value as SampleId)}>
-              <option value="release">Release brief</option>
-              <option value="spec">Theme contract note</option>
-            </select>
-          </label>
+          <DropdownSelector
+            label="Theme"
+            value={themeId}
+            onChange={setThemeId}
+            options={THEME_PRESETS.map((entry) => ({ id: entry.metadata.id, label: entry.metadata.name }))}
+          />
+          <DropdownSelector
+            label="Sample"
+            value={sampleId}
+            onChange={(nextValue) => loadSample(nextValue as SampleId)}
+            options={[
+              { id: 'release', label: 'Release brief' },
+              { id: 'spec', label: 'Theme contract note' },
+            ]}
+          />
         </div>
       </section>
 
@@ -115,7 +120,10 @@ export default function App(): React.JSX.Element {
         {[
           ['Bold', 'bold'],
           ['Italic', 'italic'],
+          ['Underline', 'underline'],
           ['Strike', 'strikethrough'],
+          ['Sup', 'superscript'],
+          ['Sub', 'subscript'],
           ['Bullet', 'bullet-list'],
           ['Task', 'task-list'],
           ['Indent', 'indent'],
@@ -123,26 +131,22 @@ export default function App(): React.JSX.Element {
           ['Undo', 'undo'],
           ['Redo', 'redo'],
         ].map(([label, command]) => (
-          <button key={command} type="button" onClick={() => editorRef.current?.executeCommand(command as never)}>
-            {label}
-          </button>
+          <ActionButton
+            key={command}
+            label={label}
+            onClick={() => editorRef.current?.executeCommand(command as never)}
+          />
         ))}
-        <label className="toggle">
-          <input
-            type="checkbox"
-            checked={showLineNumbers}
-            onChange={(event) => setShowLineNumbers(event.target.checked)}
-          />
-          <span>Line numbers</span>
-        </label>
-        <label className="toggle">
-          <input
-            type="checkbox"
-            checked={textWrap}
-            onChange={(event) => setTextWrap(event.target.checked)}
-          />
-          <span>Soft wrap</span>
-        </label>
+        <TogglePill
+          label="Line numbers"
+          checked={showLineNumbers}
+          onChange={setShowLineNumbers}
+        />
+        <TogglePill
+          label="Soft wrap"
+          checked={textWrap}
+          onChange={setTextWrap}
+        />
       </section>
 
       <section className="demo-grid">

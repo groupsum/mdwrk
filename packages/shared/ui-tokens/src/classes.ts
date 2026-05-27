@@ -9,6 +9,7 @@ export const MARKDOWN_WORKSPACE_THEME_CLASS_NAMES = [
   "md-p",
   "md-strong",
   "md-em",
+  "md-underline",
   "md-hr",
   "md-blockquote",
   "md-ul",
@@ -29,7 +30,9 @@ export const MARKDOWN_WORKSPACE_THEME_CLASS_NAMES = [
   "md-table-column",
   "md-code-block",
   "md-code-header",
+  "md-code-language",
   "md-code-surface",
+  "md-code-content",
   "mw-editor",
   "mw-editor-layout",
   "mw-editor-gutter",
@@ -60,6 +63,7 @@ export const MARKDOWN_WORKSPACE_THEME_CLASSES = [
   { name: "md-p", selector: ".md-p", scope: "renderer", description: "Paragraph helper class.", stability: "provisional" },
   { name: "md-strong", selector: ".md-strong", scope: "renderer", description: "Strong emphasis helper class.", stability: "provisional" },
   { name: "md-em", selector: ".md-em", scope: "renderer", description: "Emphasis helper class.", stability: "provisional" },
+  { name: "md-underline", selector: ".md-underline", scope: "renderer", description: "Underline helper class.", stability: "provisional" },
   { name: "md-hr", selector: ".md-hr", scope: "renderer", description: "Horizontal rule helper class.", stability: "provisional" },
   { name: "md-blockquote", selector: ".md-blockquote", scope: "renderer", description: "Blockquote helper class.", stability: "provisional" },
   { name: "md-ul", selector: ".md-ul", scope: "renderer", description: "Unordered-list helper class.", stability: "provisional" },
@@ -80,7 +84,9 @@ export const MARKDOWN_WORKSPACE_THEME_CLASSES = [
   { name: "md-table-column", selector: ".md-table-column", scope: "renderer", description: "Portable markdown table column class.", stability: "provisional" },
   { name: "md-code-block", selector: ".md-code-block", scope: "renderer", description: "Portable fenced code block root class.", stability: "stable" },
   { name: "md-code-header", selector: ".md-code-header", scope: "renderer", description: "Portable fenced code header class.", stability: "stable" },
+  { name: "md-code-language", selector: ".md-code-language", scope: "renderer", description: "Portable fenced code language pill class.", stability: "stable" },
   { name: "md-code-surface", selector: ".md-code-surface", scope: "renderer", description: "Portable fenced code surface class.", stability: "stable" },
+  { name: "md-code-content", selector: ".md-code-content", scope: "renderer", description: "Portable fenced code content class applied to rendered code nodes.", stability: "stable" },
   { name: "mw-editor", selector: ".mw-editor", scope: "editor", description: "Portable markdown source editor root class.", stability: "stable" },
   { name: "mw-editor-layout", selector: ".mw-editor-layout", scope: "editor", description: "Portable markdown source editor layout class.", stability: "stable" },
   { name: "mw-editor-gutter", selector: ".mw-editor-gutter", scope: "editor", description: "Portable markdown source editor gutter class.", stability: "stable" },
@@ -103,7 +109,7 @@ export interface RendererHelperClassDefinition extends ThemeClassDefinition {
 function resolveGroup(name: MarkdownWorkspaceThemeClassName): RendererHelperClassDefinition["group"] {
   if (name === "markdown-body") return "scope";
   if (name.startsWith("md-h")) return "heading";
-  if (["md-p", "md-strong", "md-em", "md-hr", "md-blockquote", "md-link"].includes(name)) return "text";
+  if (["md-p", "md-strong", "md-em", "md-underline", "md-hr", "md-blockquote", "md-link"].includes(name)) return "text";
   if (["md-ul", "md-ol", "md-li", "md-task-list-item"].includes(name)) return "list";
   if (["md-checkbox"].includes(name)) return "form";
   if (name.startsWith("md-table")) return "table";
