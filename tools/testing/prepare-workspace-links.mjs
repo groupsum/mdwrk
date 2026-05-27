@@ -9,6 +9,7 @@ const workspacePackages = new Map([
   ['@mdwrk/extension-manifest', '../mdwrk-studio/packages/contracts/extension-manifest'],
   ['@mdwrk/theme-contract', '../mdwrk-studio/packages/contracts/theme-contract'],
   ['@mdwrk/i18n', '../mdwrk-studio/packages/shared/i18n'],
+  ['@mdwrk/studio-ui-tokens', '../mdwrk-studio/packages/shared/studio-ui-tokens'],
   ['@mdwrk/markdown-editor-core', 'packages/editor/markdown-editor-core'],
   ['@mdwrk/markdown-editor-react', 'packages/editor/markdown-editor-react'],
   ['@mdwrk/markdown-edit-in-renderer-react', 'packages/editor/markdown-edit-in-renderer-react'],

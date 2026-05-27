@@ -55,7 +55,7 @@ packages/renderer/markdown-renderer-react/src/styles/default.css
 
 These tokens are generic and should be valid in the MdWrk workspace, preview pane, exported HTML, docs surfaces, and any renderer consumer.
 
-### Core UI Tokens
+### Package-owned core UI tokens
 
 ```css
 --ui-scale
@@ -65,20 +65,22 @@ These tokens are generic and should be valid in the MdWrk workspace, preview pan
 --fg-primary
 --fg-secondary
 --fg-muted
---bg-app
 --bg-panel
 --bg-inset
 --border-color
 --border-width
 --accent
+```
+
+### Studio-owned shell and layout tokens
+
+These belong in `mdwrk-studio`, not in `@mdwrk/ui-tokens`.
+
+```css
+--bg-app
 --status-ok
 --status-warn
 --status-error
-```
-
-### Workspace and Layout Tokens
-
-```css
 --app-gap
 --header-height
 --status-height
@@ -603,7 +605,8 @@ src/styles/index.ts      imports all style layers
 src/site.css             site shell, navbar, footer, route layout
 src/markdown.css         .markdown-body and optional .lander-markdown bridge
 @mdwrk/lander-theme      reusable lander tokens and classes
-@mdwrk/ui-tokens         plain Markdown and app/workspace token base
+@mdwrk/ui-tokens         plain Markdown and package-owned renderer/editor token base
+@mdwrk/theme-contract    combined Studio workspace contract
 ```
 
 Site CSS should prefer package tokens over raw values:

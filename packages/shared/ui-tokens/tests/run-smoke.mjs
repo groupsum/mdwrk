@@ -70,15 +70,7 @@ const requiredPhase9Tokens = [
   "markdown-line-height",
   "markdown-heading-line-height",
   "line-number-gutter-width",
-  "mobile-rail-expanded-width",
-  "mobile-expandable-rail-width",
-  "mobile-action-rail-flow",
-  "mobile-portrait-action-rail-flow",
-  "mobile-landscape-action-rail-flow",
-  "toolbar-footer-gap",
-  "toolbar-footer-offset",
   "editor-content-width",
-  "lander-theme-compatible",
 ];
 for (const tokenName of requiredPhase9Tokens) {
   assert.ok(MARKDOWN_WORKSPACE_UI_TOKEN_NAMES.includes(tokenName));
@@ -90,18 +82,10 @@ const alignmentTheme = createMarkdownWorkspaceThemeTokenMap({
   "markdown-line-height": "1.75rem",
   "markdown-heading-line-height": "1.2",
   "line-number-gutter-width": "56px",
-  "mobile-rail-expanded-width": "100vw",
-  "mobile-expandable-rail-width": "100vw",
-  "mobile-action-rail-flow": "row",
-  "mobile-portrait-action-rail-flow": "row-reverse",
-  "mobile-landscape-action-rail-flow": "column",
-  "toolbar-footer-gap": "8px",
-  "toolbar-footer-offset": "0px",
   "editor-content-width": "82ch",
-  "lander-theme-compatible": "1",
 });
 assert.equal(alignmentTheme["editor-line-height"], "1.75rem");
-assert.equal(alignmentTheme["mobile-portrait-action-rail-flow"], "row-reverse");
+assert.equal(alignmentTheme["editor-content-width"], "82ch");
 
 const alignmentRendererBridge = createRendererThemeBridgeVariableRecord(alignmentTheme);
 assert.equal(alignmentRendererBridge["--mw-line-height"], "1.75rem");

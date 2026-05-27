@@ -6,19 +6,19 @@ This guide documents the naming rules for the shared styling surface used by Mar
 
 ## Token naming rules
 
-### Rule 1 — all theme tokens are kebab-case
+### Rule 1 - all theme tokens are kebab-case
 Examples:
-- `bg-app`
+- `bg-panel`
 - `fg-primary`
 - `table-header-bg`
 - `font-mono`
 
-### Rule 2 — the runtime CSS custom property form is `--<token-name>`
+### Rule 2 - the runtime CSS custom property form is `--<token-name>`
 Examples:
-- token `bg-app` → CSS variable `--bg-app`
-- token `font-ui` → CSS variable `--font-ui`
+- token `bg-panel` -> CSS variable `--bg-panel`
+- token `font-ui` -> CSS variable `--font-ui`
 
-### Rule 3 — tokens describe semantics, not implementation details
+### Rule 3 - tokens describe semantics, not implementation details
 Preferred:
 - `bg-panel`
 - `fg-muted`
@@ -62,5 +62,6 @@ These helper classes are exported by `mdwrk/ui-tokens` so renderer packages and 
 
 ## Package sources of truth
 
-- normative contract: `mdwrk/theme-contract`
-- implemented CSS and helper classes: `mdwrk/ui-tokens`
+- normative workspace contract: `mdwrk/theme-contract`
+- studio-owned shell tokens: `@mdwrk/studio-ui-tokens`
+- implemented package CSS and helper classes: `@mdwrk/ui-tokens`

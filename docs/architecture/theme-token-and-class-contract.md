@@ -35,8 +35,7 @@ The token contract is now interpreted in three ownership bands:
 - `mdwrk-studio` owns application shell and chassis token implementation.
 - `mdwrk-pages` implements the shared markdown subset and may extend it with Pages-only tokens.
 
-The token contract publishes canonical names such as:
-- `bg-app`
+The combined workspace contract publishes canonical names such as:
 - `bg-panel`
 - `bg-inset`
 - `border-color`
@@ -52,8 +51,6 @@ The token contract publishes canonical names such as:
 - `line-number-gutter-width`
 - `markdown-line-height`
 - `markdown-heading-line-height`
-- `mobile-rail-expanded-width`
-- `mobile-expandable-rail-width`
 
 ### Package-owned MdWrk token subset
 
@@ -91,7 +88,7 @@ These are the tokens that portable `mdwrk` packages are allowed to require direc
 
 ### Studio-owned shell token subset
 
-These tokens remain in the shared contract for compatibility, but the implementation responsibility belongs to `mdwrk-studio`:
+These tokens are no longer declared in `@mdwrk/ui-tokens`. They now live in the studio-owned package `@mdwrk/studio-ui-tokens` and are re-composed into the full workspace contract through `@mdwrk/theme-contract`:
 
 - `header-height`
 - `rail-width`
@@ -192,7 +189,7 @@ Examples:
 - `--mwe-line-height`
 - `--mwe-gutter-width`
 
-These bridge definitions are exported from `mdwrk/theme-contract/bridges` and materialized through `mdwrk/ui-tokens/theme-map`.
+These bridge definitions are exported from `mdwrk/theme-contract/bridges`. Package-owned bridge helpers are materialized through `@mdwrk/ui-tokens/theme-map`, while the full workspace host helpers are materialized through `@mdwrk/theme-contract/theme-map`.
 
 ## Derivation in the current repo
 
@@ -222,7 +219,8 @@ Reusable packages target the shared contract directly and remain independent of 
 A third-party application can implement the same tokens/classes with its own styling system and either:
 - emit host token variables
 - emit renderer/editor bridge variables directly
-- generate CSS blocks from `mdwrk/ui-tokens/theme-map`
+- generate CSS blocks from `@mdwrk/ui-tokens/theme-map` for package-owned markdown surfaces
+- generate CSS blocks from `@mdwrk/theme-contract/theme-map` for the full Studio workspace contract
 
 ## Contract rules
 

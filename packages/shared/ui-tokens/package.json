@@ -1,5 +1,5 @@
 {
-  "version": "1.2.8",
+  "version": "1.2.9",
   "type": "module",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -14,7 +14,7 @@
     "README.md"
   ],
   "name": "@mdwrk/ui-tokens",
-  "description": "Shared CSS tokens, markdown class names, and theme mapping helpers for MdWrk packages and applications.",
+  "description": "Shared package-owned CSS tokens, markdown class names, and theme mapping helpers for MdWrk packages.",
   "sideEffects": [
     "./src/styles/*.css"
   ],

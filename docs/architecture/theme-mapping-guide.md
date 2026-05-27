@@ -11,8 +11,7 @@ Renderer and editor packages then inherit those values through the standardized 
 
 ## First-party mapping
 
-The Markdown Workspace client already uses CSS custom properties such as:
-- `--bg-app`
+The markdown/editor/renderer package surface uses CSS custom properties such as:
 - `--bg-panel`
 - `--bg-inset`
 - `--fg-primary`
@@ -23,7 +22,7 @@ The Markdown Workspace client already uses CSS custom properties such as:
 - `--font-mono`
 - `--editor-padding`
 
-Because those names are exported through `mdwrk/theme-contract` and `mdwrk/ui-tokens`, first-party apps can continue overriding the same variables in theme-specific stylesheets.
+Those package-owned names are exported through `@mdwrk/ui-tokens`. Studio shell variables such as `--bg-app` live in `mdwrk-studio` through the studio-owned token package and `@mdwrk/theme-contract`.
 
 ## Renderer and editor bridge mapping
 
@@ -71,7 +70,6 @@ Host-token example:
 
 ```css
 .third-party-theme {
-  --bg-app: #101418;
   --bg-panel: #17202b;
   --bg-inset: #1f2937;
   --fg-primary: #f5f7fa;
@@ -94,7 +92,6 @@ import {
 
 const hostCss = renderThemeCssVariables(
   {
-    'bg-app': '#101418',
     'bg-panel': '#17202b',
     accent: '#5eead4',
   },

@@ -3,7 +3,7 @@ import { createMarkdownEditorThemeStyle } from '@mdwrk/markdown-editor-react';
 import { createMarkdownRendererThemeStyle } from '@mdwrk/markdown-renderer-react';
 import {
   createThemeCssCustomPropertyRecord,
-  type MarkdownWorkspaceThemeTokenMap,
+  type MarkdownPackageThemeTokenMap,
 } from '@mdwrk/ui-tokens';
 
 export type DemoThemeId = 'default-light' | 'default-dark' | 'paper';
@@ -12,24 +12,26 @@ type DemoThemeDefinition = {
   readonly id: DemoThemeId;
   readonly label: string;
   readonly description: string;
-  readonly tokens: Partial<MarkdownWorkspaceThemeTokenMap>;
+  readonly appBackground: string;
+  readonly tokens: Partial<MarkdownPackageThemeTokenMap>;
   readonly shell: React.CSSProperties;
   readonly editor: React.CSSProperties;
   readonly renderer: React.CSSProperties;
 };
 
 function createDemoShellStyle(
-  tokens: Partial<MarkdownWorkspaceThemeTokenMap>,
+  tokens: Partial<MarkdownPackageThemeTokenMap>,
+  appBackground: string,
   colorScheme: 'light' | 'dark',
 ): React.CSSProperties {
   return {
     ...createThemeCssCustomPropertyRecord(tokens),
+    '--bg-app': appBackground,
     colorScheme,
   } as React.CSSProperties;
 }
 
-const LIGHT_TOKENS: Partial<MarkdownWorkspaceThemeTokenMap> = {
-  'bg-app': '#f3f6fb',
+const LIGHT_TOKENS: Partial<MarkdownPackageThemeTokenMap> = {
   'bg-panel': '#ffffff',
   'bg-inset': '#f8fafc',
   'fg-primary': '#0f172a',
@@ -60,8 +62,7 @@ const LIGHT_TOKENS: Partial<MarkdownWorkspaceThemeTokenMap> = {
   'font-head': "'Inter', sans-serif",
 };
 
-const DARK_TOKENS: Partial<MarkdownWorkspaceThemeTokenMap> = {
-  'bg-app': '#050816',
+const DARK_TOKENS: Partial<MarkdownPackageThemeTokenMap> = {
   'bg-panel': '#0f172a',
   'bg-inset': '#111c35',
   'fg-primary': '#eff6ff',
@@ -92,8 +93,7 @@ const DARK_TOKENS: Partial<MarkdownWorkspaceThemeTokenMap> = {
   'font-head': "'Inter', sans-serif",
 };
 
-const PAPER_TOKENS: Partial<MarkdownWorkspaceThemeTokenMap> = {
-  'bg-app': '#f7f4ec',
+const PAPER_TOKENS: Partial<MarkdownPackageThemeTokenMap> = {
   'bg-panel': '#fffdf8',
   'bg-inset': '#f0eadd',
   'fg-primary': '#2a2118',
@@ -129,8 +129,9 @@ const DEMO_THEME_DEFINITIONS: readonly DemoThemeDefinition[] = [
     id: 'default-light',
     label: 'Default light',
     description: 'Light baseline preset for editor and renderer package demos.',
+    appBackground: '#f3f6fb',
     tokens: LIGHT_TOKENS,
-    shell: createDemoShellStyle(LIGHT_TOKENS, 'light'),
+    shell: createDemoShellStyle(LIGHT_TOKENS, '#f3f6fb', 'light'),
     editor: createMarkdownEditorThemeStyle({
       background: '#ffffff',
       foreground: '#0f172a',
@@ -163,8 +164,9 @@ const DEMO_THEME_DEFINITIONS: readonly DemoThemeDefinition[] = [
     id: 'default-dark',
     label: 'Default dark',
     description: 'High-contrast dark preset for package demos and specimen review.',
+    appBackground: '#050816',
     tokens: DARK_TOKENS,
-    shell: createDemoShellStyle(DARK_TOKENS, 'dark'),
+    shell: createDemoShellStyle(DARK_TOKENS, '#050816', 'dark'),
     editor: createMarkdownEditorThemeStyle({
       background: '#050816',
       foreground: '#eff6ff',
@@ -197,8 +199,9 @@ const DEMO_THEME_DEFINITIONS: readonly DemoThemeDefinition[] = [
     id: 'paper',
     label: 'Paper',
     description: 'Paper-like reading preset for export review and light editorial inspection.',
+    appBackground: '#f7f4ec',
     tokens: PAPER_TOKENS,
-    shell: createDemoShellStyle(PAPER_TOKENS, 'light'),
+    shell: createDemoShellStyle(PAPER_TOKENS, '#f7f4ec', 'light'),
     editor: createMarkdownEditorThemeStyle({
       background: '#fffdf8',
       foreground: '#2a2118',

@@ -1,74 +1,3 @@
-export const MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES = [
-  "ui-scale",
-  "header-height",
-  "rail-width",
-  "rail-height",
-  "sidebar-width",
-  "status-height",
-  "tab-height",
-  "panel-header-height",
-  "rail-btn-size",
-  "bg-app",
-  "bg-panel",
-  "bg-inset",
-  "border-color",
-  "border-width",
-  "fg-primary",
-  "fg-secondary",
-  "fg-muted",
-  "accent",
-  "code-inline-bg",
-  "code-inline-fg",
-  "code-block-bg",
-  "code-block-fg",
-  "code-header-bg",
-  "code-header-fg",
-  "code-language-bg",
-  "code-language-fg",
-  "table-header-bg",
-  "table-header-fg",
-  "table-header-border-color",
-  "table-row-primary-bg",
-  "table-row-secondary-bg",
-  "status-ok",
-  "status-warn",
-  "status-error",
-  "app-gap",
-  "texture-opacity",
-  "editor-padding",
-  "editor-line-height",
-  "editor-line-rhythm",
-  "markdown-line-height",
-  "markdown-heading-line-height",
-  "pdf-page-size",
-  "pdf-page-margin-block",
-  "pdf-page-margin-inline",
-  "pdf-content-font-size",
-  "pdf-content-line-height",
-  "pdf-heading-keep-with-next",
-  "line-number-gutter-width",
-  "mobile-rail-expanded-width",
-  "mobile-expandable-rail-width",
-  "mobile-action-rail-flow",
-  "mobile-portrait-action-rail-flow",
-  "mobile-landscape-action-rail-flow",
-  "toolbar-footer-gap",
-  "toolbar-footer-offset",
-  "editor-content-width",
-  "lander-theme-compatible",
-  "file-indent-base",
-  "file-indent-unit",
-  "c-explorer-hover",
-  "c-explorer-selected",
-  "c-explorer-selected-text",
-  "c-explorer-drag-bg",
-  "font-ui",
-  "font-mono",
-  "font-head",
-] as const;
-
-export type MarkdownWorkspaceThemeTokenName = typeof MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES[number];
-
 export const MARKDOWN_PACKAGE_THEME_TOKEN_NAMES = [
   "ui-scale",
   "bg-panel",
@@ -108,42 +37,9 @@ export const MARKDOWN_PACKAGE_THEME_TOKEN_NAMES = [
   "font-ui",
   "font-mono",
   "font-head",
-] as const satisfies readonly MarkdownWorkspaceThemeTokenName[];
+] as const;
 
 export type MarkdownPackageThemeTokenName = typeof MARKDOWN_PACKAGE_THEME_TOKEN_NAMES[number];
-
-export const STUDIO_SHELL_THEME_TOKEN_NAMES = [
-  "header-height",
-  "rail-width",
-  "rail-height",
-  "sidebar-width",
-  "status-height",
-  "tab-height",
-  "panel-header-height",
-  "rail-btn-size",
-  "bg-app",
-  "status-ok",
-  "status-warn",
-  "status-error",
-  "app-gap",
-  "texture-opacity",
-  "mobile-rail-expanded-width",
-  "mobile-expandable-rail-width",
-  "mobile-action-rail-flow",
-  "mobile-portrait-action-rail-flow",
-  "mobile-landscape-action-rail-flow",
-  "toolbar-footer-gap",
-  "toolbar-footer-offset",
-  "file-indent-base",
-  "file-indent-unit",
-  "c-explorer-hover",
-  "c-explorer-selected",
-  "c-explorer-selected-text",
-  "c-explorer-drag-bg",
-  "lander-theme-compatible",
-] as const satisfies readonly MarkdownWorkspaceThemeTokenName[];
-
-export type StudioShellThemeTokenName = typeof STUDIO_SHELL_THEME_TOKEN_NAMES[number];
 
 export type ThemeTokenCategory =
   | "layout"
@@ -154,7 +50,7 @@ export type ThemeTokenCategory =
   | "typography";
 
 export interface ThemeTokenDefinition {
-  readonly name: MarkdownWorkspaceThemeTokenName;
+  readonly name: MarkdownPackageThemeTokenName;
   readonly cssCustomProperty: `--${string}`;
   readonly category: ThemeTokenCategory;
   readonly description: string;
@@ -162,17 +58,8 @@ export interface ThemeTokenDefinition {
   readonly stability: "stable" | "experimental";
 }
 
-export const MARKDOWN_WORKSPACE_THEME_TOKENS = [
+export const MARKDOWN_PACKAGE_THEME_TOKENS = [
   { name: "ui-scale", cssCustomProperty: "--ui-scale", category: "layout", description: "Global UI scale multiplier.", defaultValue: "1", stability: "stable" },
-  { name: "header-height", cssCustomProperty: "--header-height", category: "layout", description: "Header height for the application shell.", defaultValue: "calc(32px * var(--ui-scale))", stability: "stable" },
-  { name: "rail-width", cssCustomProperty: "--rail-width", category: "layout", description: "Action rail width.", defaultValue: "calc(44px * var(--ui-scale))", stability: "stable" },
-  { name: "rail-height", cssCustomProperty: "--rail-height", category: "layout", description: "Action rail row height.", defaultValue: "calc(44px * var(--ui-scale))", stability: "stable" },
-  { name: "sidebar-width", cssCustomProperty: "--sidebar-width", category: "layout", description: "Sidebar width.", defaultValue: "calc(200px * var(--ui-scale))", stability: "stable" },
-  { name: "status-height", cssCustomProperty: "--status-height", category: "layout", description: "Status bar height.", defaultValue: "calc(20px * var(--ui-scale))", stability: "stable" },
-  { name: "tab-height", cssCustomProperty: "--tab-height", category: "layout", description: "Tab strip height.", defaultValue: "var(--header-height)", stability: "stable" },
-  { name: "panel-header-height", cssCustomProperty: "--panel-header-height", category: "layout", description: "Panel header height.", defaultValue: "calc(30px * var(--ui-scale))", stability: "stable" },
-  { name: "rail-btn-size", cssCustomProperty: "--rail-btn-size", category: "layout", description: "Action rail button size.", defaultValue: "calc(30px * var(--ui-scale))", stability: "stable" },
-  { name: "bg-app", cssCustomProperty: "--bg-app", category: "color", description: "Top-level application background.", defaultValue: "#c0c0c0", stability: "stable" },
   { name: "bg-panel", cssCustomProperty: "--bg-panel", category: "color", description: "Panel background.", defaultValue: "#ececec", stability: "stable" },
   { name: "bg-inset", cssCustomProperty: "--bg-inset", category: "color", description: "Inset surface background.", defaultValue: "#dcdcdc", stability: "stable" },
   { name: "border-color", cssCustomProperty: "--border-color", category: "color", description: "Primary border color.", defaultValue: "#000000", stability: "stable" },
@@ -194,11 +81,6 @@ export const MARKDOWN_WORKSPACE_THEME_TOKENS = [
   { name: "table-header-border-color", cssCustomProperty: "--table-header-border-color", category: "color", description: "Rendered Markdown table header border color.", defaultValue: "var(--border-color)", stability: "stable" },
   { name: "table-row-primary-bg", cssCustomProperty: "--table-row-primary-bg", category: "color", description: "Odd markdown table row background.", defaultValue: "var(--bg-panel)", stability: "stable" },
   { name: "table-row-secondary-bg", cssCustomProperty: "--table-row-secondary-bg", category: "color", description: "Even markdown table row background.", defaultValue: "var(--bg-inset)", stability: "stable" },
-  { name: "status-ok", cssCustomProperty: "--status-ok", category: "status", description: "Success status color.", defaultValue: "#00cc00", stability: "stable" },
-  { name: "status-warn", cssCustomProperty: "--status-warn", category: "status", description: "Warning status color.", defaultValue: "#ff8800", stability: "stable" },
-  { name: "status-error", cssCustomProperty: "--status-error", category: "status", description: "Error status color.", defaultValue: "#cc0000", stability: "stable" },
-  { name: "app-gap", cssCustomProperty: "--app-gap", category: "spacing", description: "Primary gap between shell regions.", defaultValue: "calc(4px * var(--ui-scale))", stability: "stable" },
-  { name: "texture-opacity", cssCustomProperty: "--texture-opacity", category: "interaction", description: "Texture overlay opacity.", defaultValue: "0.05", stability: "stable" },
   { name: "editor-padding", cssCustomProperty: "--editor-padding", category: "spacing", description: "Editor inner padding.", defaultValue: "calc(24px * var(--ui-scale))", stability: "stable" },
   { name: "editor-line-height", cssCustomProperty: "--editor-line-height", category: "typography", description: "Base editor line height.", defaultValue: "calc(1.5rem * var(--ui-scale))", stability: "stable" },
   { name: "editor-line-rhythm", cssCustomProperty: "--editor-line-rhythm", category: "typography", description: "Shared editor line rhythm used by the textarea and gutter.", defaultValue: "var(--editor-line-height)", stability: "stable" },
@@ -211,64 +93,36 @@ export const MARKDOWN_WORKSPACE_THEME_TOKENS = [
   { name: "pdf-content-line-height", cssCustomProperty: "--pdf-content-line-height", category: "typography", description: "Base Markdown line height for PDF output.", defaultValue: "1.5", stability: "stable" },
   { name: "pdf-heading-keep-with-next", cssCustomProperty: "--pdf-heading-keep-with-next", category: "layout", description: "Heading page-break behavior for PDF output.", defaultValue: "avoid", stability: "stable" },
   { name: "line-number-gutter-width", cssCustomProperty: "--line-number-gutter-width", category: "layout", description: "Width of the editor line-number gutter.", defaultValue: "calc(26px * var(--ui-scale))", stability: "stable" },
-  { name: "mobile-rail-expanded-width", cssCustomProperty: "--mobile-rail-expanded-width", category: "layout", description: "Expanded width for the rail on narrow mobile layouts.", defaultValue: "100vw", stability: "stable" },
-  { name: "mobile-expandable-rail-width", cssCustomProperty: "--mobile-expandable-rail-width", category: "layout", description: "Token used by responsive layouts for expandable rail width.", defaultValue: "var(--mobile-rail-expanded-width)", stability: "stable" },
-  { name: "mobile-action-rail-flow", cssCustomProperty: "--mobile-action-rail-flow", category: "layout", description: "Action rail flex direction for compact mobile layouts.", defaultValue: "row", stability: "stable" },
-  { name: "mobile-portrait-action-rail-flow", cssCustomProperty: "--mobile-portrait-action-rail-flow", category: "layout", description: "Action rail flex direction override for narrow portrait touch layouts.", defaultValue: "row-reverse", stability: "stable" },
-  { name: "mobile-landscape-action-rail-flow", cssCustomProperty: "--mobile-landscape-action-rail-flow", category: "layout", description: "Action rail flex direction override for compact landscape layouts.", defaultValue: "column", stability: "stable" },
-  { name: "toolbar-footer-gap", cssCustomProperty: "--toolbar-footer-gap", category: "spacing", description: "Shared spacing token for toolbar and footer alignment.", defaultValue: "var(--app-gap)", stability: "stable" },
-  { name: "toolbar-footer-offset", cssCustomProperty: "--toolbar-footer-offset", category: "spacing", description: "Shared offset token used to align toolbars and footer/status regions.", defaultValue: "0px", stability: "stable" },
   { name: "editor-content-width", cssCustomProperty: "--editor-content-width", category: "layout", description: "Shared editor and Markdown content width alignment token.", defaultValue: "78ch", stability: "stable" },
-  { name: "lander-theme-compatible", cssCustomProperty: "--lander-theme-compatible", category: "interaction", description: "Compatibility flag for themes that remain valid under the lander theme subset.", defaultValue: "1", stability: "stable" },
-  { name: "file-indent-base", cssCustomProperty: "--file-indent-base", category: "spacing", description: "Base indentation for file tree items.", defaultValue: "calc(12px * var(--ui-scale))", stability: "stable" },
-  { name: "file-indent-unit", cssCustomProperty: "--file-indent-unit", category: "spacing", description: "Incremental indentation for nested file tree items.", defaultValue: "calc(12px * var(--ui-scale))", stability: "stable" },
-  { name: "c-explorer-hover", cssCustomProperty: "--c-explorer-hover", category: "interaction", description: "Explorer hover background.", defaultValue: "rgba(0, 0, 0, 0.06)", stability: "stable" },
-  { name: "c-explorer-selected", cssCustomProperty: "--c-explorer-selected", category: "interaction", description: "Explorer selected background.", defaultValue: "var(--accent)", stability: "stable" },
-  { name: "c-explorer-selected-text", cssCustomProperty: "--c-explorer-selected-text", category: "interaction", description: "Explorer selected foreground.", defaultValue: "#ffffff", stability: "stable" },
-  { name: "c-explorer-drag-bg", cssCustomProperty: "--c-explorer-drag-bg", category: "interaction", description: "Explorer drag surface background.", defaultValue: "rgba(255, 255, 255, 0.08)", stability: "stable" },
   { name: "font-ui", cssCustomProperty: "--font-ui", category: "typography", description: "UI font stack.", defaultValue: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", stability: "stable" },
   { name: "font-mono", cssCustomProperty: "--font-mono", category: "typography", description: "Monospace font stack.", defaultValue: "'JetBrains Mono', 'IBM Plex Mono', Menlo, monospace", stability: "stable" },
   { name: "font-head", cssCustomProperty: "--font-head", category: "typography", description: "Heading font stack.", defaultValue: "'Inter', sans-serif", stability: "stable" },
 ] as const satisfies readonly ThemeTokenDefinition[];
 
-export type MarkdownWorkspaceThemeTokenMap = Readonly<Record<MarkdownWorkspaceThemeTokenName, string>>;
 export type MarkdownPackageThemeTokenMap = Readonly<Record<MarkdownPackageThemeTokenName, string>>;
-export type StudioShellThemeTokenMap = Readonly<Record<StudioShellThemeTokenName, string>>;
+
+export type MarkdownWorkspaceThemeTokenName = MarkdownPackageThemeTokenName;
+export type MarkdownWorkspaceThemeTokenMap = MarkdownPackageThemeTokenMap;
 
 export type MarkdownWorkspaceUiTokenName = MarkdownWorkspaceThemeTokenName;
 export type MarkdownWorkspaceUiTokenMap = MarkdownWorkspaceThemeTokenMap;
 export type MarkdownPackageUiTokenName = MarkdownPackageThemeTokenName;
 export type MarkdownPackageUiTokenMap = MarkdownPackageThemeTokenMap;
-export type StudioShellUiTokenName = StudioShellThemeTokenName;
-export type StudioShellUiTokenMap = StudioShellThemeTokenMap;
 export type UiTokenDefinition = ThemeTokenDefinition;
 
+export const MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES = MARKDOWN_PACKAGE_THEME_TOKEN_NAMES;
+export const MARKDOWN_WORKSPACE_THEME_TOKENS = MARKDOWN_PACKAGE_THEME_TOKENS;
 export const MARKDOWN_WORKSPACE_UI_TOKEN_NAMES = MARKDOWN_WORKSPACE_THEME_TOKEN_NAMES;
 export const MARKDOWN_WORKSPACE_UI_TOKENS = MARKDOWN_WORKSPACE_THEME_TOKENS;
 export const MARKDOWN_PACKAGE_UI_TOKEN_NAMES = MARKDOWN_PACKAGE_THEME_TOKEN_NAMES;
-export const STUDIO_SHELL_UI_TOKEN_NAMES = STUDIO_SHELL_THEME_TOKEN_NAMES;
 
-export const MARKDOWN_WORKSPACE_TOKEN_DEFAULTS = Object.freeze(
+export const MARKDOWN_PACKAGE_TOKEN_DEFAULTS = Object.freeze(
   Object.fromEntries(
-    MARKDOWN_WORKSPACE_THEME_TOKENS.map((definition) => [definition.name, definition.defaultValue]),
-  ) as MarkdownWorkspaceThemeTokenMap,
+    MARKDOWN_PACKAGE_THEME_TOKENS.map((definition) => [definition.name, definition.defaultValue]),
+  ) as MarkdownPackageThemeTokenMap,
 );
 
-function pickTokenDefaults<const T extends readonly MarkdownWorkspaceThemeTokenName[]>(
-  names: T,
-): Readonly<Record<T[number], string>> {
-  return Object.freeze(
-    Object.fromEntries(names.map((name) => [name, MARKDOWN_WORKSPACE_TOKEN_DEFAULTS[name]])),
-  ) as Readonly<Record<T[number], string>>;
-}
-
-export const MARKDOWN_PACKAGE_TOKEN_DEFAULTS = pickTokenDefaults(
-  MARKDOWN_PACKAGE_THEME_TOKEN_NAMES,
-) as MarkdownPackageThemeTokenMap;
-
-export const STUDIO_SHELL_TOKEN_DEFAULTS = pickTokenDefaults(
-  STUDIO_SHELL_THEME_TOKEN_NAMES,
-) as StudioShellThemeTokenMap;
+export const MARKDOWN_WORKSPACE_TOKEN_DEFAULTS = MARKDOWN_PACKAGE_TOKEN_DEFAULTS;
 
 export const MARKDOWN_WORKSPACE_TOKEN_CSS_CUSTOM_PROPERTIES = Object.freeze(
   MARKDOWN_WORKSPACE_THEME_TOKENS.map((definition) => definition.cssCustomProperty),
