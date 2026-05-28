@@ -116,7 +116,7 @@ export default function App(): React.JSX.Element {
         </div>
       </section>
 
-      <section className="command-bar" aria-label="Editor commands">
+      <section className="command-row" aria-label="Editor commands">
         {[
           ['Bold', 'bold'],
           ['Italic', 'italic'],
@@ -137,6 +137,9 @@ export default function App(): React.JSX.Element {
             onClick={() => editorRef.current?.executeCommand(command as never)}
           />
         ))}
+      </section>
+
+      <section className="toggle-row" aria-label="Editor display controls">
         <TogglePill
           label="Line numbers"
           checked={showLineNumbers}

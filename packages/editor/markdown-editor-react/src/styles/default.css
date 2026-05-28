@@ -61,8 +61,16 @@
   outline: none;
 }
 
+.mw-editor-textarea--wrap {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-break: anywhere;
+  overflow-x: hidden;
+}
+
 .mw-editor-textarea--nowrap,
-.editor-textarea--nowrap {
+.mw-editor--nowrap .mw-editor-textarea {
   white-space: pre;
   overflow-wrap: normal;
   word-break: normal;

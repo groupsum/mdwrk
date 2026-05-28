@@ -100,14 +100,32 @@ body {
 .meta-card ol {
   padding-left: 20px;
   color: var(--fg-secondary);
+  min-width: 0;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .meta-card pre {
-  overflow: auto;
+  overflow: visible;
   padding: 14px;
   border-radius: 16px;
   background: color-mix(in srgb, var(--bg-inset) 92%, transparent);
   color: var(--fg-secondary);
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.meta-card li,
+.meta-card code {
+  min-width: 0;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .meta-card p {

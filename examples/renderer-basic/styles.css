@@ -50,7 +50,7 @@ body {
   padding: 20px;
   min-width: 0;
   overflow: hidden;
-  background: color-mix(in srgb, var(--bg-panel) 92%, white 8%);
+  background: var(--mw-bg-surface, var(--bg-panel));
   border: 1px solid color-mix(in srgb, var(--border-color) 60%, transparent);
   border-radius: 20px;
   box-shadow: 0 20px 56px color-mix(in srgb, var(--fg-primary) 10%, transparent);

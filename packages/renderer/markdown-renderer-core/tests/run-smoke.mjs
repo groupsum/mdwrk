@@ -104,6 +104,9 @@ const checks = [
     async test() {
       const fragment = createHtmlDocument({ title: 'Fragment', bodyHtml: '<main>Fragment</main>' });
       assert.match(fragment, /<!DOCTYPE html>/);
+      assert.match(fragment, /class="mw-html-document"/);
+      assert.match(fragment, /class="mw-html-export mw-pdf-page"/);
+      assert.match(fragment, /class="mw-html-content mw-pdf-content"/);
       assert.match(fragment, /<main>Fragment<\/main>/);
     },
   },
@@ -113,6 +116,9 @@ const checks = [
     async test() {
       const documentHtml = renderMarkdownToHtmlDocumentSync('# Export', { title: 'Export' });
       assert.match(documentHtml, /<!DOCTYPE html>/);
+      assert.match(documentHtml, /class="mw-html-head"/);
+      assert.match(documentHtml, /class="mw-html-metadata"/);
+      assert.match(documentHtml, /class="mw-html-body mw-pdf-document"/);
       assert.match(documentHtml, /Export/);
     },
   },

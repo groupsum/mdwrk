@@ -10,27 +10,40 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+function renderClassAttribute(...values) {
+  const className = values.filter(Boolean).join(" ").trim();
+  return className ? ` class="${escapeHtml(className)}"` : "";
+}
+
 export function createHtmlDocument(options) {
   const title = escapeHtml(options.title);
   const lang = options.lang ?? "en";
-  const htmlClassName = options.htmlClassName ? ` class="${escapeHtml(options.htmlClassName)}"` : "";
+  const htmlClassName = renderClassAttribute("mw-html-document", options.htmlClassName);
   const dataTheme = options.dataTheme ? ` data-theme="${escapeHtml(options.dataTheme)}"` : "";
-  const bodyClassName = options.bodyClassName ? ` class="${escapeHtml(options.bodyClassName)}"` : "";
+  const bodyClassName = renderClassAttribute("mw-html-body", "mw-pdf-document", options.bodyClassName);
   const stylesheets = options.stylesheets?.length
     ? `<style>\n${options.stylesheets.join("\n")}\n</style>`
     : "";
+  const wrappedBodyHtml = [
+    '<div class="mw-html-export mw-pdf-page">',
+    '<main class="mw-html-content mw-pdf-content">',
+    options.bodyHtml,
+    "</main>",
+    "</div>",
+  ].join("\n");
 
   return [
     "<!DOCTYPE html>",
     `<html lang="${escapeHtml(lang)}"${dataTheme}${htmlClassName}>`,
-    "<head>",
+    '<head class="mw-html-head">',
     "  <meta charset=\"UTF-8\" />",
     "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />",
+    '  <meta class="mw-html-metadata" name="mdwrk-export-surface" content="html-document" />',
     `  <title>${title}</title>`,
     stylesheets,
     "</head>",
     `<body${bodyClassName}>`,
-    options.bodyHtml,
+    wrappedBodyHtml,
     "</body>",
     "</html>",
   ].filter(Boolean).join("\n");

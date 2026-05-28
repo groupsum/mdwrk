@@ -38,11 +38,29 @@ export const MARKDOWN_WORKSPACE_THEME_CLASS_NAMES = [
   "mw-editor-gutter",
   "mw-editor-line-number",
   "mw-editor-textarea",
+  "mw-editor--line-numbers-visible",
+  "mw-editor--line-numbers-hidden",
+  "mw-editor--soft-wrap",
+  "mw-editor--nowrap",
+  "mw-editor-textarea--wrap",
+  "mw-editor-textarea--nowrap",
+  "mw-html-document",
+  "mw-html-head",
+  "mw-html-body",
+  "mw-html-export",
+  "mw-html-content",
+  "mw-html-metadata",
+  "mw-pdf-document",
+  "mw-pdf-page",
+  "mw-pdf-content",
+  "mw-pdf-heading",
+  "mw-pdf-running-header",
+  "mw-pdf-running-footer",
 ] as const;
 
 export type MarkdownWorkspaceThemeClassName = typeof MARKDOWN_WORKSPACE_THEME_CLASS_NAMES[number];
 
-export type ThemeClassScope = "renderer" | "editor" | "app";
+export type ThemeClassScope = "renderer" | "editor" | "html" | "pdf" | "app";
 
 export interface ThemeClassDefinition {
   readonly name: MarkdownWorkspaceThemeClassName;
@@ -92,6 +110,24 @@ export const MARKDOWN_WORKSPACE_THEME_CLASSES = [
   { name: "mw-editor-gutter", selector: ".mw-editor-gutter", scope: "editor", description: "Portable markdown source editor gutter class.", stability: "stable" },
   { name: "mw-editor-line-number", selector: ".mw-editor-line-number", scope: "editor", description: "Portable markdown source editor line-number class.", stability: "stable" },
   { name: "mw-editor-textarea", selector: ".mw-editor-textarea", scope: "editor", description: "Portable markdown source editor textarea class.", stability: "stable" },
+  { name: "mw-editor--line-numbers-visible", selector: ".mw-editor--line-numbers-visible", scope: "editor", description: "Portable markdown source editor root state when the line-number gutter is visible.", stability: "stable" },
+  { name: "mw-editor--line-numbers-hidden", selector: ".mw-editor--line-numbers-hidden", scope: "editor", description: "Portable markdown source editor root state when the line-number gutter is hidden.", stability: "stable" },
+  { name: "mw-editor--soft-wrap", selector: ".mw-editor--soft-wrap", scope: "editor", description: "Portable markdown source editor root state when soft wrapping is enabled.", stability: "stable" },
+  { name: "mw-editor--nowrap", selector: ".mw-editor--nowrap", scope: "editor", description: "Portable markdown source editor root state when source wrapping is disabled.", stability: "stable" },
+  { name: "mw-editor-textarea--wrap", selector: ".mw-editor-textarea--wrap", scope: "editor", description: "Portable markdown source editor textarea state when soft wrapping is enabled.", stability: "stable" },
+  { name: "mw-editor-textarea--nowrap", selector: ".mw-editor-textarea--nowrap", scope: "editor", description: "Portable markdown source editor textarea state when source wrapping is disabled.", stability: "stable" },
+  { name: "mw-html-document", selector: ".mw-html-document", scope: "html", description: "Portable HTML export document root class.", stability: "stable" },
+  { name: "mw-html-head", selector: ".mw-html-head", scope: "html", description: "Portable HTML export head class.", stability: "stable" },
+  { name: "mw-html-body", selector: ".mw-html-body", scope: "html", description: "Portable HTML export body class.", stability: "stable" },
+  { name: "mw-html-export", selector: ".mw-html-export", scope: "html", description: "Portable HTML export wrapper class around the exported markdown surface.", stability: "stable" },
+  { name: "mw-html-content", selector: ".mw-html-content", scope: "html", description: "Portable HTML export content wrapper class around rendered markdown output.", stability: "stable" },
+  { name: "mw-html-metadata", selector: ".mw-html-metadata", scope: "html", description: "Portable HTML export metadata marker class.", stability: "stable" },
+  { name: "mw-pdf-document", selector: ".mw-pdf-document", scope: "pdf", description: "Portable PDF export document wrapper class.", stability: "stable" },
+  { name: "mw-pdf-page", selector: ".mw-pdf-page", scope: "pdf", description: "Portable PDF export page wrapper class.", stability: "stable" },
+  { name: "mw-pdf-content", selector: ".mw-pdf-content", scope: "pdf", description: "Portable PDF export content wrapper class.", stability: "stable" },
+  { name: "mw-pdf-heading", selector: ".mw-pdf-heading", scope: "pdf", description: "Portable PDF export heading surface class.", stability: "stable" },
+  { name: "mw-pdf-running-header", selector: ".mw-pdf-running-header", scope: "pdf", description: "Portable PDF export running header class.", stability: "stable" },
+  { name: "mw-pdf-running-footer", selector: ".mw-pdf-running-footer", scope: "pdf", description: "Portable PDF export running footer class.", stability: "stable" },
 ] as const satisfies readonly ThemeClassDefinition[];
 
 export const MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASS_NAMES = Object.freeze(
@@ -104,6 +140,42 @@ export type MarkdownWorkspaceRendererHelperClassName = typeof MARKDOWN_WORKSPACE
 
 export interface RendererHelperClassDefinition extends ThemeClassDefinition {
   readonly group: "scope" | "heading" | "text" | "list" | "table" | "code" | "form";
+}
+
+export const MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASS_NAMES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "editor")
+    .map((definition) => definition.name),
+) as readonly MarkdownWorkspaceThemeClassName[];
+
+export type MarkdownWorkspaceEditorHelperClassName = typeof MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASS_NAMES[number];
+
+export interface EditorHelperClassDefinition extends ThemeClassDefinition {
+  readonly group: "root" | "layout" | "gutter" | "line-number" | "textarea" | "state";
+}
+
+export const MARKDOWN_WORKSPACE_HTML_HELPER_CLASS_NAMES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "html")
+    .map((definition) => definition.name),
+) as readonly MarkdownWorkspaceThemeClassName[];
+
+export type MarkdownWorkspaceHtmlHelperClassName = typeof MARKDOWN_WORKSPACE_HTML_HELPER_CLASS_NAMES[number];
+
+export interface HtmlHelperClassDefinition extends ThemeClassDefinition {
+  readonly group: "document" | "head" | "body" | "export" | "content" | "metadata";
+}
+
+export const MARKDOWN_WORKSPACE_PDF_HELPER_CLASS_NAMES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "pdf")
+    .map((definition) => definition.name),
+) as readonly MarkdownWorkspaceThemeClassName[];
+
+export type MarkdownWorkspacePdfHelperClassName = typeof MARKDOWN_WORKSPACE_PDF_HELPER_CLASS_NAMES[number];
+
+export interface PdfHelperClassDefinition extends ThemeClassDefinition {
+  readonly group: "document" | "page" | "content" | "heading" | "running-header" | "running-footer";
 }
 
 function resolveGroup(name: MarkdownWorkspaceThemeClassName): RendererHelperClassDefinition["group"] {
@@ -121,6 +193,51 @@ export const MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES = Object.freeze(
     .filter((definition) => definition.scope === "renderer")
     .map((definition) => ({ ...definition, group: resolveGroup(definition.name) })),
 ) as readonly RendererHelperClassDefinition[];
+
+function resolveEditorGroup(name: MarkdownWorkspaceThemeClassName): EditorHelperClassDefinition["group"] {
+  if (name === "mw-editor") return "root";
+  if (name === "mw-editor-layout") return "layout";
+  if (name === "mw-editor-gutter") return "gutter";
+  if (name === "mw-editor-line-number") return "line-number";
+  if (name === "mw-editor-textarea") return "textarea";
+  return "state";
+}
+
+export const MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASSES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "editor")
+    .map((definition) => ({ ...definition, group: resolveEditorGroup(definition.name) })),
+) as readonly EditorHelperClassDefinition[];
+
+function resolveHtmlGroup(name: MarkdownWorkspaceThemeClassName): HtmlHelperClassDefinition["group"] {
+  if (name === "mw-html-document") return "document";
+  if (name === "mw-html-head") return "head";
+  if (name === "mw-html-body") return "body";
+  if (name === "mw-html-export") return "export";
+  if (name === "mw-html-content") return "content";
+  return "metadata";
+}
+
+export const MARKDOWN_WORKSPACE_HTML_HELPER_CLASSES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "html")
+    .map((definition) => ({ ...definition, group: resolveHtmlGroup(definition.name) })),
+) as readonly HtmlHelperClassDefinition[];
+
+function resolvePdfGroup(name: MarkdownWorkspaceThemeClassName): PdfHelperClassDefinition["group"] {
+  if (name === "mw-pdf-document") return "document";
+  if (name === "mw-pdf-page") return "page";
+  if (name === "mw-pdf-content") return "content";
+  if (name === "mw-pdf-heading") return "heading";
+  if (name === "mw-pdf-running-header") return "running-header";
+  return "running-footer";
+}
+
+export const MARKDOWN_WORKSPACE_PDF_HELPER_CLASSES = Object.freeze(
+  MARKDOWN_WORKSPACE_THEME_CLASSES
+    .filter((definition) => definition.scope === "pdf")
+    .map((definition) => ({ ...definition, group: resolvePdfGroup(definition.name) })),
+) as readonly PdfHelperClassDefinition[];
 
 export const MARKDOWN_WORKSPACE_STABLE_THEME_CLASS_NAMES = Object.freeze(
   MARKDOWN_WORKSPACE_THEME_CLASSES

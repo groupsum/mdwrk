@@ -3,10 +3,10 @@ import { DropdownSelector } from '@mdwrk/core-demo-react';
 import { MarkdownSourceEditor } from '@mdwrk/markdown-editor-react';
 import { MarkdownRenderer } from '@mdwrk/markdown-renderer-react';
 import {
-  MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES,
+  MARKDOWN_PACKAGE_THEME_TOKENS,
+  MARKDOWN_PACKAGE_TOKEN_DEFAULTS,
+  MARKDOWN_WORKSPACE_THEME_CLASSES,
   MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
-  MARKDOWN_WORKSPACE_UI_TOKENS,
-  MARKDOWN_WORKSPACE_TOKEN_DEFAULTS,
 } from '@mdwrk/ui-tokens';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
 import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
@@ -104,9 +104,9 @@ export default function App(): React.JSX.Element {
   );
 
   const tokenRows = React.useMemo(
-    () => MARKDOWN_WORKSPACE_UI_TOKENS.map((definition) => ({
+    () => MARKDOWN_PACKAGE_THEME_TOKENS.map((definition) => ({
       ...definition,
-      defaultValue: MARKDOWN_WORKSPACE_TOKEN_DEFAULTS[definition.name],
+      defaultValue: MARKDOWN_PACKAGE_TOKEN_DEFAULTS[definition.name],
       override: preset?.tokens[definition.name] ?? 'inherited default',
     })),
     [preset],
@@ -114,13 +114,13 @@ export default function App(): React.JSX.Element {
   const rendererBridgeRows = React.useMemo(
     () => MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES.map((definition) => ({
       ...definition,
-      defaultValue: MARKDOWN_WORKSPACE_TOKEN_DEFAULTS[definition.sourceToken],
+      defaultValue: MARKDOWN_PACKAGE_TOKEN_DEFAULTS[definition.sourceToken],
       override: preset?.tokens[definition.sourceToken] ?? 'inherited default',
     })),
     [preset],
   );
-  const rendererClassRows = React.useMemo(
-    () => MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES,
+  const classRows = React.useMemo(
+    () => MARKDOWN_WORKSPACE_THEME_CLASSES,
     [],
   );
 
@@ -131,7 +131,7 @@ export default function App(): React.JSX.Element {
         <div>
           <p className="eyebrow">MdWrk Demo</p>
           <h1>UI Tokens</h1>
-          <p>Markdown tokens, renderer bridge variables, and markdown helper classes now source directly from <code>@mdwrk/ui-tokens</code>.</p>
+          <p>Package-owned markdown tokens, renderer bridge variables, and markdown, editor, HTML export, and PDF export helper classes source directly from <code>@mdwrk/ui-tokens</code>.</p>
         </div>
         <div className="selector-row">
           <DropdownSelector
@@ -145,7 +145,7 @@ export default function App(): React.JSX.Element {
 
       <section className="contract-strip">
         <article className="contract-pill">
-          <span className="contract-label">Markdown tokens</span>
+          <span className="contract-label">Package tokens</span>
           <strong>{tokenRows.length}</strong>
         </article>
         <article className="contract-pill">
@@ -153,9 +153,38 @@ export default function App(): React.JSX.Element {
           <strong>{rendererBridgeRows.length}</strong>
         </article>
         <article className="contract-pill">
-          <span className="contract-label">Renderer classes</span>
-          <strong>{rendererClassRows.length}</strong>
+          <span className="contract-label">Theme classes</span>
+          <strong>{classRows.length}</strong>
         </article>
+      </section>
+
+      <section className="token-card">
+        <header>
+          <h2>Markdown class inventory</h2>
+          <p>Portable markdown, editor, HTML export, and PDF export class names declared by <code>@mdwrk/ui-tokens</code>, including their scope and stability.</p>
+        </header>
+        <div className="token-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Selector</th>
+                <th>Scope</th>
+                <th>Stability</th>
+              </tr>
+            </thead>
+            <tbody>
+              {classRows.map((row) => (
+                <tr key={row.name}>
+                  <td><code>{row.name}</code></td>
+                  <td><code>{row.selector}</code></td>
+                  <td>{row.scope}</td>
+                  <td>{row.stability}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="specimen-grid">
@@ -171,7 +200,7 @@ export default function App(): React.JSX.Element {
 
       <section className="token-card">
         <header>
-          <h2>Workspace token ledger</h2>
+          <h2>Package token ledger</h2>
           <p>Default values come from <code>@mdwrk/ui-tokens</code>; preset overrides come from the selected first-party theme.</p>
         </header>
         <div className="token-table-wrap">
@@ -227,34 +256,6 @@ export default function App(): React.JSX.Element {
         </div>
       </section>
 
-      <section className="token-card">
-        <header>
-          <h2>Markdown helper classes</h2>
-          <p>Renderer-facing markdown semantics such as headings, emphasis, tables, and code blocks are declared here as stable or provisional class contracts.</p>
-        </header>
-        <div className="token-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Selector</th>
-                <th>Group</th>
-                <th>Stability</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rendererClassRows.map((row) => (
-                <tr key={row.name}>
-                  <td><code>{row.name}</code></td>
-                  <td><code>{row.selector}</code></td>
-                  <td>{row.group}</td>
-                  <td>{row.stability}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
     </main>
   );
 }

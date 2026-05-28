@@ -25,10 +25,14 @@ body {
 .hero-card,
 .summary-card,
 .preview-card {
-  background: color-mix(in srgb, var(--bg-panel) 88%, white 12%);
+  background: var(--bg-panel);
   border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
   border-radius: 26px;
   box-shadow: 0 22px 72px rgba(16, 18, 24, 0.22);
+}
+
+.preview-card {
+  background: var(--mw-bg-surface, var(--bg-panel));
 }
 
 .hero-card {

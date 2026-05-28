@@ -64,7 +64,8 @@ body {
 }
 
 .hero-controls,
-.command-bar {
+.command-row,
+.toggle-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -75,7 +76,11 @@ body {
   margin-top: 16px;
 }
 
-.command-bar {
+.command-row {
+  margin-bottom: 12px;
+}
+
+.toggle-row {
   margin-bottom: 20px;
 }
 

@@ -37,17 +37,19 @@ const checks = [
     id: 'gutter',
     description: 'MarkdownSourceEditor renders the gutter when line numbers are enabled',
     test() {
-      assert.match(html, /editor-gutter/);
+      assert.match(html, /mw-editor-gutter/);
       assert.match(html, />1<\/div>/);
       assert.match(html, />2<\/div>/);
+      assert.match(html, /mw-editor--line-numbers-visible/);
     },
   },
   {
     id: 'gutter-optional',
     description: 'MarkdownSourceEditor can suppress the gutter when line numbers are disabled',
     test() {
-      assert.doesNotMatch(htmlWithoutGutter, /editor-gutter/);
+      assert.doesNotMatch(htmlWithoutGutter, /mw-editor-gutter/);
       assert.match(htmlWithoutGutter, /data-line-numbers="hidden"/);
+      assert.match(htmlWithoutGutter, /mw-editor--line-numbers-hidden/);
     },
   },
   {
@@ -73,7 +75,8 @@ const checks = [
     test() {
       assert.match(htmlWithoutWrap, /wrap="off"/);
       assert.match(htmlWithoutWrap, /data-wrap-mode="off"/);
-      assert.match(htmlWithoutWrap, /editor-textarea--nowrap/);
+      assert.match(htmlWithoutWrap, /mw-editor-textarea--nowrap/);
+      assert.match(htmlWithoutWrap, /mw-editor--nowrap/);
     },
   },
 ];

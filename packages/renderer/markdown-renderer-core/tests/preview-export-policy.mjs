@@ -82,6 +82,9 @@ const checks = [
         htmlHandling: 'sanitize',
       });
       assert.match(html, /<!DOCTYPE html>/);
+      assert.match(html, /class="mw-html-document"/);
+      assert.match(html, /class="mw-html-export mw-pdf-page"/);
+      assert.match(html, /class="mw-html-content mw-pdf-content"/);
       assert.match(html, /<table/);
       assert.match(html, /type="checkbox"/);
       assert.match(html, /md-footnotes/);

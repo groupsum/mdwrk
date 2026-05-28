@@ -3,8 +3,11 @@ import {
   createMarkdownWorkspaceThemeTokenMap,
   createRendererThemeBridgeVariableRecord,
   createEditorThemeBridgeVariableRecord,
+  MARKDOWN_WORKSPACE_HTML_HELPER_CLASSES,
+  MARKDOWN_WORKSPACE_PDF_HELPER_CLASSES,
   renderThemeBridgeCssVariables,
   renderThemeCssVariables,
+  MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASSES,
   MARKDOWN_WORKSPACE_UI_TOKEN_NAMES,
 } from '../dist/index.js';
 
@@ -96,6 +99,19 @@ const alignmentEditorBridge = createEditorThemeBridgeVariableRecord(alignmentThe
 assert.equal(alignmentEditorBridge["--mwe-line-height"], "1.75rem");
 assert.equal(alignmentEditorBridge["--mwe-gutter-width"], "56px");
 assert.equal(alignmentEditorBridge["--mwe-content-width"], "82ch");
+
+assert.ok(
+  MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASSES.some((definition) => definition.name === "mw-editor--line-numbers-visible"),
+);
+assert.ok(
+  MARKDOWN_WORKSPACE_EDITOR_HELPER_CLASSES.some((definition) => definition.name === "mw-editor-textarea--nowrap"),
+);
+assert.ok(
+  MARKDOWN_WORKSPACE_HTML_HELPER_CLASSES.some((definition) => definition.name === "mw-html-document"),
+);
+assert.ok(
+  MARKDOWN_WORKSPACE_PDF_HELPER_CLASSES.some((definition) => definition.name === "mw-pdf-document"),
+);
 
 
 console.log('ui-tokens smoke: ok');

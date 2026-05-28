@@ -37,14 +37,16 @@ describe("MarkdownSourceEditor", () => {
 
   it("can suppress the gutter when line numbers are disabled", () => {
     const { container } = render(<MarkdownSourceEditor defaultValue="alpha" showLineNumbers={false} />);
-    expect(container.querySelector('.editor-gutter')).toBeNull();
-    expect(container.querySelector(".editor-stage")).toHaveAttribute("data-line-numbers", "hidden");
+    expect(container.querySelector('.mw-editor-gutter')).toBeNull();
+    expect(container.querySelector(".mw-editor")).toHaveAttribute("data-line-numbers", "hidden");
+    expect(container.querySelector(".mw-editor")).toHaveClass("mw-editor--line-numbers-hidden");
   });
 
   it("renders line numbers by default", () => {
     const { container } = render(<MarkdownSourceEditor defaultValue={"alpha\nbeta"} />);
-    expect(container.querySelectorAll(".line-num")).toHaveLength(2);
-    expect(container.querySelector(".editor-stage")).toHaveAttribute("data-line-numbers", "visible");
+    expect(container.querySelectorAll(".mw-editor-line-number")).toHaveLength(2);
+    expect(container.querySelector(".mw-editor")).toHaveAttribute("data-line-numbers", "visible");
+    expect(container.querySelector(".mw-editor")).toHaveClass("mw-editor--line-numbers-visible");
   });
 
   it("can turn source text wrapping off", () => {
@@ -52,7 +54,8 @@ describe("MarkdownSourceEditor", () => {
     const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
     expect(editor).toHaveAttribute("wrap", "off");
     expect(editor).toHaveAttribute("data-wrap-mode", "off");
-    expect(editor).toHaveClass("editor-textarea--nowrap");
+    expect(editor).toHaveClass("mw-editor-textarea--nowrap");
+    expect(editor.closest(".mw-editor")).toHaveClass("mw-editor--nowrap");
   });
 
   it("emits selection format state when the current selection changes", () => {

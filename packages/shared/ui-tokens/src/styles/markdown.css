@@ -1,5 +1,38 @@
 /* MdWrk: Markdown & GFM Rendering */
 
+.mw-html-document,
+.mw-html-body,
+.mw-html-export,
+.mw-html-content,
+.mw-pdf-document,
+.mw-pdf-page,
+.mw-pdf-content {
+  box-sizing: border-box;
+}
+
+.mw-html-body {
+  margin: 0;
+  background: var(--bg-panel);
+  color: var(--fg-primary);
+  font-family: var(--font-ui);
+}
+
+.mw-html-export {
+  width: 100%;
+}
+
+.mw-html-content,
+.mw-pdf-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.mw-pdf-running-header,
+.mw-pdf-running-footer {
+  display: none;
+}
+
 /* MARKDOWN STYLES (Scoped) */
 .markdown-body {
   width: 100%;
@@ -440,11 +473,38 @@
 }
 
 @media print {
+  @page {
+    size: var(--pdf-page-size, A4);
+    margin-block: var(--pdf-page-margin-block, 14mm);
+    margin-inline: var(--pdf-page-margin-inline, 16mm);
+  }
+
+  .mw-pdf-document,
+  .mw-pdf-page,
+  .mw-pdf-content {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .mw-pdf-running-header,
+  .mw-pdf-running-footer {
+    display: block;
+  }
+
+  .mw-pdf-content .markdown-body,
+  .mw-pdf-content.markdown-body,
   .markdown-body {
     font-size: var(--pdf-content-font-size, 10.5pt);
     line-height: var(--pdf-content-line-height, 1.5);
   }
 
+  .mw-pdf-content .markdown-body h1,
+  .mw-pdf-content .markdown-body h2,
+  .mw-pdf-content .markdown-body h3,
+  .mw-pdf-content .markdown-body h4,
+  .mw-pdf-content .markdown-body h5,
+  .mw-pdf-content .markdown-body h6,
+  .mw-pdf-content .mw-pdf-heading,
   .markdown-body h1,
   .markdown-body h2,
   .markdown-body h3,
@@ -455,6 +515,9 @@
     page-break-after: avoid;
   }
 
+  .mw-pdf-content .markdown-body .page-break,
+  .mw-pdf-content .markdown-body [data-page-break="always"],
+  .mw-pdf-content .markdown-body hr.md-page-break,
   .markdown-body .page-break,
   .markdown-body [data-page-break="always"],
   .markdown-body hr.md-page-break {
@@ -467,21 +530,32 @@
     page-break-before: always;
   }
 
+  .mw-pdf-content .markdown-body [data-break-before="page"],
   .markdown-body [data-break-before="page"] {
     break-before: page;
     page-break-before: always;
   }
 
+  .mw-pdf-content .markdown-body [data-break-after="page"],
   .markdown-body [data-break-after="page"] {
     break-after: page;
     page-break-after: always;
   }
 
+  .mw-pdf-content .markdown-body [data-break-inside="avoid"],
   .markdown-body [data-break-inside="avoid"] {
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
+  .mw-pdf-content .markdown-body table,
+  .mw-pdf-content .markdown-body pre,
+  .mw-pdf-content .markdown-body blockquote,
+  .mw-pdf-content .markdown-body ul,
+  .mw-pdf-content .markdown-body ol,
+  .mw-pdf-content .markdown-body img,
+  .mw-pdf-content .markdown-body .md-code-block,
+  .mw-pdf-content .markdown-body .md-table,
   .markdown-body table,
   .markdown-body pre,
   .markdown-body blockquote,

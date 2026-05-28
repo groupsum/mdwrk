@@ -75,6 +75,12 @@ describe("@mdwrk/markdown-renderer-core", () => {
       stylesheets: [":root { --example: 1; }"]
     });
     expect(html).toContain("<!DOCTYPE html>");
+    expect(html).toContain('class="mw-html-document"');
+    expect(html).toContain('class="mw-html-head"');
+    expect(html).toContain('class="mw-html-body mw-pdf-document markdown-export"');
+    expect(html).toContain('class="mw-html-export mw-pdf-page"');
+    expect(html).toContain('class="mw-html-content mw-pdf-content"');
+    expect(html).toContain('class="mw-html-metadata"');
     expect(html).toContain("markdown-export");
     expect(html).toContain("--example: 1");
   });
@@ -85,6 +91,7 @@ describe("@mdwrk/markdown-renderer-core", () => {
       bodyHtml: '<main id="content">Fragment</main>',
       bodyClassName: "markdown-export",
     });
+    expect(html).toContain('<main class="mw-html-content mw-pdf-content">');
     expect(html).toContain("<main id=\"content\">Fragment</main>");
   });
 });

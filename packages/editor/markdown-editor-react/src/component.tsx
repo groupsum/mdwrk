@@ -2,6 +2,7 @@ import React from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
 import {
   DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES,
+  MARKDOWN_EDITOR_HELPER_CLASS_NAMES,
   applyBuiltinMarkdownCommand,
   canRedoHistory,
   canUndoHistory,
@@ -399,20 +400,25 @@ export const MarkdownSourceEditor = React.forwardRef<MarkdownSourceEditorHandle,
 
     return (
       <div
-        className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.root, "editor-stage", className)}
+        className={mergeClassNames(
+          DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.root,
+          showLineNumbers ? MARKDOWN_EDITOR_HELPER_CLASS_NAMES.lineNumbersVisible : MARKDOWN_EDITOR_HELPER_CLASS_NAMES.lineNumbersHidden,
+          textWrap ? MARKDOWN_EDITOR_HELPER_CLASS_NAMES.softWrap : MARKDOWN_EDITOR_HELPER_CLASS_NAMES.noWrap,
+          className,
+        )}
         style={mergedThemeStyle}
         data-line-numbers={showLineNumbers ? "visible" : "hidden"}
         data-text-wrap={textWrap ? "soft" : "off"}
       >
-        <div className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.layout, "editor-layout-wrapper")}>
+        <div className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.layout)}>
           {showLineNumbers ? (
-            <div ref={gutterRef} className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.gutter, "editor-gutter", gutterClassName)} aria-hidden="true">
+            <div ref={gutterRef} className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.gutter, gutterClassName)} aria-hidden="true">
               {Array.from({ length: lineCount }, (_, index) => {
                 const rowSpan = visualLineRows[index] ?? 1;
                 return (
                 <div
                   key={index + 1}
-                  className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.lineNumber, "line-num", lineNumberClassName)}
+                  className={mergeClassNames(DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.lineNumber, lineNumberClassName)}
                   style={{
                     height: `calc(${EDITOR_LINE_HEIGHT_CSS} * ${rowSpan})`,
                     lineHeight: EDITOR_LINE_HEIGHT_CSS,
@@ -428,8 +434,7 @@ export const MarkdownSourceEditor = React.forwardRef<MarkdownSourceEditorHandle,
             ref={textareaRef}
             className={mergeClassNames(
               DEFAULT_MARKDOWN_EDITOR_CLASS_NAMES.textarea,
-              "editor-textarea",
-              textWrap ? "editor-textarea--wrap" : "editor-textarea--nowrap",
+              textWrap ? MARKDOWN_EDITOR_HELPER_CLASS_NAMES.textareaWrap : MARKDOWN_EDITOR_HELPER_CLASS_NAMES.textareaNoWrap,
               textareaClassName,
             )}
             value={isControlled ? (value ?? "") : draftValue}
