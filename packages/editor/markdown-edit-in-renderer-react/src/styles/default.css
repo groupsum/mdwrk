@@ -49,8 +49,10 @@
   overflow-wrap: anywhere;
   word-break: normal;
   line-height: 1.6;
-  pointer-events: none;
-  user-select: none;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  touch-action: pan-y;
   transition:
     background-color 120ms ease,
     border-color 120ms ease,

@@ -4,7 +4,7 @@ import "@mdwrk/testing/vitest-setup";
 import React from "react";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { MarkdownSourceEditor } from "../src/index.js";
+import { MarkdownSourceEditor, useMarkdownCommandPalette } from "../src/index.js";
 
 afterEach(() => {
   document.body.innerHTML = "";
@@ -110,6 +110,23 @@ describe("MarkdownSourceEditor", () => {
     expect(editor.selectionEnd).toBe(22);
   });
 
+  it("lists commands and keeps focus stable while reordering lines", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
+    render(<MarkdownSourceEditor ref={ref} defaultValue={"one\ntwo\nthree"} />);
+    const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
+    editor.focus();
+    editor.setSelectionRange(4, 7);
+    ref.current?.setSelection({ start: 4, end: 7 });
+
+    await act(async () => {
+      ref.current?.executeNamedCommand("move-line-up");
+    });
+
+    expect(ref.current?.listCommands().some((command) => command.id === "ordered-list")).toBe(true);
+    expect(document.activeElement).toBe(editor);
+    expect(editor.value).toBe("two\none\nthree");
+  });
+
   it("focuses the appended footnote definition when the footnote command is executed", async () => {
     const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
     render(<MarkdownSourceEditor ref={ref} defaultValue="Alpha" />);
@@ -126,5 +143,29 @@ describe("MarkdownSourceEditor", () => {
     expect(editor.value).toBe("Alpha[^1]\n\n[^1]: ");
     expect(editor.selectionStart).toBe(17);
     expect(editor.selectionEnd).toBe(17);
+  });
+
+  it("provides a headless command palette model backed by editor commands", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
+
+    function Harness(): React.JSX.Element {
+      const palette = useMarkdownCommandPalette(ref);
+      return (
+        <>
+          <MarkdownSourceEditor ref={ref} defaultValue="alpha" />
+          <button onClick={() => palette.execute("ordered-list")}>ordered</button>
+          <output data-testid="palette-count">{palette.commands.length}</output>
+        </>
+      );
+    }
+
+    render(<Harness />);
+    const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
+    editor.focus();
+    editor.setSelectionRange(0, editor.value.length);
+    fireEvent.click(screen.getByRole("button", { name: "ordered" }));
+
+    expect(editor.value).toBe("1. alpha");
+    expect(Number(screen.getByTestId("palette-count").textContent)).toBeGreaterThan(0);
   });
 });

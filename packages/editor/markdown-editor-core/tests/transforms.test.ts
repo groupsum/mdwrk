@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  applyOrderedListSelection,
   computeSelectionFormatState,
   getListContinuationPrefix,
   insertListContinuation,
+  moveSelectedLines,
 } from "../src/index.js";
 
 describe("editor transforms", () => {
@@ -39,6 +41,24 @@ describe("editor transforms", () => {
     expect(computeSelectionFormatState("_italic_", { start: 1, end: 7 }).italic).toBe(true);
     expect(computeSelectionFormatState("~~strike~~", { start: 2, end: 8 }).strikethrough).toBe(true);
     expect(computeSelectionFormatState("- item", { start: 2, end: 2 }).bulletList).toBe(true);
+    expect(computeSelectionFormatState("1. item", { start: 3, end: 3 }).orderedList).toBe(true);
     expect(computeSelectionFormatState("- [ ] item", { start: 6, end: 6 }).taskList).toBe(true);
+  });
+
+  it("adds and removes ordered list prefixes", () => {
+    const applied = applyOrderedListSelection("alpha\nbeta", { start: 0, end: 10 });
+    expect(applied.value).toBe("1. alpha\n2. beta");
+
+    const removed = applyOrderedListSelection(applied.value, applied.selection);
+    expect(removed.value).toBe("alpha\nbeta");
+  });
+
+  it("moves selected lines up and down while preserving the block selection", () => {
+    const movedUp = moveSelectedLines("one\ntwo\nthree", { start: 4, end: 7 }, "up");
+    expect(movedUp.value).toBe("two\none\nthree");
+    expect(movedUp.selection).toEqual({ start: 0, end: 3, direction: "none" });
+
+    const boundary = moveSelectedLines("one\ntwo", { start: 0, end: 3 }, "up");
+    expect(boundary.changed).toBe(false);
   });
 });

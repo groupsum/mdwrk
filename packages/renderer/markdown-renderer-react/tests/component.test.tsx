@@ -3,9 +3,9 @@ import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { MarkdownRenderer } from "../src/component.js";
+import { MarkdownRenderer, useMarkdownPreviewCommands } from "../src/component.js";
 import { createMarkdownRendererThemeStyle } from "../src/theme.js";
-import { renderMarkdownToStaticHtml, renderMarkdownToStaticHtmlDocument } from "../src/server.js";
+import { renderMarkdownToStaticHtml, renderMarkdownToStaticHtmlDocument, renderMarkdownToStaticPdfDocument } from "../src/server.js";
 
 describe("@mdwrk/markdown-renderer-react", () => {
   it("renders markdown headings and paragraphs", () => {
@@ -50,6 +50,16 @@ describe("@mdwrk/markdown-renderer-react", () => {
     expect(html).toContain("markdown-export");
   });
 
+  it("renders static pdf artifact contracts", () => {
+    const pdf = renderMarkdownToStaticPdfDocument({
+      markdown: "# Export",
+      title: "Export",
+      bodyClassName: "markdown-export",
+    });
+    expect(pdf.format).toBe("pdf");
+    expect(pdf.html).toContain("mw-pdf-document");
+  });
+
   it("renders default GFM features in the React surface", () => {
     render(
       <MarkdownRenderer
@@ -77,6 +87,16 @@ describe("@mdwrk/markdown-renderer-react", () => {
     expect(container.querySelector("code.md-code-content.language-ts")).toBeInTheDocument();
     expect(container.querySelector(".token.keyword")).toHaveTextContent("const");
     expect(container.querySelector(".token.number")).toHaveTextContent("1");
+  });
+
+  it("exposes preview command descriptors for shared operator surfaces", () => {
+    function Harness(): React.JSX.Element {
+      const commands = useMarkdownPreviewCommands();
+      return <output data-testid="preview-count">{commands.length}</output>;
+    }
+
+    render(<Harness />);
+    expect(Number(screen.getByTestId("preview-count").textContent)).toBeGreaterThan(0);
   });
 
 });

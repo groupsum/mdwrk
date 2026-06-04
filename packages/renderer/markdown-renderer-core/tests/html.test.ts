@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   createHtmlDocument,
+  exportMarkdownToPdfDocument,
   extractMarkdownHeadings,
+  getMarkdownBlockMap,
+  listMarkdownOperators,
+  loadMarkdownDocument,
   parseMarkdownDocument,
   renderMarkdownToHtml,
   renderMarkdownToHtmlDocument,
@@ -12,6 +16,7 @@ describe("@mdwrk/markdown-renderer-core", () => {
     const parsed = parseMarkdownDocument(`---\ntitle: Test\n---\n\n# Alpha\n\n## Beta\n\nParagraph`);
     expect(parsed.metadata.title).toBe("Test");
     expect(parsed.headings.map((heading) => heading.text)).toEqual(["Alpha", "Beta"]);
+    expect(loadMarkdownDocument(`---\ntitle: Test\n---\n\n# Alpha`).metadata.title).toBe("Test");
   });
 
   it("extracts headings with depth filtering", () => {
@@ -35,10 +40,9 @@ describe("@mdwrk/markdown-renderer-core", () => {
     ].join("\n"));
 
     expect(html).toContain('class="markdown-body"');
-    expect(html).toContain('class="md-task-list-item"');
-    expect(html).toContain('class="md-table"');
-    expect(html).toContain('class="md-code-block"');
-    expect(html).toContain('class="md-code-content language-ts"');
+    expect(html).toContain('class="md-li md-task-list-item"');
+    expect(html).toContain('class="md-code-block md-code-surface"');
+    expect(html).toContain('class="language-ts"');
     expect(html).toContain('class="token keyword"');
     expect(html).toContain('class="token number"');
   });
@@ -56,7 +60,7 @@ describe("@mdwrk/markdown-renderer-core", () => {
 
     for (const [language, source] of fixtures) {
       const html = await renderMarkdownToHtml(`\`\`\`${language}\n${source}\n\`\`\``);
-      expect(html).toContain(`class="md-code-content language-${language}"`);
+      expect(html).toContain(`class="language-${language}"`);
       expect(html).toMatch(/class="token (?:attr-name|boolean|comment|function|keyword|number|operator|property|punctuation|selector|string|tag)"/);
     }
   });
@@ -93,5 +97,25 @@ describe("@mdwrk/markdown-renderer-core", () => {
     });
     expect(html).toContain('<main class="mw-html-content mw-pdf-content">');
     expect(html).toContain("<main id=\"content\">Fragment</main>");
+  });
+
+  it("exports a block map and PDF artifact contract", () => {
+    const blockMap = getMarkdownBlockMap("# Alpha\n\n1. Beta");
+    expect(blockMap.map((entry) => entry.type)).toContain("heading");
+
+    const pdf = exportMarkdownToPdfDocument("# Alpha", { title: "Alpha", stylesheets: [":root { --pdf: 1; }"] });
+    expect(pdf.html).toContain("mw-pdf-document");
+    expect(pdf.bridgeStyles).toContain(":root { --pdf: 1; }");
+  });
+
+  it("discloses the explicit operator inventory", () => {
+    expect(listMarkdownOperators().map((operator) => operator.id)).toEqual([
+      "load",
+      "parse",
+      "get-block-map",
+      "export-markdown",
+      "export-html",
+      "export-pdf",
+    ]);
   });
 });

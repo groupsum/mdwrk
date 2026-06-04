@@ -133,6 +133,10 @@ function isBulletListLine(line: string): boolean {
   return /^\s*[-*+]\s+/.test(line) && !isTaskListLine(line);
 }
 
+function isOrderedListLine(line: string): boolean {
+  return /^\s*\d+[.)]\s+/.test(line) && !isTaskListLine(line);
+}
+
 function applyTaskPrefix(line: string): { line: string; added: number } {
   if (isTaskListLine(line)) {
     return { line, added: 0 };
@@ -168,11 +172,34 @@ function applyBulletPrefix(line: string): string {
   return line.replace(/^(\s*)/, "$1- ");
 }
 
+function applyOrderedPrefix(line: string, index: number): string {
+  if (line.trim().length === 0) {
+    return line;
+  }
+  if (isTaskListLine(line)) {
+    return line.replace(/^(\s*)(?:[-*+]|\d+[.)])\s+\[[ xX]\]\s+/, `$1${index + 1}. `);
+  }
+  if (isOrderedListLine(line)) {
+    return line.replace(/^(\s*)\d+[.)]\s+/, `$1${index + 1}. `);
+  }
+  if (isBulletListLine(line)) {
+    return line.replace(/^(\s*)[-*+]\s+/, `$1${index + 1}. `);
+  }
+  return line.replace(/^(\s*)/, `$1${index + 1}. `);
+}
+
 function removeBulletPrefix(line: string): string {
   if (line.trim().length === 0) {
     return line;
   }
   return line.replace(/^(\s*)[-*+]\s+/, "$1");
+}
+
+function removeOrderedPrefix(line: string): string {
+  if (line.trim().length === 0) {
+    return line;
+  }
+  return line.replace(/^(\s*)\d+[.)]\s+/, "$1");
 }
 
 export function applyBulletListSelection(
@@ -184,6 +211,24 @@ export function applyBulletListSelection(
   const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
   const shouldRemove = nonEmptyLines.length > 0 && nonEmptyLines.every((line) => isBulletListLine(line));
   const updatedLines = lines.map((line) => (shouldRemove ? removeBulletPrefix(line) : applyBulletPrefix(line)));
+  const updatedBlock = updatedLines.join("\n");
+  const nextValue = `${value.slice(0, lineStart)}${updatedBlock}${value.slice(lineEnd)}`;
+  return {
+    value: nextValue,
+    selection: createSelection(lineStart, lineStart + updatedBlock.length),
+    changed: nextValue !== value,
+  };
+}
+
+export function applyOrderedListSelection(
+  value: string,
+  selection: MarkdownEditorSelection,
+): MarkdownEditorEditResult {
+  const normalized = normalizeSelection(selection, value.length);
+  const { lineStart, lineEnd, lines } = getSelectedLineRange(value, normalized);
+  const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
+  const shouldRemove = nonEmptyLines.length > 0 && nonEmptyLines.every((line) => isOrderedListLine(line));
+  const updatedLines = lines.map((line, index) => (shouldRemove ? removeOrderedPrefix(line) : applyOrderedPrefix(line, index)));
   const updatedBlock = updatedLines.join("\n");
   const nextValue = `${value.slice(0, lineStart)}${updatedBlock}${value.slice(lineEnd)}`;
   return {
@@ -341,6 +386,92 @@ export function computeSelectionFormatState(
     underline,
     strikethrough,
     bulletList: isBulletListLine(currentLine),
+    orderedList: isOrderedListLine(currentLine),
     taskList: isTaskListLine(currentLine),
+  };
+}
+
+interface LineSpan {
+  readonly start: number;
+  readonly end: number;
+}
+
+function getDocumentLineSpans(value: string): readonly LineSpan[] {
+  const spans: LineSpan[] = [];
+  let start = 0;
+  for (let index = 0; index <= value.length; index += 1) {
+    if (index === value.length || value[index] === "\n") {
+      spans.push({ start, end: index });
+      start = index + 1;
+    }
+  }
+  return spans;
+}
+
+function getTouchedLineIndexes(
+  spans: readonly LineSpan[],
+  selection: MarkdownEditorSelection,
+): { startIndex: number; endIndex: number } {
+  const startIndex = spans.findIndex((span) => selection.start <= span.end);
+  const resolvedStart = startIndex === -1 ? Math.max(0, spans.length - 1) : startIndex;
+  const resolvedEnd = spans.findIndex((span) => selection.end <= span.end);
+  return {
+    startIndex: resolvedStart,
+    endIndex: resolvedEnd === -1 ? Math.max(0, spans.length - 1) : resolvedEnd,
+  };
+}
+
+export function moveSelectedLines(
+  value: string,
+  selection: MarkdownEditorSelection,
+  direction: "up" | "down",
+): MarkdownEditorEditResult {
+  const normalized = normalizeSelection(selection, value.length);
+  const spans = getDocumentLineSpans(value);
+  if (spans.length <= 1) {
+    return { value, selection: normalized, changed: false };
+  }
+
+  const { startIndex, endIndex } = getTouchedLineIndexes(spans, normalized);
+
+  if ((direction === "up" && startIndex === 0) || (direction === "down" && endIndex === spans.length - 1)) {
+    return { value, selection: normalized, changed: false };
+  }
+
+  const lines = spans.map((span) => value.slice(span.start, span.end));
+  const beforeSelection = lines.slice(0, startIndex);
+  const selectionLines = lines.slice(startIndex, endIndex + 1);
+  const afterSelection = lines.slice(endIndex + 1);
+
+  let reordered: string[];
+  let nextStartIndex: number;
+  if (direction === "up") {
+    reordered = [
+      ...beforeSelection.slice(0, -1),
+      ...selectionLines,
+      beforeSelection.at(-1) ?? "",
+      ...afterSelection,
+    ];
+    nextStartIndex = startIndex - 1;
+  } else {
+    reordered = [
+      ...beforeSelection,
+      afterSelection[0] ?? "",
+      ...selectionLines,
+      ...afterSelection.slice(1),
+    ];
+    nextStartIndex = startIndex + 1;
+  }
+
+  const nextValue = reordered.join("\n");
+  const nextSpans = getDocumentLineSpans(nextValue);
+  const nextStart = nextSpans[nextStartIndex]?.start ?? normalized.start;
+  const nextEndLineIndex = nextStartIndex + selectionLines.length - 1;
+  const nextEnd = nextSpans[nextEndLineIndex]?.end ?? normalized.end;
+
+  return {
+    value: nextValue,
+    selection: createSelection(nextStart, nextEnd),
+    changed: nextValue !== value,
   };
 }

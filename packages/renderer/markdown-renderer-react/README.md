@@ -37,6 +37,11 @@ export function Preview() {
 }
 ```
 
+## Surface
+- Shared preview/export inventory is available through `useMarkdownPreviewCommands()`.
+- Static export helpers now include `renderMarkdownToStaticHtmlDocument()` and `renderMarkdownToStaticPdfDocument()`.
+- Preview hosts keep rendered text selectable on touch devices so users can expand a native selection range.
+
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview

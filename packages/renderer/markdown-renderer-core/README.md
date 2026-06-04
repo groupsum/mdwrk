@@ -36,6 +36,11 @@ const html = renderMarkdownToHtmlSync("# Hello\n\nMdWrk renderer core.", {
 });
 ```
 
+## Surface
+- Shared operators are exported as `loadMarkdownDocument()`, `parseMarkdownToAst()`, `getMarkdownBlockMap()`, `exportMarkdownSource()`, `exportMarkdownToHtmlDocument()`, and `exportMarkdownToPdfDocument()`.
+- Operator descriptors are exported through `listMarkdownOperators()` with `shared` scope and CM/GFM/CFM or `mdwrk-operator` applicability metadata.
+- PDF export returns a portable print contract backed by HTML, metadata, and bridge styles rather than PDF bytes.
+
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview

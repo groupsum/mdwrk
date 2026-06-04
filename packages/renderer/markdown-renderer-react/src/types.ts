@@ -3,6 +3,7 @@ import type React from "react";
 import type {
   MarkdownHtmlHandlingMode,
   MarkdownLinkAttributeResult,
+  MarkdownOperatorDescriptor,
   MarkdownOptionalProfileId,
   MarkdownProfileId,
 } from "@mdwrk/markdown-renderer-core";
@@ -42,6 +43,8 @@ export interface MarkdownRendererProps {
   readonly sourcePositionAttributes?: boolean;
   readonly preserveSoftLineBreaks?: boolean;
 }
+
+export type MarkdownPreviewCommandDescriptor = MarkdownOperatorDescriptor;
 
 
 export interface RenderMarkdownToStaticHtmlProps {

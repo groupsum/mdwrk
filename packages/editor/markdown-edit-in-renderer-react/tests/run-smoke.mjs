@@ -196,13 +196,14 @@ const checks = [
   },
   {
     id: "plaintext-source-is-only-editable-control",
-    description: "Rendered markdown is inert and plaintext markdown is the only editable control",
+    description: "Rendered markdown stays source-backed while remaining touch-selectable on the projected surface",
     test() {
       const view = setupRenderedEditor("# Title\n\nBody");
       try {
         assert.equal(view.container.querySelectorAll("textarea.markdown-edit-in-renderer-plaintext").length, 1);
         assert.equal(view.projection.getAttribute("aria-hidden"), "true");
-        assert.match(defaultCss, /\.markdown-edit-in-renderer-surface\s*\{[\s\S]*pointer-events:\s*none;/);
+        assert.match(defaultCss, /\.markdown-edit-in-renderer-surface\s*\{[\s\S]*pointer-events:\s*auto;/);
+        assert.match(defaultCss, /\.markdown-edit-in-renderer-surface\s*\{[\s\S]*user-select:\s*text;/);
         assert.equal(view.textarea.value, "# Title\n\nBody");
         assert.equal(view.projection.querySelector("h1")?.textContent, "Title");
       } finally {
@@ -301,13 +302,12 @@ const checks = [
     test() {
       const view = setupRenderedEditor("```ts\nconst value = 1;\n```");
       try {
-        const codeBlock = view.projection.querySelector(".markdown-edit-in-renderer-code-block");
-        const header = view.projection.querySelector(".markdown-edit-in-renderer-code-header");
-        const language = view.projection.querySelector(".markdown-edit-in-renderer-code-language");
+        const codeBlock = view.projection.querySelector(".md-code-block");
+        const header = view.projection.querySelector(".md-code-header");
+        const language = view.projection.querySelector(".md-code-language");
         assert.ok(codeBlock instanceof HTMLElement);
         assert.ok(header instanceof HTMLElement);
         assert.ok(language instanceof HTMLElement);
-        assert.equal(codeBlock.dataset.codeLanguage, "ts");
         assert.equal(language.textContent, "TS");
         assert.ok(view.projection.querySelector("code.language-ts"));
         assert.ok(view.projection.querySelector(".token.keyword"));
@@ -321,11 +321,11 @@ const checks = [
     id: "code-block-styling-is-distinct-from-document-background",
     description: "Edit-in-renderer code blocks use a distinct visible background and token color rules",
     test() {
-      assert.match(defaultCss, /\.markdown-edit-in-renderer-code-block\s*\{[\s\S]*background:\s*#e8eef5;/);
-      assert.match(defaultCss, /\.markdown-edit-in-renderer-code-block \.markdown-edit-in-renderer-code-header\s*\{[\s\S]*background:\s*#dbe6f1;/);
-      assert.match(defaultCss, /\.markdown-edit-in-renderer-code-block \.token\.keyword[\s\S]*color:\s*#0b5cad;/);
-      assert.match(defaultCss, /\.markdown-edit-in-renderer-code-block \.token\.string[\s\S]*color:\s*#12633d;/);
-      assert.match(defaultCss, /\.markdown-edit-in-renderer-code-block \.token\.number[\s\S]*color:\s*#8a3ffc;/);
+      assert.match(defaultCss, /\.markdown-edit-in-renderer-surface \.md-code-surface\s*\{[\s\S]*background:\s*var\(--code-block-bg\);/);
+      assert.match(defaultCss, /\.markdown-edit-in-renderer-surface \.md-code-block \.md-code-language\s*\{[\s\S]*color:\s*var\(--code-language-fg\);/);
+      assert.match(defaultCss, /\.markdown-edit-in-renderer-surface \.md-code-block \.token\.keyword[\s\S]*color:\s*#0b5cad;/);
+      assert.match(defaultCss, /\.markdown-edit-in-renderer-surface \.md-code-block \.token\.string[\s\S]*color:\s*#12633d;/);
+      assert.match(defaultCss, /\.markdown-edit-in-renderer-surface \.md-code-block \.token\.number[\s\S]*color:\s*#8a3ffc;/);
     },
   },
   {

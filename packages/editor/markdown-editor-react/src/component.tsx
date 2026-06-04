@@ -6,11 +6,13 @@ import {
   applyBuiltinMarkdownCommand,
   canRedoHistory,
   canUndoHistory,
+  computeNavigatedSelection,
   computeCursorPosition,
   computeSelectionFormatState,
   createSelection,
   createHistoryState,
   insertListContinuation,
+  listBuiltinMarkdownEditorCommands,
   normalizeSelection,
   pushHistoryEntry,
   redoHistory,
@@ -28,7 +30,12 @@ import type {
 } from "@mdwrk/markdown-editor-core";
 import { measureNaturalWidth, prepareWithSegments } from "@chenglou/pretext";
 import { createMarkdownEditorThemeStyle } from "./theme.js";
-import type { MarkdownSourceEditorHandle, MarkdownSourceEditorProps } from "./types.js";
+import type {
+  MarkdownCommandPaletteModel,
+  MarkdownEditorNavigationApi,
+  MarkdownSourceEditorHandle,
+  MarkdownSourceEditorProps,
+} from "./types.js";
 
 const mergeClassNames = (...values: Array<string | undefined>) => values.filter(Boolean).join(" ");
 const WRAP_MEASUREMENT_SAMPLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -39,7 +46,31 @@ const EDITOR_LINE_HEIGHT_CSS = "var(--mwe-line-height, var(--editor-line-rhythm,
 function estimateWordBreakVisualRows(line: string, wrapColumn: number): number {
   if (!line) return 1;
   const expanded = line.replace(/\t/g, "    ");
-  return Math.max(1, Math.ceil(expanded.length / Math.max(MIN_WRAP_COLUMN, wrapColumn)));
+  const boundedWrapColumn = Math.max(MIN_WRAP_COLUMN, wrapColumn);
+  const segments = expanded.split(/(\s+)/).filter(Boolean);
+  let rows = 1;
+  let currentWidth = 0;
+  for (const segment of segments) {
+    const segmentWidth = segment.length;
+    if (/^\s+$/.test(segment)) {
+      currentWidth += segmentWidth;
+      continue;
+    }
+    if (currentWidth > 0 && currentWidth + segmentWidth > boundedWrapColumn) {
+      rows += 1;
+      currentWidth = 0;
+    }
+    if (segmentWidth > boundedWrapColumn) {
+      rows += Math.max(0, Math.ceil(segmentWidth / boundedWrapColumn) - 1);
+      currentWidth = segmentWidth % boundedWrapColumn;
+      if (currentWidth === 0) {
+        currentWidth = boundedWrapColumn;
+      }
+      continue;
+    }
+    currentWidth += segmentWidth;
+  }
+  return Math.max(1, rows);
 }
 
 function selectionEquals(a: MarkdownEditorSelection, b: MarkdownEditorSelection): boolean {
@@ -294,6 +325,12 @@ export const MarkdownSourceEditor = React.forwardRef<MarkdownSourceEditorHandle,
         applyEditResult(result, { historic: options?.historic, focus: true });
       },
       executeCommand,
+      executeNamedCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot {
+        return executeCommand(command, options);
+      },
+      listCommands() {
+        return listBuiltinMarkdownEditorCommands();
+      },
       undo(): void {
         executeCommand("undo");
       },
@@ -456,6 +493,7 @@ export const MarkdownSourceEditor = React.forwardRef<MarkdownSourceEditorHandle,
             cols={textWrap ? wrapColumn : undefined}
             data-wrap-engine="pretext"
             data-wrap-mode={textWrap ? "word-break" : "off"}
+            data-touch-selection="native"
             data-testid="markdown-source-editor"
           />
         </div>
@@ -463,3 +501,46 @@ export const MarkdownSourceEditor = React.forwardRef<MarkdownSourceEditorHandle,
     );
   },
 );
+
+export function useMarkdownEditorCommands(): ReturnType<typeof listBuiltinMarkdownEditorCommands> {
+  return React.useMemo(() => listBuiltinMarkdownEditorCommands(), []);
+}
+
+export function useMarkdownEditorNavigation(
+  handleRef: React.RefObject<MarkdownSourceEditorHandle | null>,
+): MarkdownEditorNavigationApi {
+  const navigate = React.useCallback((intent: Parameters<MarkdownEditorNavigationApi["navigate"]>[0], options?: Parameters<MarkdownEditorNavigationApi["navigate"]>[1]) => {
+    const handle = handleRef.current;
+    if (!handle) return undefined;
+    const snapshot = handle.getSnapshot();
+    const nextSelection = computeNavigatedSelection(snapshot.value, snapshot.selection, intent, options);
+    handle.setSelection(nextSelection);
+    return nextSelection;
+  }, [handleRef]);
+
+  return React.useMemo(() => ({ navigate }), [navigate]);
+}
+
+export function useMarkdownCommandPalette(
+  handleRef: React.RefObject<MarkdownSourceEditorHandle | null>,
+): MarkdownCommandPaletteModel {
+  const [query, setQuery] = React.useState("");
+  const commands = useMarkdownEditorCommands();
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const filteredCommands = React.useMemo(() => commands.filter((command) => {
+    if (!normalizedQuery) return true;
+    return `${command.id} ${command.title} ${command.description}`.toLowerCase().includes(normalizedQuery);
+  }), [commands, normalizedQuery]);
+
+  const execute = React.useCallback((command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions) => {
+    return handleRef.current?.executeNamedCommand(command, options);
+  }, [handleRef]);
+
+  return React.useMemo(() => ({
+    query,
+    setQuery,
+    commands: filteredCommands.map((command) => ({ ...command, disabled: !handleRef.current })),
+    execute,
+  }), [execute, filteredCommands, handleRef, query]);
+}

@@ -4,10 +4,13 @@ import {
   canRedoHistory,
   canUndoHistory,
   computeCursorPosition,
+  computeNavigatedSelection,
   computeSelectionFormatState,
   createHistoryState,
   getListContinuationPrefix,
   insertListContinuation,
+  listBuiltinMarkdownEditorCommands,
+  moveSelectedLines,
   normalizeSelection,
   pushHistoryEntry,
   redoHistory,
@@ -33,6 +36,15 @@ const checks = [
       const bulletList = applyBuiltinMarkdownCommand('bullet-list', 'alpha\nbeta', { start: 0, end: 10 });
       assert.equal(bulletList.value, '- alpha\n- beta');
       assert.equal(bulletList.selection.end, 14);
+    },
+  },
+  {
+    id: 'ordered-list-selection',
+    description: 'ordered-list command toggles ordered list prefixes for selected lines',
+    test() {
+      const orderedList = applyBuiltinMarkdownCommand('ordered-list', 'alpha\nbeta', { start: 0, end: 10 });
+      assert.equal(orderedList.value, '1. alpha\n2. beta');
+      assert.equal(orderedList.selection.end, 16);
     },
   },
   {
@@ -139,6 +151,8 @@ const checks = [
       assert.equal(bulletState.bulletList, true);
       const taskState = computeSelectionFormatState('- [ ] alpha', { start: 6, end: 6 });
       assert.equal(taskState.taskList, true);
+      const orderedState = computeSelectionFormatState('2. alpha', { start: 3, end: 3 });
+      assert.equal(orderedState.orderedList, true);
     },
   },
   {
@@ -148,6 +162,18 @@ const checks = [
       assert.deepEqual(normalizeSelection({ start: 8, end: 2 }, 10), { start: 2, end: 8, direction: 'none' });
       assert.deepEqual(computeCursorPosition('one\ntwo', 5), { offset: 5, line: 2, column: 2 });
       assert.equal(wrapSelection('hello world', { start: 0, end: 5 }, '**', '**').value, '**hello** world');
+      assert.deepEqual(computeNavigatedSelection('one\ntwo', { start: 0, end: 0 }, 'arrow-down'), { start: 4, end: 4, direction: 'none' });
+    },
+  },
+  {
+    id: 'line-reorder-and-command-catalog',
+    description: 'line reorder and exported command metadata stay available',
+    test() {
+      const moved = moveSelectedLines('one\ntwo\nthree', { start: 4, end: 7 }, 'up');
+      assert.equal(moved.value, 'two\none\nthree');
+      const commands = listBuiltinMarkdownEditorCommands();
+      assert.equal(commands.some((command) => command.id === 'move-line-up'), true);
+      assert.equal(commands.some((command) => command.id === 'ordered-list'), true);
     },
   },
   {

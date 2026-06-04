@@ -5,6 +5,16 @@ export interface MarkdownHeading {
   readonly index: number;
 }
 
+export type MarkdownOperatorApplicability = "cm" | "gfm" | "cfm" | "mdwrk-operator";
+
+export interface MarkdownOperatorDescriptor<TOperatorId extends string = string> {
+  readonly id: TOperatorId;
+  readonly title: string;
+  readonly scope: "shared" | "preview";
+  readonly applicability: readonly MarkdownOperatorApplicability[];
+  readonly description: string;
+}
+
 export interface MarkdownPositionPoint {
   readonly line: number;
   readonly column: number;
@@ -74,6 +84,17 @@ export interface MarkdownAstRoot {
   readonly position?: MarkdownPosition;
 }
 
+export interface MarkdownBlockMapEntry {
+  readonly id: string;
+  readonly type: string;
+  readonly depth?: number;
+  readonly ordered?: boolean;
+  readonly task?: boolean;
+  readonly checked?: boolean;
+  readonly text?: string;
+  readonly position?: MarkdownPosition;
+}
+
 export type MarkdownBaseProfileId = 'commonmark-core' | 'gfm-default';
 export type MarkdownOptionalProfileId =
   | 'front-matter'
@@ -103,6 +124,30 @@ export interface ParsedMarkdownDocument {
   readonly metadata: Readonly<Record<string, unknown>>;
   readonly headings: readonly MarkdownHeading[];
   readonly excerpt?: string;
+}
+
+export interface ExportedMarkdownDocument {
+  readonly format: "markdown";
+  readonly markdown: string;
+  readonly applicability: readonly MarkdownOperatorApplicability[];
+}
+
+export interface ExportedHtmlDocument {
+  readonly format: "html";
+  readonly html: string;
+  readonly applicability: readonly MarkdownOperatorApplicability[];
+}
+
+export interface ExportedPdfDocument {
+  readonly format: "pdf";
+  readonly html: string;
+  readonly metadata: Readonly<{
+    title: string;
+    lang: string;
+    dataTheme?: string;
+  }>;
+  readonly bridgeStyles: readonly string[];
+  readonly applicability: readonly MarkdownOperatorApplicability[];
 }
 
 export interface ExtractMarkdownHeadingsOptions {

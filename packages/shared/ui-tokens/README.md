@@ -35,6 +35,11 @@ import { MARKDOWN_PACKAGE_TOKEN_DEFAULTS } from "@mdwrk/ui-tokens";
 console.log(MARKDOWN_PACKAGE_TOKEN_DEFAULTS["bg-panel"]);
 ```
 
+## Surface
+- Theme bridge helpers now cover `renderer`, `editor`, `html`, and `pdf` targets.
+- Use `createHtmlThemeBridgeVariableRecord()` and `createPdfThemeBridgeVariableRecord()` when exporting HTML or PDF-specific token bridges.
+- The bridge inventory continues to expose applicability through stable CSS custom-property contracts rather than app-shell selectors.
+
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview

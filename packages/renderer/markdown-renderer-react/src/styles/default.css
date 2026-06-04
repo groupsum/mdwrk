@@ -27,6 +27,9 @@
   box-sizing: border-box;
   background: var(--mw-bg-surface, var(--bg-panel, transparent));
   color: var(--mw-fg-primary, var(--fg-primary, inherit));
+  user-select: text;
+  -webkit-user-select: text;
+  touch-action: manipulation;
 }
 
 .markdown-body {

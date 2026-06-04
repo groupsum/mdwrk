@@ -3,6 +3,8 @@ import {
   createMarkdownWorkspaceThemeTokenMap,
   createRendererThemeBridgeVariableRecord,
   createEditorThemeBridgeVariableRecord,
+  createHtmlThemeBridgeVariableRecord,
+  createPdfThemeBridgeVariableRecord,
   MARKDOWN_WORKSPACE_HTML_HELPER_CLASSES,
   MARKDOWN_WORKSPACE_PDF_HELPER_CLASSES,
   renderThemeBridgeCssVariables,
@@ -54,6 +56,12 @@ assert.equal(rendererBridge['--mw-accent'], '#ff79c6');
 const editorBridge = createEditorThemeBridgeVariableRecord(customTheme);
 assert.equal(editorBridge['--mwe-bg-gutter'], '#241338');
 assert.equal(editorBridge['--mwe-editor-padding'], '32px');
+
+const htmlBridge = createHtmlThemeBridgeVariableRecord(customTheme);
+assert.equal(htmlBridge['--mw-html-bg-surface'], '#1b1028');
+
+const pdfBridge = createPdfThemeBridgeVariableRecord(customTheme);
+assert.equal(pdfBridge['--mw-pdf-page-size'], 'A4');
 
 const rendererCss = renderThemeBridgeCssVariables('renderer', customTheme, { selector: '.custom-renderer' });
 assert.ok(rendererCss.includes('--mw-bg-surface: #1b1028;'));

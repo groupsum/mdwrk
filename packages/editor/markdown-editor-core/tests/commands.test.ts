@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyBuiltinMarkdownCommand } from "../src/index.js";
+import { applyBuiltinMarkdownCommand, listBuiltinMarkdownEditorCommands } from "../src/index.js";
 
 describe("builtin markdown editor commands", () => {
   it("applies bold to the selected text", () => {
@@ -32,6 +32,21 @@ describe("builtin markdown editor commands", () => {
     expect(result.value).toBe("- [ ] alpha\n- [ ] beta");
     expect(result.selection.start).toBe(0);
     expect(result.selection.end).toBe(22);
+  });
+
+  it("toggles ordered list prefixes for selected lines", () => {
+    const result = applyBuiltinMarkdownCommand("ordered-list", "alpha\nbeta", { start: 0, end: 10 });
+    expect(result.value).toBe("1. alpha\n2. beta");
+    expect(result.selection.start).toBe(0);
+    expect(result.selection.end).toBe(16);
+  });
+
+  it("moves the current line or selected block up and down", () => {
+    const movedUp = applyBuiltinMarkdownCommand("move-line-up", "one\ntwo\nthree", { start: 5, end: 5 });
+    expect(movedUp.value).toBe("two\none\nthree");
+
+    const movedDown = applyBuiltinMarkdownCommand("move-block-down", "one\ntwo\nthree", { start: 0, end: 7 });
+    expect(movedDown.value).toBe("three\none\ntwo");
   });
 
   it("wraps selected text as a markdown link and selects the URL", () => {
@@ -143,5 +158,15 @@ describe("builtin markdown editor commands", () => {
     );
     expect(result.value).toBe("Alpha beta[^2][^1]\n\n[^1]: prior note\n\n[^2]: ");
     expect(result.selection).toEqual({ start: 44, end: 44, direction: "none" });
+  });
+
+  it("exports command descriptors with scope and applicability metadata", () => {
+    const commands = listBuiltinMarkdownEditorCommands();
+    expect(commands.find((command) => command.id === "ordered-list")).toMatchObject({
+      scope: "editor",
+      category: "list",
+    });
+    expect(commands.find((command) => command.id === "task-list")?.applicability).toContain("gfm");
+    expect(commands.find((command) => command.id === "move-line-up")?.applicability).toContain("mdwrk-operator");
   });
 });

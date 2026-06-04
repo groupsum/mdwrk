@@ -5,3 +5,4 @@ export * from "./selection.js";
 export * from "./transforms.js";
 export * from "./commands.js";
 export * from "./history.js";
+export * from "./navigation.js";

@@ -185,12 +185,14 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
 
     const handleHostPointerDown = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
       if (disabled) return;
+      if (event.pointerType === "touch") return;
       event.preventDefault();
       updateSelectionFromPointer(event as unknown as React.PointerEvent<HTMLTextAreaElement>, event.shiftKey);
     }, [disabled, updateSelectionFromPointer]);
 
     const handleHostPointerMove = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
       if (disabled || event.buttons !== 1) return;
+      if (event.pointerType === "touch") return;
       event.preventDefault();
       updateSelectionFromPointer(event as unknown as React.PointerEvent<HTMLTextAreaElement>, true);
     }, [disabled, updateSelectionFromPointer]);

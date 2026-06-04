@@ -1,5 +1,5 @@
 import React from "react";
-import { enhanceRenderedCodeBlocks, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
+import { enhanceRenderedCodeBlocks, listMarkdownOperators, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
 import { createMarkdownRendererThemeStyle } from "./theme.js";
 import type { MarkdownRendererProps } from "./types.js";
 
@@ -50,4 +50,8 @@ export function MarkdownRenderer({
     onClick: handleAnchorClickFactory(onLinkClick),
     dangerouslySetInnerHTML: { __html: html },
   });
+}
+
+export function useMarkdownPreviewCommands() {
+  return React.useMemo(() => listMarkdownOperators(), []);
 }

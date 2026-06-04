@@ -70,6 +70,18 @@ export function createEditorThemeBridgeVariableRecord(
   return createThemeBridgeVariableRecord("editor", overrides);
 }
 
+export function createHtmlThemeBridgeVariableRecord(
+  overrides: ThemeTokenOverrides = {},
+): Readonly<Record<`--${string}`, string>> {
+  return createThemeBridgeVariableRecord("html", overrides);
+}
+
+export function createPdfThemeBridgeVariableRecord(
+  overrides: ThemeTokenOverrides = {},
+): Readonly<Record<`--${string}`, string>> {
+  return createThemeBridgeVariableRecord("pdf", overrides);
+}
+
 export function renderThemeCssVariables(
   overrides: ThemeTokenOverrides = {},
   options: ThemeCssVariableRenderOptions = {},

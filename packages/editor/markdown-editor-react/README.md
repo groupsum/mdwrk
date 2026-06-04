@@ -37,6 +37,11 @@ export function Editor() {
 }
 ```
 
+## Surface
+- The imperative handle now exports `listCommands()` and `executeNamedCommand()` in addition to selection, history, and focus helpers.
+- Headless React helpers are exported as `useMarkdownEditorCommands()`, `useMarkdownEditorNavigation()`, and `useMarkdownCommandPalette()`.
+- Touch devices keep native word-range selection on the textarea surface while command dispatch preserves focus and insertion point.
+
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview

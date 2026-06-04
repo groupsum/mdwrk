@@ -2,9 +2,9 @@
 import "@testing-library/jest-dom/vitest";
 import "@mdwrk/testing/vitest-setup";
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { MarkdownSourceEditor } from "../src/index.js";
+import { MarkdownSourceEditor, useMarkdownEditorNavigation } from "../src/index.js";
 
 afterEach(() => {
   document.body.innerHTML = "";
@@ -70,6 +70,40 @@ describe("MarkdownSourceEditor keyboard behavior", () => {
     editor.setSelectionRange(editor.value.length, editor.value.length);
     fireEvent.keyDown(editor, { key: "Enter" });
     expect(editor.value).toBe("2. alpha\n3. \n- [x] done\n- [ ] ");
+  });
+
+  it("supports ordered-list insertion through imperative command dispatch", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
+    render(<MarkdownSourceEditor ref={ref} defaultValue="alpha" />);
+    const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
+    editor.focus();
+    editor.setSelectionRange(0, editor.value.length);
+    ref.current?.setSelection({ start: 0, end: editor.value.length });
+    await act(async () => {
+      ref.current?.executeNamedCommand("ordered-list");
+    });
+    expect(editor.value).toBe("1. alpha");
+  });
+
+  it("exposes explicit navigation helpers through the React hook", () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownSourceEditor>>();
+
+    function Harness(): React.JSX.Element {
+      const navigation = useMarkdownEditorNavigation(ref);
+      return (
+        <>
+          <MarkdownSourceEditor ref={ref} defaultValue={"one\ntwo"} />
+          <button onClick={() => navigation.navigate("arrow-down")}>down</button>
+        </>
+      );
+    }
+
+    render(<Harness />);
+    const editor = screen.getByTestId("markdown-source-editor") as HTMLTextAreaElement;
+    ref.current?.setSelection({ start: 0, end: 0 });
+    fireEvent.click(screen.getByRole("button", { name: "down" }));
+    expect(editor.selectionStart).toBe(4);
+    expect(editor.selectionEnd).toBe(4);
   });
 
   it("does not consume Ctrl+U for Markdown underline", () => {

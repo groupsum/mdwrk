@@ -37,6 +37,11 @@ const result = applyBuiltinMarkdownCommand(
 );
 ```
 
+## Surface
+- Editor commands include `ordered-list`, `bullet-list`, `task-list`, `move-line-up`, `move-line-down`, `move-block-up`, and `move-block-down`.
+- Command descriptors are exported through `listBuiltinMarkdownEditorCommands()` with scope, category, and CM/GFM/CFM or `mdwrk-operator` applicability metadata.
+- Explicit keyboard navigation is exported as pure selection helpers through `computeNavigatedSelection()`.
+
 ## Related
 - [Packages index](../../README.md) - family and package navigation
 - [Root README](../../../README.md) - repo overview

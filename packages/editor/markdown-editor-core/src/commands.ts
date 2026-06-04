@@ -1,6 +1,14 @@
 import { createSelection, normalizeSelection, wrapSelection } from "./selection.js";
-import { applyBulletListSelection, applyTaskListSelection, indentSelection, outdentSelection } from "./transforms.js";
+import {
+  applyBulletListSelection,
+  applyOrderedListSelection,
+  applyTaskListSelection,
+  indentSelection,
+  moveSelectedLines,
+  outdentSelection,
+} from "./transforms.js";
 import type {
+  MarkdownCommandDescriptor,
   MarkdownEditorBuiltinCommandId,
   MarkdownEditorCommandOptions,
   MarkdownEditorEditResult,
@@ -13,7 +21,9 @@ export const BUILTIN_MARKDOWN_EDITOR_COMMANDS: readonly MarkdownEditorBuiltinCom
   "underline",
   "strikethrough",
   "bullet-list",
+  "ordered-list",
   "task-list",
+  "image",
   "link",
   "front-matter",
   "footnote",
@@ -24,10 +34,42 @@ export const BUILTIN_MARKDOWN_EDITOR_COMMANDS: readonly MarkdownEditorBuiltinCom
   "citation",
   "indent",
   "outdent",
+  "move-line-up",
+  "move-line-down",
+  "move-block-up",
+  "move-block-down",
   "undo",
   "redo",
   "insert-tab",
 ] as const;
+
+export const BUILTIN_MARKDOWN_EDITOR_COMMAND_DESCRIPTORS = [
+  { id: "bold", title: "Bold", scope: "editor", category: "format", applicability: ["cm", "gfm", "cfm"], description: "Wrap the current selection in strong markers." },
+  { id: "italic", title: "Italic", scope: "editor", category: "format", applicability: ["cm", "gfm", "cfm"], description: "Wrap the current selection in emphasis markers." },
+  { id: "underline", title: "Underline", scope: "editor", category: "format", applicability: ["mdwrk-operator", "cfm"], description: "Wrap the current selection in MdWrk underline markers." },
+  { id: "strikethrough", title: "Strikethrough", scope: "editor", category: "format", applicability: ["gfm", "cfm"], description: "Wrap the current selection in strike markers." },
+  { id: "bullet-list", title: "Bullet List", scope: "editor", category: "list", applicability: ["cm", "gfm", "cfm"], description: "Toggle unordered list markers for the selected lines." },
+  { id: "ordered-list", title: "Ordered List", scope: "editor", category: "list", applicability: ["cm", "gfm", "cfm"], description: "Toggle ordered list markers for the selected lines." },
+  { id: "task-list", title: "Checklist", scope: "editor", category: "list", applicability: ["gfm", "cfm"], description: "Toggle task-list markers for the selected lines." },
+  { id: "link", title: "Link", scope: "editor", category: "format", applicability: ["cm", "gfm", "cfm"], description: "Insert or update a markdown link." },
+  { id: "image", title: "Image", scope: "editor", category: "format", applicability: ["cm", "gfm", "cfm"], description: "Insert or update a markdown image." },
+  { id: "front-matter", title: "Front Matter", scope: "editor", category: "structure", applicability: ["mdwrk-operator", "cfm"], description: "Insert a YAML front matter scaffold." },
+  { id: "footnote", title: "Footnote", scope: "editor", category: "structure", applicability: ["gfm", "cfm"], description: "Insert a footnote reference and definition." },
+  { id: "inline-math", title: "Inline Math", scope: "editor", category: "format", applicability: ["cfm"], description: "Wrap the selection in inline math delimiters." },
+  { id: "block-math", title: "Block Math", scope: "editor", category: "structure", applicability: ["cfm"], description: "Wrap the selection in block math delimiters." },
+  { id: "superscript", title: "Superscript", scope: "editor", category: "format", applicability: ["cfm"], description: "Wrap the selection in superscript markers." },
+  { id: "subscript", title: "Subscript", scope: "editor", category: "format", applicability: ["cfm"], description: "Wrap the selection in subscript markers." },
+  { id: "citation", title: "Citation", scope: "editor", category: "format", applicability: ["cfm"], description: "Wrap the selection in citation markers." },
+  { id: "indent", title: "Indent", scope: "editor", category: "selection", applicability: ["mdwrk-operator"], description: "Indent the current selection." },
+  { id: "outdent", title: "Outdent", scope: "editor", category: "selection", applicability: ["mdwrk-operator"], description: "Outdent the current selection." },
+  { id: "move-line-up", title: "Move Line Up", scope: "editor", category: "navigation", applicability: ["mdwrk-operator"], description: "Move the current line up by one line." },
+  { id: "move-line-down", title: "Move Line Down", scope: "editor", category: "navigation", applicability: ["mdwrk-operator"], description: "Move the current line down by one line." },
+  { id: "move-block-up", title: "Move Block Up", scope: "editor", category: "navigation", applicability: ["mdwrk-operator"], description: "Move the selected block up by one line." },
+  { id: "move-block-down", title: "Move Block Down", scope: "editor", category: "navigation", applicability: ["mdwrk-operator"], description: "Move the selected block down by one line." },
+  { id: "undo", title: "Undo", scope: "editor", category: "history", applicability: ["mdwrk-operator"], description: "Restore the previous editor snapshot." },
+  { id: "redo", title: "Redo", scope: "editor", category: "history", applicability: ["mdwrk-operator"], description: "Restore the next editor snapshot." },
+  { id: "insert-tab", title: "Insert Tab", scope: "editor", category: "selection", applicability: ["mdwrk-operator"], description: "Indent using the configured indentation unit." },
+] as const satisfies readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[];
 
 export function applyBuiltinMarkdownCommand(
   command: MarkdownEditorBuiltinCommandId,
@@ -46,6 +88,8 @@ export function applyBuiltinMarkdownCommand(
       return wrapSelection(value, selection, "~~", "~~");
     case "bullet-list":
       return applyBulletListSelection(value, selection);
+    case "ordered-list":
+      return applyOrderedListSelection(value, selection);
     case "task-list":
       return applyTaskListSelection(value, selection);
     case "link":
@@ -84,6 +128,12 @@ export function applyBuiltinMarkdownCommand(
       return indentSelection(value, selection, options.indentUnit ?? "\t");
     case "outdent":
       return outdentSelection(value, selection, options.indentUnit ?? "\t");
+    case "move-line-up":
+    case "move-block-up":
+      return moveSelectedLines(value, selection, "up");
+    case "move-line-down":
+    case "move-block-down":
+      return moveSelectedLines(value, selection, "down");
     case "undo":
     case "redo":
       return {
@@ -96,6 +146,10 @@ export function applyBuiltinMarkdownCommand(
       throw new Error(`Unsupported markdown editor command: ${String(exhaustiveCheck)}`);
     }
   }
+}
+
+export function listBuiltinMarkdownEditorCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
+  return BUILTIN_MARKDOWN_EDITOR_COMMAND_DESCRIPTORS;
 }
 
 function applyFootnoteCommand(
