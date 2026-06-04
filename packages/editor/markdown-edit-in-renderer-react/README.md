@@ -19,6 +19,11 @@ Use it when you want Typora-style authoring without splitting the document into 
 - Source editor activation only where the user is editing.
 - Integration with the MdWrk renderer and editor packages instead of a second parsing model.
 
+## Surface
+- The imperative handle now exports `getSnapshot()`, `getSelection()`, `setSelection()`, `listCommands()`, and `executeNamedCommand()` in addition to focus and value helpers.
+- `useMarkdownEditInRendererCommands()` exposes the first-class command inventory for rendered-flow authoring surfaces.
+- Command dispatch reuses the package-owned editor command descriptors so ordered lists, checklists, formatting, reorder commands, and undo/redo stay explicit instead of app-local.
+
 ## Installation
 Node.js 20.x through 22.x, matching the workspace engine contract in the root package manifest.
 

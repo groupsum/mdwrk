@@ -1,5 +1,12 @@
 import type React from "react";
 import type {
+  MarkdownCommandDescriptor,
+  MarkdownEditorBuiltinCommandId,
+  MarkdownEditorCommandOptions,
+  MarkdownEditorSelection,
+  MarkdownEditorSnapshot,
+} from "@mdwrk/markdown-editor-core";
+import type {
   MarkdownHtmlHandlingMode,
   MarkdownOptionalProfileId,
   MarkdownProfileId,
@@ -11,7 +18,13 @@ export interface MarkdownEditInRendererHandle {
   focus(): void;
   getValue(): string;
   getInputElement(): HTMLTextAreaElement | null;
-  setValue(value: string): void;
+  getSnapshot(): MarkdownEditorSnapshot;
+  getSelection(): MarkdownEditorSelection;
+  setSelection(selection: MarkdownEditorSelection): void;
+  setValue(value: string, options?: { selection?: MarkdownEditorSelection }): void;
+  executeCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot;
+  executeNamedCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot;
+  listCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[];
 }
 
 export interface MarkdownEditInRendererProps {

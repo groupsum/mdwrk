@@ -8,6 +8,7 @@ import {
   createMarkdownEditInRendererThemeStyle,
   replaceMarkdownEditBlock,
   splitMarkdownEditBlocks,
+  useMarkdownEditInRendererCommands,
 } from "../dist/index.js";
 
 const sample = "# Title\n\nParagraph text.\n\n```ts\nconst value = 1;\n```\n";
@@ -125,12 +126,97 @@ async function assertProjectedCaret(view, offset, expected) {
 
 const checks = [
   {
+    id: "command-surface-is-exported",
+    description: "Edit-in-renderer exports the first-class editor command inventory and imperative dispatch handle",
+    async test() {
+      const ref = React.createRef();
+      const view = render(
+        React.createElement(MarkdownEditInRenderer, {
+          ref,
+          defaultValue: "alpha",
+        }),
+      );
+      try {
+        const textarea = view.container.querySelector("textarea.markdown-edit-in-renderer-plaintext");
+        assert.ok(textarea instanceof HTMLTextAreaElement);
+        textarea.focus();
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = textarea.value.length;
+        fireEvent.select(textarea);
+        await waitForFrame();
+
+        const commands = ref.current?.listCommands?.();
+        assert.ok(Array.isArray(commands));
+        assert.equal(commands.some((command) => command.id === "ordered-list"), true);
+
+        ref.current?.executeNamedCommand?.("ordered-list");
+        await waitForFrame();
+        assert.equal(ref.current?.getSnapshot?.().value, "1. alpha");
+        assert.equal(document.activeElement, textarea);
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
+    id: "command-hook-is-exported",
+    description: "Package command hook exposes the same editor command inventory for rendered-flow toolbars and palettes",
+    test() {
+      function Harness() {
+        const commands = useMarkdownEditInRendererCommands();
+        return React.createElement("output", { "data-testid": "commands" }, String(commands.length));
+      }
+
+      const view = render(React.createElement(Harness));
+      try {
+        const output = view.getByTestId("commands");
+        assert.ok(output instanceof HTMLElement);
+        assert.ok(Number(output.textContent) > 0);
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
     id: "block-splitting",
     description: "splitMarkdownEditBlocks preserves paragraph and fenced-code block boundaries",
     test() {
       assert.equal(blocks.length, 3);
       assert.match(blocks[2].markdown, /```ts/);
       assert.match(blocks[2].markdown, /const value = 1/);
+    },
+  },
+  {
+    id: "undo-redo-are-real-command-surface-operations",
+    description: "Undo and redo restore prior rendered-flow markdown states through the package command handle",
+    async test() {
+      const ref = React.createRef();
+      const view = render(
+        React.createElement(MarkdownEditInRenderer, {
+          ref,
+          defaultValue: "alpha",
+        }),
+      );
+      try {
+        const textarea = view.container.querySelector("textarea.markdown-edit-in-renderer-plaintext");
+        assert.ok(textarea instanceof HTMLTextAreaElement);
+        textarea.focus();
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = textarea.value.length;
+        fireEvent.select(textarea);
+        await waitForFrame();
+
+        ref.current?.executeCommand?.("ordered-list");
+        await waitForFrame();
+        ref.current?.executeCommand?.("undo");
+        await waitForFrame();
+        assert.equal(ref.current?.getValue?.(), "alpha");
+        ref.current?.executeCommand?.("redo");
+        await waitForFrame();
+        assert.equal(ref.current?.getValue?.(), "1. alpha");
+      } finally {
+        cleanup();
+      }
     },
   },
   {

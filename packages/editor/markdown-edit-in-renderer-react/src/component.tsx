@@ -1,6 +1,22 @@
 import React from "react";
 import { enhanceRenderedCodeBlocks, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
 import {
+  applyBuiltinMarkdownCommand,
+  createHistoryState,
+  createSelection,
+  listBuiltinMarkdownEditorCommands,
+  normalizeSelection,
+  pushHistoryEntry,
+  redoHistory,
+  replaceHistoryPresent,
+  undoHistory,
+  type MarkdownCommandDescriptor,
+  type MarkdownEditorBuiltinCommandId,
+  type MarkdownEditorCommandOptions,
+  type MarkdownEditorSelection,
+  type MarkdownEditorSnapshot,
+} from "@mdwrk/markdown-editor-core";
+import {
   getProjectedCaret,
   plaintextOffsetFromRenderedPoint,
   projectMarkdownState,
@@ -15,6 +31,7 @@ import type {
 } from "./types.js";
 
 const mergeClassNames = (...values: Array<string | undefined | false>) => values.filter(Boolean).join(" ");
+const EDIT_IN_RENDERER_HISTORY_LIMIT = 100;
 
 function createTrailingBlankLineSpacers(markdown: string): string {
   const trailingNewlines = markdown.match(/\n+$/)?.[0].length ?? 0;
@@ -28,6 +45,29 @@ function createBlankMarkdownSpacers(markdown: string): string {
   return Array.from({ length: blankLineCount }, () => (
     '<div class="markdown-edit-in-renderer-blank-line" aria-hidden="true"></div>'
   )).join("");
+}
+
+function snapshotFromState(value: string, selection: PlaintextSelection): MarkdownEditorSnapshot {
+  return {
+    value,
+    selection: {
+      start: selection.start,
+      end: selection.end,
+      direction: "none",
+    },
+  };
+}
+
+function normalizePlaintextSelection(selection: MarkdownEditorSelection | PlaintextSelection, length: number): PlaintextSelection {
+  const normalized = normalizeSelection({
+    start: selection.start,
+    end: selection.end,
+    direction: "none",
+  }, length);
+  return {
+    start: normalized.start,
+    end: normalized.end,
+  };
 }
 
 export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHandle, MarkdownEditInRendererProps>(
@@ -60,7 +100,14 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
     const surfaceRef = React.useRef<HTMLDivElement>(null);
     const valueRef = React.useRef(draftValue);
     const selectionRef = React.useRef<PlaintextSelection>({ start: 0, end: 0 });
+    const pendingSelectionRef = React.useRef<PlaintextSelection | null>(null);
     const isComposingRef = React.useRef(false);
+    const [history, setHistory] = React.useState(() => createHistoryState(
+      initialValue,
+      createSelection(initialValue.length, initialValue.length),
+      EDIT_IN_RENDERER_HISTORY_LIMIT,
+    ));
+    const historyRef = React.useRef(history);
     const initialCaret = React.useMemo<RenderedCaret>(() => ({
       ...getProjectedCaret(initialValue, 0),
       visible: false,
@@ -107,12 +154,54 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       valueRef.current = markdown;
     }, [markdown]);
 
-    const commitValue = React.useCallback((nextValue: string) => {
+    React.useEffect(() => {
+      historyRef.current = history;
+    }, [history]);
+
+    React.useLayoutEffect(() => {
+      if (!isControlled || value === undefined) return;
+      if (value === valueRef.current) return;
+      const nextSelection = normalizePlaintextSelection(selectionRef.current, value.length);
+      valueRef.current = value;
+      selectionRef.current = nextSelection;
+      pendingSelectionRef.current = nextSelection;
+      setDraftValue(value);
+      setHistory((currentHistory) => {
+        const nextHistory = replaceHistoryPresent(currentHistory, value, createSelection(nextSelection.start, nextSelection.end));
+        historyRef.current = nextHistory;
+        return nextHistory;
+      });
+    }, [isControlled, value]);
+
+    React.useLayoutEffect(() => {
+      const input = inputRef.current;
+      const nextSelection = pendingSelectionRef.current;
+      if (!input || !nextSelection) return;
+      input.setSelectionRange(nextSelection.start, nextSelection.end);
+      pendingSelectionRef.current = null;
+    }, [markdown]);
+
+    const commitValue = React.useCallback((nextValue: string, nextSelection: PlaintextSelection, options: { historic?: boolean; focus?: boolean } = {}) => {
+      const normalizedSelection = normalizePlaintextSelection(nextSelection, nextValue.length);
       valueRef.current = nextValue;
+      selectionRef.current = normalizedSelection;
+      pendingSelectionRef.current = normalizedSelection;
       if (!isControlled) {
         setDraftValue(nextValue);
       }
+      setHistory((currentHistory) => {
+        const nextHistory = options.historic === false
+          ? replaceHistoryPresent(currentHistory, nextValue, createSelection(normalizedSelection.start, normalizedSelection.end))
+          : pushHistoryEntry(currentHistory, nextValue, createSelection(normalizedSelection.start, normalizedSelection.end));
+        historyRef.current = nextHistory;
+        return nextHistory;
+      });
       onChange?.(nextValue);
+      if (options.focus) {
+        window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        });
+      }
     }, [isControlled, onChange]);
 
     const trackPlaintextSelection = React.useCallback((input: HTMLTextAreaElement) => {
@@ -171,6 +260,66 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       window.requestAnimationFrame(updateRenderedCaret);
     }, [updateRenderedCaret]);
 
+    const executeCommand = React.useCallback((
+      command: MarkdownEditorBuiltinCommandId,
+      options: MarkdownEditorCommandOptions = {},
+    ): MarkdownEditorSnapshot => {
+      if (command === "undo") {
+        const nextHistory = undoHistory(historyRef.current);
+        historyRef.current = nextHistory;
+        setHistory(nextHistory);
+        valueRef.current = nextHistory.present.value;
+        const nextSelection = normalizePlaintextSelection(nextHistory.present.selection, nextHistory.present.value.length);
+        selectionRef.current = nextSelection;
+        pendingSelectionRef.current = nextSelection;
+        if (!isControlled) {
+          setDraftValue(nextHistory.present.value);
+        }
+        onChange?.(nextHistory.present.value);
+        window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+          updateRenderedCaret();
+        });
+        return nextHistory.present;
+      }
+
+      if (command === "redo") {
+        const nextHistory = redoHistory(historyRef.current);
+        historyRef.current = nextHistory;
+        setHistory(nextHistory);
+        valueRef.current = nextHistory.present.value;
+        const nextSelection = normalizePlaintextSelection(nextHistory.present.selection, nextHistory.present.value.length);
+        selectionRef.current = nextSelection;
+        pendingSelectionRef.current = nextSelection;
+        if (!isControlled) {
+          setDraftValue(nextHistory.present.value);
+        }
+        onChange?.(nextHistory.present.value);
+        window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+          updateRenderedCaret();
+        });
+        return nextHistory.present;
+      }
+
+      const result = applyBuiltinMarkdownCommand(command, valueRef.current, {
+        start: selectionRef.current.start,
+        end: selectionRef.current.end,
+        direction: "none",
+      }, options);
+      const nextSelection = normalizePlaintextSelection(result.selection, result.value.length);
+      if (result.changed) {
+        commitValue(result.value, nextSelection, { focus: true });
+      } else {
+        pendingSelectionRef.current = nextSelection;
+        window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+          updateRenderedCaret();
+        });
+      }
+      return snapshotFromState(result.value, nextSelection);
+    }, [commitValue, isControlled, onChange, updateRenderedCaret]);
+
     const updateSelectionFromPointer = React.useCallback((event: React.PointerEvent<HTMLTextAreaElement>, extendSelection: boolean) => {
       const surface = surfaceRef.current;
       const input = inputRef.current;
@@ -209,13 +358,45 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       getValue(): string {
         return valueRef.current;
       },
+      getSnapshot(): MarkdownEditorSnapshot {
+        return snapshotFromState(valueRef.current, selectionRef.current);
+      },
+      getSelection(): MarkdownEditorSelection {
+        return {
+          start: selectionRef.current.start,
+          end: selectionRef.current.end,
+          direction: "none",
+        };
+      },
       getInputElement(): HTMLTextAreaElement | null {
         return inputRef.current;
       },
-      setValue(nextValue: string): void {
-        commitValue(nextValue);
+      setSelection(nextSelection: MarkdownEditorSelection): void {
+        const normalized = normalizePlaintextSelection(nextSelection, valueRef.current.length);
+        selectionRef.current = normalized;
+        pendingSelectionRef.current = normalized;
+        window.requestAnimationFrame(() => {
+          inputRef.current?.focus();
+          updateRenderedCaret();
+        });
       },
-    }), [commitValue]);
+      setValue(nextValue: string, options?: { selection?: MarkdownEditorSelection }): void {
+        commitValue(
+          nextValue,
+          normalizePlaintextSelection(options?.selection ?? createSelection(nextValue.length, nextValue.length), nextValue.length),
+          { focus: true },
+        );
+      },
+      executeCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot {
+        return executeCommand(command, options);
+      },
+      executeNamedCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot {
+        return executeCommand(command, options);
+      },
+      listCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
+        return listBuiltinMarkdownEditorCommands();
+      },
+    }), [commitValue, executeCommand, updateRenderedCaret]);
 
     const mergedThemeStyle = React.useMemo(
       () => ({
@@ -301,7 +482,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
           value={markdown}
           onChange={(event) => {
             trackPlaintextSelection(event.currentTarget);
-            commitValue(event.currentTarget.value);
+            commitValue(event.currentTarget.value, selectionRef.current);
             window.requestAnimationFrame(updateRenderedCaret);
           }}
           onFocus={() => {
@@ -356,3 +537,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
     );
   },
 );
+
+export function useMarkdownEditInRendererCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
+  return React.useMemo(() => listBuiltinMarkdownEditorCommands(), []);
+}
