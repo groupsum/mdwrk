@@ -1,4 +1,4 @@
-schema_version: "0.4.0"
+schema_version: "0.6.0"
 kind: "adr"
 id: "adr:1071"
 number: 1071
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "Editor toolbar and command work includes checkbox insertion, italic isolation, focus retention, selection preservation, link conversion, image source editing, underlining, list continuation, line-count alignment, and rendered-flow editing. These behaviors are easy to break when toolbar buttons mutate DOM or React state directly."
+summary: "Editor toolbar and command work includes checkbox insertion, checkbox completion, italic isolation, focus retention, selection preservation, link conversion, image source editing, ordered and unordered list behavior, line and block reordering, line-count alignment, touch selection expansion, and rendered-flow editing. These behaviors are easy to break when toolbar buttons mutate DOM or React state directly."
 supersedes: []
 superseded_by: []
 status_notes:
@@ -19,13 +19,13 @@ status_notes:
 references: []
 body: |-
   # Context
-  Editor toolbar and command work includes checkbox insertion, italic isolation, focus retention, selection preservation, link conversion, image source editing, underlining, list continuation, line-count alignment, and rendered-flow editing. These behaviors are easy to break when toolbar buttons mutate DOM or React state directly.
+  Editor toolbar and command work includes checkbox insertion, checkbox completion, italic isolation, focus retention, selection preservation, link conversion, image source editing, ordered and unordered list behavior, line and block reordering, line-count alignment, touch selection expansion, and rendered-flow editing. These behaviors are easy to break when toolbar buttons mutate DOM or React state directly.
   
   # Decision
-  Editor commands must preserve focus, selection, and insertion semantics through package-owned command contracts. `@mdwrk/markdown-editor-core` owns source-mode transforms and command state. `@mdwrk/markdown-editor-react` owns React toolbar dispatch and textarea focus integration. `@mdwrk/markdown-edit-in-renderer-react` owns rendered-flow editing parity. Toolbar controls dispatch commands; they do not implement independent mutations.
+  Editor commands must preserve focus, selection, insertion semantics, and scroll continuity through package-owned command contracts. `@mdwrk/markdown-editor-core` owns source-mode transforms, reorder semantics, navigation intents, and command state. `@mdwrk/markdown-editor-react` owns React toolbar dispatch, keyboard wiring, palette projection, and textarea focus integration. `@mdwrk/markdown-edit-in-renderer-react` owns rendered-flow editing parity. Toolbar and palette controls dispatch commands; they do not implement independent mutations.
   
   # Boundaries
-  This decision does not prescribe one UI for every editor surface. It requires each UI to use the package command contracts and to prove focus/selection behavior through tests. Renderer packages own rendering and preview output; editor packages own authoring mutations.
+  This decision does not prescribe one UI for every editor surface. It requires each UI to use the package command contracts and to prove focus or selection behavior through tests. Renderer packages own rendering and preview output; editor packages own authoring mutations.
   
   # Consequences
-  Checkbox, italic, link, image, list, and line-alignment behavior can be tested at the correct package boundary. App-level regressions can be traced back to command dispatch, command transforms, or rendered-flow integration.
+  Checkbox, list, reorder, link, image, touch-selection, and line-alignment behavior can be tested at the correct package boundary. App-level regressions can be traced back to command dispatch, command transforms, keyboard adapters, or rendered-flow integration.

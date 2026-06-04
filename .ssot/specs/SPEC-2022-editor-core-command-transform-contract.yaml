@@ -1,4 +1,4 @@
-schema_version: "0.4.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2022"
 number: 2022
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "Editor core must own markdown command and transform semantics for bold, unordered lists, task lists, indentation, outdentation, list continuation, task-list termination, selection metadata, history, undo, redo, and roundtrip behavior."
+summary: "Editor core must own markdown command and transform semantics for bold, ordered lists, unordered lists, task lists, indentation, outdentation, line and block reordering, list continuation, task-list termination, selection metadata, history, undo, redo, keyboard navigation intents, and roundtrip behavior."
 supersedes: []
 superseded_by: []
 status_notes:
@@ -22,11 +22,11 @@ body: |-
   
   ## Requirements
   
-  Editor core must own markdown command and transform semantics for bold, unordered lists, task lists, indentation, outdentation, list continuation, task-list termination, selection metadata, history, undo, redo, and roundtrip behavior.
+  Editor core must own markdown command and transform semantics for bold, ordered lists, unordered lists, task lists, indentation, outdentation, line and block reordering, list continuation, task-list termination, selection metadata, history, undo, redo, keyboard navigation intents, and roundtrip behavior.
   
   ## Evidence
   
-  Evidence must cover core command transforms, selection normalization, line and column calculations, history limits, undo/redo, and renderer/editor roundtrip behavior.
+  Evidence must cover core command transforms, reorder transforms, selection normalization, navigation intent helpers, line and column calculations, history limits, undo/redo, and renderer/editor roundtrip behavior.
 spec_kind: "normative"
 adr_ids:
   - "adr:1035"

@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2016"
 number: 2016
@@ -13,9 +13,9 @@ supersedes: []
 superseded_by: []
 status_notes:
   -
-    status: "draft"
-    note: "Require line count gutter padding to match editor textarea padding."
     at: "2026-04-25T22:04:23Z"
+    note: "Require line count gutter padding to match editor textarea padding."
+    status: "draft"
 references: []
 body: |-
   # MdWrk Editor Authoring Behavior Specification
@@ -26,12 +26,15 @@ body: |-
   
   ## Requirements
   
-  - Ordered and unordered list continuation must typeahead on Enter and terminate on a second empty item.
-  - Checkbox creation must preserve focus, line, and character position.
-  - Text wrapping must be configurable where supported.
+  - Ordered and unordered list continuation must typeahead on Enter and terminate on a second empty item where supported.
+  - Ordered-list command support, unordered-list command support, and checklist command support must remain targetable behaviors.
+  - Checkbox creation and checkbox completion must preserve focus, line, character position, scroll continuity, and must not jump to the top of the document.
+  - Text wrapping must be configurable where supported and wrap estimation may use pretext-aware segment measurement.
+  - Line or block move commands must preserve selection over the moved content.
   - Underline behavior must not claim standard Markdown semantics unless a custom profile enables it.
   - Line count bars must be hideable and y-scroll aligned with editor content.
   - Line count gutter block padding must match the editor textarea block padding so line numbers, line spacing, and y-scroll position visually align with editor text.
   - Visual keyboard mode must preserve editor usability on mobile.
+  - Touch devices must allow native multi-word selection and selection expansion in supported editor and preview surfaces.
 spec_kind: "normative"
 adr_ids: []

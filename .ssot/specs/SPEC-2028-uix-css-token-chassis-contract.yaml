@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2028"
 number: 2028
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "UIX CSS tokens must govern editor and markdown rhythm, chassis dimensions, header constraints, status bar behavior, zoom-independent layout dimensions, and theme-wide token availability. Themes may vary visual treatment but must preserve shared token meaning."
+summary: "UIX CSS tokens must govern editor and markdown rhythm, chassis dimensions, header constraints, status bar behavior, zoom-independent layout dimensions, theme-wide token availability, and explicit bridge variables for HTML export and PDF artifact surfaces. Themes may vary visual treatment but must preserve shared token meaning."
 supersedes: []
 superseded_by: []
 status_notes: []
@@ -18,11 +18,11 @@ body: |-
   
   ## Requirements
   
-  UIX CSS tokens must govern editor and markdown rhythm, chassis dimensions, header constraints, status bar behavior, zoom-independent layout dimensions, and theme-wide token availability. Themes may vary visual treatment but must preserve shared token meaning.
+  UIX CSS tokens must govern editor and markdown rhythm, chassis dimensions, header constraints, status bar behavior, zoom-independent layout dimensions, theme-wide token availability, and explicit bridge variables for HTML export and PDF artifact surfaces. Themes may vary visual treatment but must preserve shared token meaning.
   
   ## Evidence
   
-  Evidence must cover alignment tokens, chassis fit, status overflow behavior, zoom token contracts, theme token availability, and markdown spacing constraints.
+  Evidence must cover alignment tokens, chassis fit, status overflow behavior, zoom token contracts, theme token availability, HTML/PDF token bridges, and markdown spacing constraints.
 spec_kind: "normative"
 adr_ids:
   - "adr:1040"

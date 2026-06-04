@@ -1,4 +1,4 @@
-schema_version: "0.4.0"
+schema_version: "0.6.0"
 kind: "adr"
 id: "adr:1035"
 number: 1035
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "MdWrk shall keep markdown editing semantics in framework-independent editor core packages. React editor components shall adapt the core model for rendering, input, keyboard handling, and selection reporting without redefining markdown transforms."
+summary: "MdWrk shall keep markdown editing semantics in framework-independent editor core packages. React editor components shall adapt the core model for rendering, input, keyboard handling, command-palette projection, and selection reporting without redefining markdown transforms."
 supersedes: []
 superseded_by: []
 status_notes:
@@ -22,17 +22,17 @@ body: |-
   
   ## Decision
   
-  MdWrk shall keep markdown editing semantics in framework-independent editor core packages. React editor components shall adapt the core model for rendering, input, keyboard handling, and selection reporting without redefining markdown transforms.
+  MdWrk shall keep markdown editing semantics in framework-independent editor core packages. React editor components shall adapt the core model for rendering, input, keyboard handling, command-palette projection, and selection reporting without redefining markdown transforms.
   
   ## Scope
   
-  - Markdown commands for inline formatting, lists, indentation, and task items.
-  - Selection normalization, line and column calculations, and selection metadata.
+  - Markdown commands for inline formatting, ordered lists, unordered lists, task items, indentation, and line or block reordering.
+  - Selection normalization, line and column calculations, navigation intents, and selection metadata.
   - History state, undo, redo, and history limits.
-  - React keyboard and component adapters.
+  - React keyboard, touch-selection, and component adapters.
   
   ## Consequences
   
   - Editor behavior remains portable across shells and UI surfaces.
-  - Core transform tests become the primary evidence for authoring semantics.
+  - Core transform tests become the primary evidence for authoring semantics, reorder behavior, and navigation intent helpers.
   - React tests must prove adapter behavior without replacing core semantics.

@@ -1,0 +1,36 @@
+schema_version: "0.6.0"
+kind: "spec"
+id: "spc:2103"
+number: 2103
+slug: "markdown-command-and-operator-surface-contract"
+title: "Markdown command and operator surface contract"
+status: "draft"
+origin: "repo-local"
+decision_date: null
+tags: []
+summary: "MdWrk shall expose package-owned markdown command and operator surfaces for `load`, `parse`, `getBlockMap`, `exportToMarkdown`, `exportToHtml`, and `exportToPdf`."
+supersedes: []
+superseded_by: []
+status_notes: []
+references: []
+body: |-
+  # SPEC-2103: Markdown command and operator surface contract
+  
+  ## Requirements
+  
+  MdWrk shall expose package-owned markdown command and operator surfaces for `load`, `parse`, `getBlockMap`, `exportToMarkdown`, `exportToHtml`, and `exportToPdf`.
+  
+  The exported inventory shall classify each surface as `editor`, `preview`, or `shared`, and shall disclose applicability as CommonMark, GFM, CFM, or MdWrk-operator behavior.
+  
+  `exportToPdf` within this repository means a portable PDF artifact contract: print-ready HTML, metadata, and PDF bridge styles, not byte-level PDF generation.
+  
+  React adapter packages shall expose imperative and hook-based access to the command inventory without redefining core semantics.
+  
+  ## Evidence
+  
+  Evidence must cover operator export reachability, command inventory disclosure, block-map extraction, markdown/html/pdf artifact preparation, React handle and hook access, and profile/applicability labeling.
+spec_kind: "normative"
+adr_ids:
+  - "adr:1073"
+  - "adr:1035"
+  - "adr:1045"

@@ -1,0 +1,31 @@
+schema_version: "0.6.0"
+kind: "adr"
+id: "adr:1073"
+number: 1073
+slug: "markdown-operator-api-and-command-taxonomy"
+title: "Markdown operator API and command taxonomy"
+status: "draft"
+origin: "repo-local"
+decision_date: null
+tags: []
+summary: "MdWrk shall classify package-owned markdown command and operator surfaces as `editor`, `preview`, or `shared`."
+supersedes: []
+superseded_by: []
+status_notes: []
+references: []
+body: |-
+  # ADR-1073: Markdown operator API and command taxonomy
+  
+  ## Decision
+  
+  MdWrk shall classify package-owned markdown command and operator surfaces as `editor`, `preview`, or `shared`.
+  
+  `editor` commands mutate source-mode markdown state and remain owned by editor packages. `preview` commands operate on derived preview, export, or rendered-state behavior without redefining editor mutations. `shared` operators cover load, parse, block-map extraction, markdown export, HTML export, PDF artifact preparation, and parser/preview profile disclosure.
+  
+  Command descriptors, applicability metadata, and palette inventory are package-owned surfaces. UI adapters may project and filter those descriptors, but they shall not redefine the underlying command taxonomy or semantics.
+  
+  ## Consequences
+  
+  - Editor and renderer packages can export stable command inventories without coupling to one host shell.
+  - Command palette and keyboard adapters consume shared descriptors rather than hardcoded action lists.
+  - CM, GFM, CFM, and MdWrk-operator applicability can be disclosed consistently across docs, preview, and export surfaces.

@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "adr"
 id: "adr:1028"
 number: 1028
@@ -13,9 +13,9 @@ supersedes: []
 superseded_by: []
 status_notes:
   -
-    status: "accepted"
-    note: "Expanded CFM profile ADR with preview/export profile disclosure requirements."
     at: "2026-04-21T09:08:25Z"
+    note: "Expanded CFM profile ADR with preview/export profile disclosure requirements."
+    status: "accepted"
 references: []
 body: |-
   # ADR-1028: CFM custom parser and preview profiles
@@ -36,6 +36,7 @@ body: |-
   - Every custom profile needs a SPEC, feature record, and evidence lane before it can be claimed.
   - Profile selection must be persisted and visible to settings/import/export surfaces.
   - Preview/export must report which parser and previewer profiles were active.
+  - This scope does not add new default CFM syntax; behavior that is specific to CFM must be documented explicitly as CFM-only.
   
   ## 2026 SSOT Coverage Update
   

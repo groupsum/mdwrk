@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2040"
 number: 2040
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "Preview and export surfaces must disclose active CM, GFM, and CFM parser and previewer profiles whenever profile selection can affect output. Profile disclosure must be visible in reports or UI surfaces that claim conformance or generated artifact fidelity."
+summary: "Preview and export surfaces must disclose active CM, GFM, and CFM parser and previewer profiles whenever profile selection can affect output. Command and operator surfaces that claim conformance or generated artifact fidelity must also disclose whether a behavior is CommonMark, GFM, CFM, or MdWrk-operator specific."
 supersedes: []
 superseded_by: []
 status_notes: []
@@ -18,11 +18,11 @@ body: |-
   
   ## Requirements
   
-  Preview and export surfaces must disclose active CM, GFM, and CFM parser and previewer profiles whenever profile selection can affect output. Profile disclosure must be visible in reports or UI surfaces that claim conformance or generated artifact fidelity.
+  Preview and export surfaces must disclose active CM, GFM, and CFM parser and previewer profiles whenever profile selection can affect output. Command and operator surfaces that claim conformance or generated artifact fidelity must also disclose whether a behavior is CommonMark, GFM, CFM, or MdWrk-operator specific.
   
   ## Evidence
   
-  Evidence must cover profile selection, preview disclosure, export disclosure, conformance reports, and failure labeling by parser, renderer, preview, export, or adapter boundary.
+  Evidence must cover profile selection, preview disclosure, export disclosure, command inventory disclosure, conformance reports, and failure labeling by parser, renderer, preview, export, or adapter boundary.
 spec_kind: "normative"
 adr_ids:
   - "adr:1045"

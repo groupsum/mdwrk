@@ -1,4 +1,4 @@
-schema_version: "0.4.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2023"
 number: 2023
@@ -8,7 +8,7 @@ status: "draft"
 origin: "repo-local"
 decision_date: null
 tags: []
-summary: "The React editor surface must adapt editor core behavior without redefining core markdown semantics. It must support controlled and uncontrolled rendering, optional line-number gutter display, selection format-state emission, keyboard shortcuts, indentation keys, list continuation, and task-list termination."
+summary: "The React editor surface must adapt editor core behavior without redefining core markdown semantics. It must support controlled and uncontrolled rendering, optional line-number gutter display, selection format-state emission, keyboard shortcuts, indentation keys, ordered and unordered list continuation, task-list termination, touch-safe multi-word selection, command inventory exposure, palette-model hooks, and keyboard navigation adapters."
 supersedes: []
 superseded_by: []
 status_notes:
@@ -22,11 +22,11 @@ body: |-
   
   ## Requirements
   
-  The React editor surface must adapt editor core behavior without redefining core markdown semantics. It must support controlled and uncontrolled rendering, optional line-number gutter display, selection format-state emission, keyboard shortcuts, indentation keys, list continuation, and task-list termination.
+  The React editor surface must adapt editor core behavior without redefining core markdown semantics. It must support controlled and uncontrolled rendering, optional line-number gutter display, selection format-state emission, keyboard shortcuts, indentation keys, ordered and unordered list continuation, task-list termination, touch-safe multi-word selection, command inventory exposure, palette-model hooks, and keyboard navigation adapters.
   
   ## Evidence
   
-  Evidence must cover component rendering modes, gutter suppression, selection events, and keyboard behavior.
+  Evidence must cover component rendering modes, gutter suppression, selection events, touch selection behavior, keyboard behavior, command handle exposure, and palette-model behavior.
 spec_kind: "normative"
 adr_ids:
   - "adr:1035"

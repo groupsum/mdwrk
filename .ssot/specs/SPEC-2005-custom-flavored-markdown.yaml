@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2005"
 number: 2005
@@ -13,9 +13,9 @@ supersedes: []
 superseded_by: []
 status_notes:
   -
-    status: "draft"
-    note: "Expanded CFM spec with parser, previewer, extension, and export disclosure obligations."
     at: "2026-04-21T09:20:21Z"
+    note: "Expanded CFM spec with parser, previewer, extension, and export disclosure obligations."
+    status: "draft"
 references: []
 body: |-
   # Custom Flavored Markdown Specification
@@ -32,6 +32,7 @@ body: |-
   - CFM must preserve round-trip behavior for source text unless a transform is explicitly user-invoked.
   - CFM preview/export must disclose active custom profile behavior.
   - CFM features require parser, previewer, settings, and evidence coverage before release claims.
+  - Ordered and unordered list authoring is documented as CM/GFM behavior; checklist semantics are documented as GFM behavior; load, block-map, reorder, palette, keyboard navigation, token bridges, and PDF artifact preparation are documented as MdWrk-operator behavior unless a named CFM feature changes rendered output.
   
   ## 2026 SSOT Coverage Update
   
