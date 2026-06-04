@@ -103,6 +103,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
     const valueRef = React.useRef(draftValue);
     const selectionRef = React.useRef<PlaintextSelection>({ start: 0, end: 0 });
     const pendingSelectionRef = React.useRef<PlaintextSelection | null>(null);
+    const queuedSelectionRefreshRef = React.useRef(0);
     const isComposingRef = React.useRef(false);
     const [history, setHistory] = React.useState(() => createHistoryState(
       initialValue,
@@ -258,14 +259,34 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       };
       selectionRef.current = nextSelection;
       input.focus();
+      selectionRef.current = nextSelection;
       input.setSelectionRange(nextSelection.start, nextSelection.end);
       window.requestAnimationFrame(updateRenderedCaret);
     }, [updateRenderedCaret]);
+
+    const queueSelectionRefresh = React.useCallback((nextSelection: PlaintextSelection) => {
+      queuedSelectionRefreshRef.current += 1;
+      const refreshId = queuedSelectionRefreshRef.current;
+      window.requestAnimationFrame(() => {
+        if (refreshId !== queuedSelectionRefreshRef.current) return;
+        const input = inputRef.current;
+        if (!input || disabled) return;
+        input.focus();
+        selectionRef.current = nextSelection;
+        pendingSelectionRef.current = nextSelection;
+        input.setSelectionRange(nextSelection.start, nextSelection.end);
+        updateRenderedCaret();
+      });
+    }, [disabled, updateRenderedCaret]);
 
     const executeCommand = React.useCallback((
       command: MarkdownEditorBuiltinCommandId,
       options: MarkdownEditorCommandOptions = {},
     ): MarkdownEditorSnapshot => {
+      if (disabled) {
+        return snapshotFromState(valueRef.current, selectionRef.current);
+      }
+
       if (command === "undo") {
         const nextHistory = undoHistory(historyRef.current);
         historyRef.current = nextHistory;
@@ -278,10 +299,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
           setDraftValue(nextHistory.present.value);
         }
         onChange?.(nextHistory.present.value);
-        window.requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          updateRenderedCaret();
-        });
+        queueSelectionRefresh(nextSelection);
         return nextHistory.present;
       }
 
@@ -297,10 +315,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
           setDraftValue(nextHistory.present.value);
         }
         onChange?.(nextHistory.present.value);
-        window.requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          updateRenderedCaret();
-        });
+        queueSelectionRefresh(nextSelection);
         return nextHistory.present;
       }
 
@@ -314,18 +329,19 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
         commitValue(result.value, nextSelection, { focus: true });
       } else {
         pendingSelectionRef.current = nextSelection;
-        window.requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          updateRenderedCaret();
-        });
+        queueSelectionRefresh(nextSelection);
       }
       return snapshotFromState(result.value, nextSelection);
-    }, [commitValue, isControlled, onChange, updateRenderedCaret]);
+    }, [commitValue, disabled, isControlled, onChange, queueSelectionRefresh]);
 
     const navigateSelection = React.useCallback((
       intent: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[0],
       options?: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[1],
     ) => {
+      if (disabled) {
+        return snapshotFromState(valueRef.current, selectionRef.current).selection;
+      }
+
       const nextSelection = computeNavigatedSelection(valueRef.current, {
         start: selectionRef.current.start,
         end: selectionRef.current.end,
@@ -334,16 +350,13 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       const normalized = normalizePlaintextSelection(nextSelection, valueRef.current.length);
       selectionRef.current = normalized;
       pendingSelectionRef.current = normalized;
-      window.requestAnimationFrame(() => {
-        inputRef.current?.focus();
-        updateRenderedCaret();
-      });
+      queueSelectionRefresh(normalized);
       return {
         start: normalized.start,
         end: normalized.end,
         direction: "none" as const,
       };
-    }, [updateRenderedCaret]);
+    }, [disabled, queueSelectionRefresh]);
 
     const updateSelectionFromPointer = React.useCallback((event: React.PointerEvent<HTMLTextAreaElement>, extendSelection: boolean) => {
       const surface = surfaceRef.current;
@@ -378,6 +391,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
 
     React.useImperativeHandle(ref, () => ({
       focus(): void {
+        if (disabled) return;
         inputRef.current?.focus();
       },
       getValue(): string {
@@ -397,13 +411,11 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
         return inputRef.current;
       },
       setSelection(nextSelection: MarkdownEditorSelection): void {
+        if (disabled) return;
         const normalized = normalizePlaintextSelection(nextSelection, valueRef.current.length);
         selectionRef.current = normalized;
         pendingSelectionRef.current = normalized;
-        window.requestAnimationFrame(() => {
-          inputRef.current?.focus();
-          updateRenderedCaret();
-        });
+        queueSelectionRefresh(normalized);
       },
       navigateSelection(intent, options) {
         return navigateSelection(intent, options);
@@ -424,7 +436,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       listCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
         return listBuiltinMarkdownEditorCommands();
       },
-    }), [commitValue, executeCommand, navigateSelection, updateRenderedCaret]);
+    }), [commitValue, disabled, executeCommand, navigateSelection, queueSelectionRefresh]);
 
     const mergedThemeStyle = React.useMemo(
       () => ({

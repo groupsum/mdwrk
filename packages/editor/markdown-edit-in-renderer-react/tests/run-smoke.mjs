@@ -261,8 +261,76 @@ const checks = [
         await waitForFrame();
 
         assert.deepEqual(nextSelection, { start: 4, end: 4, direction: "none" });
-        assert.equal(textarea.selectionStart, 4);
-        assert.equal(textarea.selectionEnd, 4);
+        assert.deepEqual(ref.current?.getSelection?.(), { start: 4, end: 4, direction: "none" });
+        assert.equal(document.activeElement, textarea);
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
+    id: "disabled-command-and-navigation-surfaces-fail-closed",
+    description: "Disabled rendered-flow editors reject imperative command and navigation mutations without stealing focus",
+    async test() {
+      const ref = React.createRef();
+      const view = render(
+        React.createElement(MarkdownEditInRenderer, {
+          ref,
+          defaultValue: "alpha",
+          disabled: true,
+        }),
+      );
+      try {
+        const textarea = view.container.querySelector("textarea.markdown-edit-in-renderer-plaintext");
+        assert.ok(textarea instanceof HTMLTextAreaElement);
+
+        const commandSnapshot = ref.current?.executeNamedCommand?.("ordered-list");
+        const navigatedSelection = ref.current?.navigateSelection?.("arrow-down");
+        ref.current?.setSelection?.({ start: 0, end: 5, direction: "none" });
+        await waitForFrame();
+
+        assert.deepEqual(commandSnapshot, {
+          value: "alpha",
+          selection: { start: 0, end: 0, direction: "none" },
+        });
+        assert.deepEqual(navigatedSelection, { start: 0, end: 0, direction: "none" });
+        assert.equal(ref.current?.getValue?.(), "alpha");
+        assert.equal(textarea.value, "alpha");
+        assert.notEqual(document.activeElement, textarea);
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
+    id: "navigation-surface-stays-bounded-and-extends-selection",
+    description: "Rendered-flow navigation stays within document bounds and can extend selection ranges across lines",
+    async test() {
+      const ref = React.createRef();
+      const view = render(
+        React.createElement(MarkdownEditInRenderer, {
+          ref,
+          defaultValue: "one\ntwo",
+        }),
+      );
+      try {
+        const textarea = view.container.querySelector("textarea.markdown-edit-in-renderer-plaintext");
+        assert.ok(textarea instanceof HTMLTextAreaElement);
+        textarea.focus();
+        ref.current?.setSelection?.({ start: 0, end: 0, direction: "none" });
+        await waitForFrame();
+
+        const boundedSelection = ref.current?.navigateSelection?.("arrow-up");
+        await waitForFrame();
+        assert.deepEqual(boundedSelection, { start: 0, end: 0, direction: "none" });
+
+        ref.current?.setSelection?.({ start: 0, end: 0, direction: "none" });
+        await waitForFrame();
+
+        const extendedSelection = ref.current?.navigateSelection?.("arrow-down", { extendSelection: true });
+        await waitForFrame();
+        assert.deepEqual(extendedSelection, { start: 0, end: 4, direction: "none" });
+        assert.deepEqual(ref.current?.getSelection?.(), { start: 0, end: 4, direction: "none" });
         assert.equal(document.activeElement, textarea);
       } finally {
         cleanup();

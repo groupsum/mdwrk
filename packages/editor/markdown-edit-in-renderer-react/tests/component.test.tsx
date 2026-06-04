@@ -97,7 +97,51 @@ describe("@mdwrk/markdown-edit-in-renderer-react", () => {
     });
 
     expect(document.activeElement).toBe(editor);
-    expect(editor.selectionStart).toBe(4);
-    expect(editor.selectionEnd).toBe(4);
+    expect(ref.current?.getSelection()).toEqual({ start: 4, end: 4, direction: "none" });
+  });
+
+  it("keeps imperative commands fail-closed while disabled", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownEditInRenderer>>();
+    render(<MarkdownEditInRenderer ref={ref} defaultValue="alpha" disabled />);
+    const editor = screen.getByRole("textbox", { name: "Markdown source" }) as HTMLTextAreaElement;
+
+    await act(async () => {
+      ref.current?.executeNamedCommand("ordered-list");
+      ref.current?.navigateSelection("arrow-down");
+      ref.current?.setSelection({ start: 0, end: 5, direction: "none" });
+    });
+
+    expect(ref.current?.getSnapshot()).toEqual({
+      value: "alpha",
+      selection: { start: 0, end: 0, direction: "none" },
+    });
+    expect(editor.value).toBe("alpha");
+    expect(document.activeElement).not.toBe(editor);
+  });
+
+  it("keeps navigation bounded and supports selection extension", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownEditInRenderer>>();
+    render(<MarkdownEditInRenderer ref={ref} defaultValue={"one\ntwo"} />);
+    const editor = screen.getByRole("textbox", { name: "Markdown source" }) as HTMLTextAreaElement;
+
+    editor.focus();
+    ref.current?.setSelection({ start: 0, end: 0, direction: "none" });
+
+    await act(async () => {
+      ref.current?.navigateSelection("arrow-up");
+    });
+
+    expect(ref.current?.getSelection()).toEqual({ start: 0, end: 0, direction: "none" });
+
+    await act(async () => {
+      ref.current?.setSelection({ start: 0, end: 0, direction: "none" });
+    });
+
+    await act(async () => {
+      ref.current?.navigateSelection("arrow-down", { extendSelection: true });
+    });
+
+    expect(document.activeElement).toBe(editor);
+    expect(ref.current?.getSelection()).toEqual({ start: 0, end: 4, direction: "none" });
   });
 });
