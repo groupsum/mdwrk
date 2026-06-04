@@ -1,341 +1,509 @@
 {
-  "generatedAt": "2026-06-04T11:41:20.514Z",
-  "entries": [
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-light",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-light.wide.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-light",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-light.portrait.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-light",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-light.wide.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=default-light&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-light",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-light.portrait.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=default-light&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-dark",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-dark.wide.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-dark",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-dark.portrait.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-dark",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-dark.wide.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=default-dark&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "default-dark",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.default-dark.portrait.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=default-dark&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "paper",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.paper.wide.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=paper"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "paper",
-      "view": "editor-surface",
-      "mode": "editing",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.paper.portrait.editing.png",
-      "url": "http://127.0.0.1:4373/?theme=paper"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "paper",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.paper.wide.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=paper&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-editor-demo",
-      "theme": "paper",
-      "view": "editor-surface",
-      "mode": "command-palette",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/editor.paper.portrait.command-palette.png",
-      "url": "http://127.0.0.1:4373/?theme=paper&palette=open"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "default-light",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.default-light.wide.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "default-light",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.default-light.portrait.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "default-dark",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.default-dark.wide.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "default-dark",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.default-dark.portrait.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "paper",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.paper.wide.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=paper"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-previewer-demo",
-      "theme": "paper",
-      "view": "preview-surface",
-      "mode": "preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/previewer.paper.portrait.preview.png",
-      "url": "http://127.0.0.1:4374/?theme=paper"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "default-light",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-light.wide.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "default-light",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-light.portrait.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=default-light"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "default-dark",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-dark.wide.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "default-dark",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-dark.portrait.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=default-dark"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "paper",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "wide",
-      "viewport": {
-        "width": 1440,
-        "height": 900
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.paper.wide.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=paper"
-    },
-    {
-      "packageOwner": "examples",
-      "packageName": "@mdwrk/example-edit-in-renderer-demo",
-      "theme": "paper",
-      "view": "edit-in-renderer-surface",
-      "mode": "editing-preview",
-      "viewportBand": "portrait",
-      "viewport": {
-        "width": 430,
-        "height": 932
-      },
-      "artifactPath": "docs/evidence/markdown-command-export-expansion/edit-in-renderer.paper.portrait.editing-preview.png",
-      "url": "http://127.0.0.1:4375/?theme=paper"
-    }
-  ]
+    "generatedAt":  "2026-06-04T13:09:54.8135004Z",
+    "entries":  [
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "default-light",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.default-light.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "default-light",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.default-light.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-light",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-light.wide.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-light",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-light.portrait.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-light",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-light.wide.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-light\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-light",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-light.portrait.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-light\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "default-light",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.default-light.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "default-light",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.default-light.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "default-light",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-light.wide.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "default-light",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-light.portrait.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "default-light",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.default-light.wide.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "default-light",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.default-light.portrait.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=default-light"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "default-dark",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.default-dark.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "default-dark",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.default-dark.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-dark",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-dark.wide.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-dark",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-dark.portrait.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-dark",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-dark.wide.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-dark\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "default-dark",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.default-dark.portrait.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=default-dark\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "default-dark",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.default-dark.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "default-dark",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.default-dark.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "default-dark",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-dark.wide.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "default-dark",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.default-dark.portrait.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "default-dark",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.default-dark.wide.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "default-dark",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.default-dark.portrait.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=default-dark"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "paper",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.paper.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-renderer-basic",
+                        "theme":  "paper",
+                        "view":  "renderer-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/renderer.paper.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/renderer-basic/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "paper",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.paper.wide.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "paper",
+                        "view":  "editor-surface",
+                        "mode":  "editing",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.paper.portrait.editing.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "paper",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.paper.wide.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=paper\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-editor-demo",
+                        "theme":  "paper",
+                        "view":  "editor-surface",
+                        "mode":  "command-palette",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/editor.paper.portrait.command-palette.png",
+                        "url":  "http://127.0.0.1:4310/editor-demo/?theme=paper\u0026palette=open"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "paper",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.paper.wide.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-previewer-demo",
+                        "theme":  "paper",
+                        "view":  "preview-surface",
+                        "mode":  "preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/previewer.paper.portrait.preview.png",
+                        "url":  "http://127.0.0.1:4310/previewer-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "paper",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.paper.wide.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-edit-in-renderer-demo",
+                        "theme":  "paper",
+                        "view":  "edit-in-renderer-surface",
+                        "mode":  "editing-preview",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/edit-in-renderer.paper.portrait.editing-preview.png",
+                        "url":  "http://127.0.0.1:4310/edit-in-renderer-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "paper",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "wide",
+                        "viewport":  {
+                                         "height":  900,
+                                         "width":  1440
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.paper.wide.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=paper"
+                    },
+                    {
+                        "packageOwner":  "examples",
+                        "packageName":  "@mdwrk/example-ui-tokens-demo",
+                        "theme":  "paper",
+                        "view":  "token-surface",
+                        "mode":  "inspection",
+                        "viewportBand":  "portrait",
+                        "viewport":  {
+                                         "height":  932,
+                                         "width":  430
+                                     },
+                        "artifactPath":  "docs/evidence/markdown-command-export-expansion/ui-tokens.paper.portrait.inspection.png",
+                        "url":  "http://127.0.0.1:4310/ui-tokens-demo/?theme=paper"
+                    }
+                ]
 }

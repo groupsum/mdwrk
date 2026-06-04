@@ -5,11 +5,18 @@ import { MarkdownRenderer } from '@mdwrk/markdown-renderer-react';
 import {
   MARKDOWN_PACKAGE_THEME_TOKENS,
   MARKDOWN_PACKAGE_TOKEN_DEFAULTS,
+  MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES,
   MARKDOWN_WORKSPACE_THEME_CLASSES,
   MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
 } from '@mdwrk/ui-tokens';
-import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
-import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
+import {
+  DEFAULT_DEMO_THEME_ID,
+  DEMO_EDITOR_RENDERER_THEMES,
+  DEMO_RENDERER_THEMES,
+  DEMO_SHELL_THEMES,
+  DEMO_THEME_PRESETS,
+} from '@mdwrk/core-demo-themes';
+import { useApplyDocumentTheme } from '../useApplyDocumentTheme';
 import './styles.css';
 
 const THEME_PRESETS = DEMO_THEME_PRESETS;
@@ -94,14 +101,15 @@ export default function App(): React.JSX.Element {
     () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
-  const selector = `.ui-tokens-demo-shell[data-theme="${themeId}"]`;
-  const themeCss = React.useMemo(
-    () => createPreviewStyleSheet(preset?.tokens ?? {}, {
-      rootSelector: selector,
-      hostSelector: selector,
-    }).cssText,
-    [preset, selector],
+  const rendererTheme = React.useMemo(
+    () => DEMO_RENDERER_THEMES[themeId as keyof typeof DEMO_RENDERER_THEMES] ?? DEMO_RENDERER_THEMES[DEFAULT_THEME_ID],
+    [themeId],
   );
+  const editorTheme = React.useMemo(
+    () => DEMO_EDITOR_RENDERER_THEMES[themeId as keyof typeof DEMO_EDITOR_RENDERER_THEMES] ?? DEMO_EDITOR_RENDERER_THEMES[DEFAULT_THEME_ID],
+    [themeId],
+  );
+  useApplyDocumentTheme(shellTheme.style);
 
   const tokenRows = React.useMemo(
     () => MARKDOWN_PACKAGE_THEME_TOKENS.map((definition) => ({
@@ -119,6 +127,14 @@ export default function App(): React.JSX.Element {
     })),
     [preset],
   );
+  const editorBridgeRows = React.useMemo(
+    () => MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES.map((definition) => ({
+      ...definition,
+      defaultValue: MARKDOWN_PACKAGE_TOKEN_DEFAULTS[definition.sourceToken],
+      override: preset?.tokens[definition.sourceToken] ?? 'inherited default',
+    })),
+    [preset],
+  );
   const classRows = React.useMemo(
     () => MARKDOWN_WORKSPACE_THEME_CLASSES,
     [],
@@ -126,7 +142,6 @@ export default function App(): React.JSX.Element {
 
   return (
     <main className="demo-shell ui-tokens-demo-shell" data-theme={themeId} style={shellTheme.style}>
-      <style>{themeCss}</style>
       <section className="hero-card">
         <div>
           <p className="eyebrow">MdWrk Demo</p>
@@ -190,11 +205,20 @@ export default function App(): React.JSX.Element {
       <section className="specimen-grid">
         <article className="specimen-card">
           <h2>Editor specimen</h2>
-          <MarkdownSourceEditor value={SPECIMEN_EDITOR} onChange={() => undefined} showLineNumbers />
+          <MarkdownSourceEditor
+            value={SPECIMEN_EDITOR}
+            onChange={() => undefined}
+            showLineNumbers
+            themeStyle={editorTheme.editor}
+          />
         </article>
-        <article className="specimen-card">
+        <article className="specimen-card renderer-specimen-card" style={rendererTheme.style}>
           <h2>Renderer specimen</h2>
-          <MarkdownRenderer markdown={SPECIMEN_MARKDOWN} extensions={['superscript', 'subscript']} />
+          <MarkdownRenderer
+            markdown={SPECIMEN_MARKDOWN}
+            extensions={['superscript', 'subscript']}
+            themeStyle={rendererTheme.style}
+          />
         </article>
       </section>
 
@@ -218,6 +242,35 @@ export default function App(): React.JSX.Element {
                 <tr key={row.name}>
                   <td><code>{row.name}</code></td>
                   <td>{row.category}</td>
+                  <td><code>{row.defaultValue}</code></td>
+                  <td><code>{row.override}</code></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="token-card">
+        <header>
+          <h2>Editor bridge ledger</h2>
+          <p>The editor consumes these <code>--mwe-*</code> bridge variables from <code>@mdwrk/ui-tokens</code> without redefining a parallel demo token contract.</p>
+        </header>
+        <div className="token-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Bridge variable</th>
+                <th>Source token</th>
+                <th>Default</th>
+                <th>Preset override</th>
+              </tr>
+            </thead>
+            <tbody>
+              {editorBridgeRows.map((row) => (
+                <tr key={row.cssCustomProperty}>
+                  <td><code>{row.cssCustomProperty}</code></td>
+                  <td><code>{row.sourceToken}</code></td>
                   <td><code>{row.defaultValue}</code></td>
                   <td><code>{row.override}</code></td>
                 </tr>

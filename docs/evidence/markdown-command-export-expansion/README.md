@@ -6,14 +6,18 @@ This artifact set captures the affected MdWrk markdown example surfaces for the 
 
 - Themes: `default-light`, `default-dark`, `paper`
 - Views:
+  - renderer surface
   - editor surface
   - preview surface
   - edit-in-renderer surface
+  - token surface
 - Modes:
+  - renderer preview
   - editor editing
   - editor command palette
   - preview rendering
   - edit-in-renderer editing + preview
+  - token inspection
 - Viewport bands:
   - `wide` for desktop/precision validation
   - `portrait` for mobile/touch-oriented validation

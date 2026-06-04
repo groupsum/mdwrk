@@ -1,7 +1,7 @@
 {
     "name":  "mdwrk",
     "private":  true,
-    "version":  "0.1.7",
+    "version":  "0.1.8",
     "packageManager":  "pnpm@10.11.0",
     "workspaces":  [
                        "packages/renderer/*",
@@ -25,7 +25,7 @@
                     "test:shared":  "npm run test -w @mdwrk/ui-tokens \u0026\u0026 npm run test -w @mdwrk/icons \u0026\u0026 npm run test -w @mdwrk/testing",
                     "test:renderer":  "npm run test -w @mdwrk/markdown-renderer-core \u0026\u0026 npm run test -w @mdwrk/markdown-renderer-react",
                     "test:editor":  "npm run test -w @mdwrk/markdown-editor-core \u0026\u0026 npm run test -w @mdwrk/markdown-editor-react \u0026\u0026 npm run test -w @mdwrk/markdown-edit-in-renderer-react",
-                    "test:examples":  "npm run test -w @mdwrk/example-renderer-basic \u0026\u0026 npm run test -w @mdwrk/example-previewer-demo",
+                    "test:examples":  "npm run test -w @mdwrk/example-renderer-basic \u0026\u0026 npm run test -w @mdwrk/example-editor-demo \u0026\u0026 npm run test -w @mdwrk/example-previewer-demo \u0026\u0026 npm run test -w @mdwrk/example-edit-in-renderer-demo \u0026\u0026 npm run test -w @mdwrk/example-ui-tokens-demo",
                     "typecheck":  "npm run typecheck:shared \u0026\u0026 npm run typecheck:renderer \u0026\u0026 npm run typecheck:editor \u0026\u0026 npm run typecheck:examples",
                     "typecheck:shared":  "npm run typecheck -w @mdwrk/ui-tokens \u0026\u0026 npm run typecheck -w @mdwrk/core-demo-themes \u0026\u0026 npm run typecheck -w @mdwrk/core-demo-react \u0026\u0026 npm run typecheck -w @mdwrk/icons \u0026\u0026 npm run typecheck -w @mdwrk/testing",
                     "typecheck:renderer":  "npm run typecheck -w @mdwrk/markdown-renderer-core \u0026\u0026 npm run typecheck -w @mdwrk/markdown-renderer-react",

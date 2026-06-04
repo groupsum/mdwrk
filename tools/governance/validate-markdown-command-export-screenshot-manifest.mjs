@@ -6,6 +6,8 @@ const ARTIFACT_DIR = 'docs/evidence/markdown-command-export-expansion';
 const MANIFEST_PATH = `${ARTIFACT_DIR}/manifest.json`;
 const THEMES = ['default-light', 'default-dark', 'paper'];
 const EXPECTED_CAPTURES = [
+  { packageName: '@mdwrk/example-renderer-basic', view: 'renderer-surface', mode: 'preview', viewportBand: 'wide' },
+  { packageName: '@mdwrk/example-renderer-basic', view: 'renderer-surface', mode: 'preview', viewportBand: 'portrait' },
   { packageName: '@mdwrk/example-editor-demo', view: 'editor-surface', mode: 'editing', viewportBand: 'wide' },
   { packageName: '@mdwrk/example-editor-demo', view: 'editor-surface', mode: 'editing', viewportBand: 'portrait' },
   { packageName: '@mdwrk/example-editor-demo', view: 'editor-surface', mode: 'command-palette', viewportBand: 'wide' },
@@ -14,6 +16,8 @@ const EXPECTED_CAPTURES = [
   { packageName: '@mdwrk/example-previewer-demo', view: 'preview-surface', mode: 'preview', viewportBand: 'portrait' },
   { packageName: '@mdwrk/example-edit-in-renderer-demo', view: 'edit-in-renderer-surface', mode: 'editing-preview', viewportBand: 'wide' },
   { packageName: '@mdwrk/example-edit-in-renderer-demo', view: 'edit-in-renderer-surface', mode: 'editing-preview', viewportBand: 'portrait' },
+  { packageName: '@mdwrk/example-ui-tokens-demo', view: 'token-surface', mode: 'inspection', viewportBand: 'wide' },
+  { packageName: '@mdwrk/example-ui-tokens-demo', view: 'token-surface', mode: 'inspection', viewportBand: 'portrait' },
 ];
 
 function toRelative(filePath) {
