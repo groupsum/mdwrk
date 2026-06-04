@@ -1,7 +1,7 @@
 {
     "name":  "mdwrk",
     "private":  true,
-    "version":  "0.1.5",
+    "version":  "0.1.6",
     "packageManager":  "pnpm@10.11.0",
     "workspaces":  [
                        "packages/renderer/*",
@@ -34,7 +34,8 @@
                     "validate:mdwrk-package-cr-order":  "node ./tools/governance/validate-mdwrk-package-cr-order.mjs",
                     "validate:mdwrk-docs-governance":  "node ./tools/governance/validate-mdwrk-docs-governance.mjs",
                     "validate:mdwrk-extension-contributions":  "node ./tools/governance/validate-mdwrk-extension-contributions.mjs",
-                    "ci:governance":  "npm run validate:mdwrk-package-cr-order \u0026\u0026 npm run validate:mdwrk-docs-governance \u0026\u0026 npm run validate:mdwrk-extension-contributions",
+                    "validate:markdown-command-export-screenshot-manifest":  "node ./tools/governance/validate-markdown-command-export-screenshot-manifest.mjs",
+                    "ci:governance":  "npm run validate:mdwrk-package-cr-order \u0026\u0026 npm run validate:mdwrk-docs-governance \u0026\u0026 npm run validate:mdwrk-extension-contributions \u0026\u0026 npm run validate:markdown-command-export-screenshot-manifest",
                     "ci:install":  "npm install --ignore-scripts",
                     "pack:packages":  "node ./tools/release/pack-workspaces.mjs",
                     "publish:packages":  "node ./tools/release/run-publish.mjs"

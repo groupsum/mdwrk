@@ -4,6 +4,7 @@ import {
   MarkdownSourceEditor,
   type MarkdownSourceEditorHandle,
   type MarkdownEditorSelection,
+  useMarkdownCommandPalette,
 } from '@mdwrk/markdown-editor-react';
 import { MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import { LineHeightRail } from '@mdwrk/extension-theme-studio';
@@ -23,11 +24,12 @@ type SampleId = keyof typeof SAMPLE_DOCUMENTS;
 
 type QueryState = {
   readonly themeId: string;
+  readonly paletteOpen: boolean;
 };
 
 function parseQueryState(): QueryState {
   if (typeof window === 'undefined') {
-    return { themeId: DEFAULT_THEME_ID };
+    return { themeId: DEFAULT_THEME_ID, paletteOpen: false };
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -35,8 +37,9 @@ function parseQueryState(): QueryState {
   const themeId = THEME_PRESETS.some((preset) => preset.metadata.id === requestedTheme)
     ? requestedTheme ?? DEFAULT_THEME_ID
     : DEFAULT_THEME_ID;
+  const paletteOpen = params.get('palette') === 'open';
 
-  return { themeId };
+  return { themeId, paletteOpen };
 }
 
 function extractHeadings(markdown: string): readonly string[] {
@@ -51,6 +54,7 @@ export default function App(): React.JSX.Element {
   const queryState = React.useMemo(() => parseQueryState(), []);
   const editorRef = React.useRef<MarkdownSourceEditorHandle>(null);
   const [themeId, setThemeId] = React.useState(queryState.themeId);
+  const [paletteOpen, setPaletteOpen] = React.useState(queryState.paletteOpen);
   const [sampleId, setSampleId] = React.useState<SampleId>('release');
   const [value, setValue] = React.useState<string>(SAMPLE_DOCUMENTS.release);
   const [showLineNumbers, setShowLineNumbers] = React.useState(true);
@@ -58,6 +62,7 @@ export default function App(): React.JSX.Element {
   const [lineHeight, setLineHeight] = React.useState(1.5);
   const [cursor, setCursor] = React.useState({ line: 1, column: 1 });
   const [selection, setSelection] = React.useState<MarkdownEditorSelection>({ start: 0, end: 0, direction: 'none' });
+  const palette = useMarkdownCommandPalette(editorRef);
 
   const preset = React.useMemo(
     () => THEME_PRESETS.find((entry) => entry.metadata.id === themeId) ?? THEME_PRESETS[0],
@@ -137,6 +142,7 @@ export default function App(): React.JSX.Element {
             onClick={() => editorRef.current?.executeCommand(command as never)}
           />
         ))}
+        <ActionButton label="Palette" onClick={() => setPaletteOpen(true)} />
       </section>
 
       <section className="toggle-row" aria-label="Editor display controls">
@@ -224,6 +230,52 @@ export default function App(): React.JSX.Element {
           </section>
         </aside>
       </section>
+      {paletteOpen ? (
+        <div className="palette-backdrop" role="presentation" onClick={() => setPaletteOpen(false)}>
+          <section
+            className="palette-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Editor command palette"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header className="palette-header">
+              <div>
+                <p className="eyebrow">MdWrk</p>
+                <h2>Command Palette</h2>
+              </div>
+              <ActionButton label="Close" onClick={() => setPaletteOpen(false)} />
+            </header>
+            <label className="palette-search">
+              <span>Filter commands</span>
+              <input
+                value={palette.query}
+                onChange={(event) => palette.setQuery(event.currentTarget.value)}
+                placeholder="ordered list, move line, export"
+              />
+            </label>
+            <ul className="palette-list">
+              {palette.commands.map((command) => (
+                <li key={command.id}>
+                  <button
+                    type="button"
+                    className="palette-item"
+                    disabled={command.disabled}
+                    onClick={() => {
+                      palette.execute(command.id);
+                      setPaletteOpen(false);
+                    }}
+                  >
+                    <strong>{command.title}</strong>
+                    <span>{command.scope} / {command.category}</span>
+                    <code>{command.id}</code>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }
