@@ -3,6 +3,8 @@ import type {
   MarkdownCommandDescriptor,
   MarkdownEditorBuiltinCommandId,
   MarkdownEditorCommandOptions,
+  MarkdownEditorNavigationIntent,
+  MarkdownEditorNavigationOptions,
   MarkdownEditorSelection,
   MarkdownEditorSnapshot,
 } from "@mdwrk/markdown-editor-core";
@@ -21,10 +23,18 @@ export interface MarkdownEditInRendererHandle {
   getSnapshot(): MarkdownEditorSnapshot;
   getSelection(): MarkdownEditorSelection;
   setSelection(selection: MarkdownEditorSelection): void;
+  navigateSelection(intent: MarkdownEditorNavigationIntent, options?: MarkdownEditorNavigationOptions): MarkdownEditorSelection;
   setValue(value: string, options?: { selection?: MarkdownEditorSelection }): void;
   executeCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot;
   executeNamedCommand(command: MarkdownEditorBuiltinCommandId, options?: MarkdownEditorCommandOptions): MarkdownEditorSnapshot;
   listCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[];
+}
+
+export interface MarkdownEditInRendererNavigationApi {
+  readonly navigate: (
+    intent: MarkdownEditorNavigationIntent,
+    options?: MarkdownEditorNavigationOptions,
+  ) => MarkdownEditorSelection | undefined;
 }
 
 export interface MarkdownEditInRendererProps {

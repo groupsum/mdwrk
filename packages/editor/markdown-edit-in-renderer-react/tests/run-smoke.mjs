@@ -9,6 +9,7 @@ import {
   replaceMarkdownEditBlock,
   splitMarkdownEditBlocks,
   useMarkdownEditInRendererCommands,
+  useMarkdownEditInRendererNavigation,
 } from "../dist/index.js";
 
 const sample = "# Title\n\nParagraph text.\n\n```ts\nconst value = 1;\n```\n";
@@ -178,6 +179,25 @@ const checks = [
     },
   },
   {
+    id: "navigation-hook-is-exported",
+    description: "Package navigation hook exposes first-class keyboard navigation helpers for rendered-flow editing",
+    test() {
+      function Harness() {
+        const navigation = useMarkdownEditInRendererNavigation(React.createRef());
+        return React.createElement("output", { "data-testid": "navigate" }, String(typeof navigation.navigate));
+      }
+
+      const view = render(React.createElement(Harness));
+      try {
+        const output = view.getByTestId("navigate");
+        assert.ok(output instanceof HTMLElement);
+        assert.equal(output.textContent, "function");
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
     id: "block-splitting",
     description: "splitMarkdownEditBlocks preserves paragraph and fenced-code block boundaries",
     test() {
@@ -214,6 +234,36 @@ const checks = [
         ref.current?.executeCommand?.("redo");
         await waitForFrame();
         assert.equal(ref.current?.getValue?.(), "1. alpha");
+      } finally {
+        cleanup();
+      }
+    },
+  },
+  {
+    id: "navigation-surface-moves-the-hidden-textarea-selection",
+    description: "Imperative navigation reuses editor-core movement intents while preserving rendered-flow focus",
+    async test() {
+      const ref = React.createRef();
+      const view = render(
+        React.createElement(MarkdownEditInRenderer, {
+          ref,
+          defaultValue: "one\ntwo",
+        }),
+      );
+      try {
+        const textarea = view.container.querySelector("textarea.markdown-edit-in-renderer-plaintext");
+        assert.ok(textarea instanceof HTMLTextAreaElement);
+        textarea.focus();
+        ref.current?.setSelection?.({ start: 0, end: 0, direction: "none" });
+        await waitForFrame();
+
+        const nextSelection = ref.current?.navigateSelection?.("arrow-down");
+        await waitForFrame();
+
+        assert.deepEqual(nextSelection, { start: 4, end: 4, direction: "none" });
+        assert.equal(textarea.selectionStart, 4);
+        assert.equal(textarea.selectionEnd, 4);
+        assert.equal(document.activeElement, textarea);
       } finally {
         cleanup();
       }

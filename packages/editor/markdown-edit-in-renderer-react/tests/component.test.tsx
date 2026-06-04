@@ -2,9 +2,9 @@
 import "@testing-library/jest-dom/vitest";
 import "@mdwrk/testing/vitest-setup";
 import React from "react";
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { MarkdownEditInRenderer, useMarkdownEditInRendererCommands } from "../src/index.js";
+import { MarkdownEditInRenderer, useMarkdownEditInRendererCommands, useMarkdownEditInRendererNavigation } from "../src/index.js";
 
 afterEach(() => {
   document.body.innerHTML = "";
@@ -72,5 +72,32 @@ describe("@mdwrk/markdown-edit-in-renderer-react", () => {
     expect(document.activeElement).toBe(editor);
     expect(ref.current?.getSnapshot().value).toBe("1. alpha");
     expect(editor.value).toBe("1. alpha");
+  });
+
+  it("exposes explicit navigation helpers through the React hook", async () => {
+    const ref = React.createRef<React.ElementRef<typeof MarkdownEditInRenderer>>();
+
+    function Harness(): React.JSX.Element {
+      const navigation = useMarkdownEditInRendererNavigation(ref);
+      return (
+        <>
+          <MarkdownEditInRenderer ref={ref} defaultValue={"one\ntwo"} />
+          <button onClick={() => navigation.navigate("arrow-down")}>down</button>
+        </>
+      );
+    }
+
+    render(<Harness />);
+    const editor = screen.getByRole("textbox", { name: "Markdown source" }) as HTMLTextAreaElement;
+    editor.focus();
+    ref.current?.setSelection({ start: 0, end: 0, direction: "none" });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "down" }));
+    });
+
+    expect(document.activeElement).toBe(editor);
+    expect(editor.selectionStart).toBe(4);
+    expect(editor.selectionEnd).toBe(4);
   });
 });

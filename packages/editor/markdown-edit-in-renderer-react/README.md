@@ -21,7 +21,9 @@ Use it when you want Typora-style authoring without splitting the document into 
 
 ## Surface
 - The imperative handle now exports `getSnapshot()`, `getSelection()`, `setSelection()`, `listCommands()`, and `executeNamedCommand()` in addition to focus and value helpers.
+- The imperative handle also exports `navigateSelection()` so rendered-flow editors can reuse editor-core movement intents.
 - `useMarkdownEditInRendererCommands()` exposes the first-class command inventory for rendered-flow authoring surfaces.
+- `useMarkdownEditInRendererNavigation()` exposes the first-class keyboard navigation helpers for rendered-flow authoring surfaces.
 - Command dispatch reuses the package-owned editor command descriptors so ordered lists, checklists, formatting, reorder commands, and undo/redo stay explicit instead of app-local.
 
 ## Installation

@@ -2,6 +2,7 @@ import React from "react";
 import { enhanceRenderedCodeBlocks, renderMarkdownToHtmlSync } from "@mdwrk/markdown-renderer-core";
 import {
   applyBuiltinMarkdownCommand,
+  computeNavigatedSelection,
   createHistoryState,
   createSelection,
   listBuiltinMarkdownEditorCommands,
@@ -27,6 +28,7 @@ import {
 import { createMarkdownEditInRendererThemeStyle } from "./theme.js";
 import type {
   MarkdownEditInRendererHandle,
+  MarkdownEditInRendererNavigationApi,
   MarkdownEditInRendererProps,
 } from "./types.js";
 
@@ -320,6 +322,29 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       return snapshotFromState(result.value, nextSelection);
     }, [commitValue, isControlled, onChange, updateRenderedCaret]);
 
+    const navigateSelection = React.useCallback((
+      intent: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[0],
+      options?: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[1],
+    ) => {
+      const nextSelection = computeNavigatedSelection(valueRef.current, {
+        start: selectionRef.current.start,
+        end: selectionRef.current.end,
+        direction: "none",
+      }, intent, options);
+      const normalized = normalizePlaintextSelection(nextSelection, valueRef.current.length);
+      selectionRef.current = normalized;
+      pendingSelectionRef.current = normalized;
+      window.requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        updateRenderedCaret();
+      });
+      return {
+        start: normalized.start,
+        end: normalized.end,
+        direction: "none" as const,
+      };
+    }, [updateRenderedCaret]);
+
     const updateSelectionFromPointer = React.useCallback((event: React.PointerEvent<HTMLTextAreaElement>, extendSelection: boolean) => {
       const surface = surfaceRef.current;
       const input = inputRef.current;
@@ -380,6 +405,9 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
           updateRenderedCaret();
         });
       },
+      navigateSelection(intent, options) {
+        return navigateSelection(intent, options);
+      },
       setValue(nextValue: string, options?: { selection?: MarkdownEditorSelection }): void {
         commitValue(
           nextValue,
@@ -396,7 +424,7 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
       listCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
         return listBuiltinMarkdownEditorCommands();
       },
-    }), [commitValue, executeCommand, updateRenderedCaret]);
+    }), [commitValue, executeCommand, navigateSelection, updateRenderedCaret]);
 
     const mergedThemeStyle = React.useMemo(
       () => ({
@@ -540,4 +568,14 @@ export const MarkdownEditInRenderer = React.forwardRef<MarkdownEditInRendererHan
 
 export function useMarkdownEditInRendererCommands(): readonly MarkdownCommandDescriptor<MarkdownEditorBuiltinCommandId>[] {
   return React.useMemo(() => listBuiltinMarkdownEditorCommands(), []);
+}
+
+export function useMarkdownEditInRendererNavigation(
+  handleRef: React.RefObject<MarkdownEditInRendererHandle | null>,
+): MarkdownEditInRendererNavigationApi {
+  const navigate = React.useCallback((intent: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[0], options?: Parameters<MarkdownEditInRendererNavigationApi["navigate"]>[1]) => {
+    return handleRef.current?.navigateSelection(intent, options);
+  }, [handleRef]);
+
+  return React.useMemo(() => ({ navigate }), [navigate]);
 }
