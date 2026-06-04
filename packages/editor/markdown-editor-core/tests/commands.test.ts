@@ -169,4 +169,10 @@ describe("builtin markdown editor commands", () => {
     expect(commands.find((command) => command.id === "task-list")?.applicability).toContain("gfm");
     expect(commands.find((command) => command.id === "move-line-up")?.applicability).toContain("mdwrk-operator");
   });
+
+  it("does not move the top line past the document boundary", () => {
+    const result = applyBuiltinMarkdownCommand("move-line-up", "one\ntwo", { start: 0, end: 0 });
+    expect(result.changed).toBe(false);
+    expect(result.value).toBe("one\ntwo");
+  });
 });

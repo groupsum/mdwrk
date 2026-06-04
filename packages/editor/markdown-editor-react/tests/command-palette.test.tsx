@@ -33,4 +33,15 @@ describe("Markdown editor command palette", () => {
     });
     expect(editor.value).toBe("1. alpha");
   });
+
+  it("marks commands as disabled when no editor handle is attached", () => {
+    function Harness(): React.JSX.Element {
+      const orphanedRef = React.useRef<React.ElementRef<typeof MarkdownSourceEditor>>(null);
+      const palette = useMarkdownCommandPalette(orphanedRef);
+      return <output data-testid="disabled">{String(palette.commands.every((command) => command.disabled))}</output>;
+    }
+
+    render(<Harness />);
+    expect(screen.getByTestId("disabled")).toHaveTextContent("true");
+  });
 });

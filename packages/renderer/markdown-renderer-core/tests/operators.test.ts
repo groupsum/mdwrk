@@ -48,4 +48,8 @@ describe("markdown renderer operators", () => {
     expect(operators.find((operator) => operator.id === "load")).toMatchObject({ scope: "shared" });
     expect(operators.find((operator) => operator.id === "export-pdf")?.applicability).toContain("mdwrk-operator");
   });
+
+  it("returns an empty block map for an empty document", () => {
+    expect(getMarkdownBlockMap("")).toEqual([]);
+  });
 });

@@ -1,6 +1,6 @@
 {
   "name": "@mdwrk/markdown-renderer-react",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -25,7 +25,7 @@
   ],
   "description": "React bindings for the MdWrk self-contained markdown renderer checkpoint.",
   "dependencies": {
-    "@mdwrk/markdown-renderer-core": "^1.2.0",
+    "@mdwrk/markdown-renderer-core": "^1.2.1",
     "@mdwrk/ui-tokens": "^1.3.0"
   },
   "peerDependencies": {
