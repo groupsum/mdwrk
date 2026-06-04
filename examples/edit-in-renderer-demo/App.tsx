@@ -6,7 +6,8 @@ import {
   MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
 } from '@mdwrk/ui-tokens';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
-import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
+import { DEFAULT_DEMO_THEME_ID, DEMO_RENDERER_THEMES, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
+import { useApplyDocumentTheme } from '../useApplyDocumentTheme';
 import './styles.css';
 
 const THEME_PRESETS = DEMO_THEME_PRESETS;
@@ -76,6 +77,11 @@ export default function App(): React.JSX.Element {
     () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
+  const rendererTheme = React.useMemo(
+    () => DEMO_RENDERER_THEMES[themeId as keyof typeof DEMO_RENDERER_THEMES] ?? DEMO_RENDERER_THEMES[DEFAULT_THEME_ID],
+    [themeId],
+  );
+  useApplyDocumentTheme(shellTheme.style);
   const selector = `.edit-in-renderer-shell[data-theme="${themeId}"]`;
   const themeCss = React.useMemo(
     () => createPreviewStyleSheet(preset?.tokens ?? {}, {
@@ -83,6 +89,19 @@ export default function App(): React.JSX.Element {
       hostSelector: selector,
     }).cssText,
     [preset, selector],
+  );
+  const editInRendererThemeVariables = React.useMemo(
+    () => ({
+      foreground: preset?.tokens['fg-primary'],
+      foregroundMuted: preset?.tokens['fg-muted'],
+      background: preset?.tokens['bg-panel'],
+      backgroundActive: preset?.tokens['bg-inset'],
+      border: preset?.tokens['border-color'],
+      accent: preset?.tokens.accent,
+      fontUi: preset?.tokens['font-ui'],
+      fontMono: preset?.tokens['font-mono'],
+    }),
+    [preset],
   );
   const blocks = React.useMemo(() => createBlockSummary(value), [value]);
   const contractClasses = React.useMemo(
@@ -125,6 +144,8 @@ export default function App(): React.JSX.Element {
             onChange={setValue}
             spellCheck={false}
             extensions={['superscript', 'subscript']}
+            themeStyle={rendererTheme.style}
+            themeVariables={editInRendererThemeVariables}
           />
         </article>
 

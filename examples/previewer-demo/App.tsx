@@ -5,13 +5,13 @@ import {
   MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES,
   MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
 } from '@mdwrk/ui-tokens';
-import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
-import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
+import { DEFAULT_DEMO_THEME_ID, DEMO_RENDERER_THEMES, DEMO_SHELL_THEMES } from '@mdwrk/core-demo-themes';
+import { useApplyDocumentTheme } from '../useApplyDocumentTheme';
 import './styles.css';
 
 type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes' | 'superscript' | 'subscript';
 
-const THEME_PRESETS = DEMO_THEME_PRESETS;
+const THEME_PRESETS = DEMO_RENDERER_THEMES;
 const DEFAULT_THEME_ID = DEFAULT_DEMO_THEME_ID;
 
 const OPTIONAL_EXTENSION_OPTIONS: readonly { id: OptionalExtensionId; label: string }[] = [
@@ -75,7 +75,7 @@ Footnote marker.[^1]
 function parseThemeFromQuery(): string {
   if (typeof window === 'undefined') return DEFAULT_THEME_ID;
   const theme = new URLSearchParams(window.location.search).get('theme');
-  return THEME_PRESETS.some((entry) => entry.metadata.id === theme) ? theme ?? DEFAULT_THEME_ID : DEFAULT_THEME_ID;
+  return THEME_PRESETS[theme as keyof typeof THEME_PRESETS] ? theme ?? DEFAULT_THEME_ID : DEFAULT_THEME_ID;
 }
 
 export default function App(): React.JSX.Element {
@@ -87,22 +87,15 @@ export default function App(): React.JSX.Element {
     'superscript',
     'subscript',
   ]);
-  const preset = React.useMemo(
-    () => THEME_PRESETS.find((entry) => entry.metadata.id === themeId) ?? THEME_PRESETS[0],
-    [themeId],
-  );
   const shellTheme = React.useMemo(
     () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
-  const selector = `.previewer-demo-shell[data-theme="${themeId}"]`;
-  const themeCss = React.useMemo(
-    () => createPreviewStyleSheet(preset?.tokens ?? {}, {
-      rootSelector: selector,
-      hostSelector: selector,
-    }).cssText,
-    [preset, selector],
+  const rendererTheme = React.useMemo(
+    () => DEMO_RENDERER_THEMES[themeId as keyof typeof DEMO_RENDERER_THEMES] ?? DEMO_RENDERER_THEMES[DEFAULT_THEME_ID],
+    [themeId],
   );
+  useApplyDocumentTheme(shellTheme.style);
   const rendererBridges = React.useMemo(
     () => MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES,
     [],
@@ -127,7 +120,6 @@ export default function App(): React.JSX.Element {
 
   return (
     <main className="demo-shell previewer-demo-shell" data-theme={themeId} style={shellTheme.style}>
-      <style>{themeCss}</style>
       <section className="hero-card">
         <div>
           <p className="eyebrow">MdWrk Demo</p>
@@ -139,7 +131,7 @@ export default function App(): React.JSX.Element {
             label="Theme"
             value={themeId}
             onChange={setThemeId}
-            options={THEME_PRESETS.map((entry) => ({ id: entry.metadata.id, label: entry.metadata.name }))}
+            options={Object.entries(THEME_PRESETS).map(([id, theme]) => ({ id, label: theme.label }))}
           />
         </div>
         <div className="control-cluster">
@@ -181,11 +173,12 @@ export default function App(): React.JSX.Element {
             </div>
           </section>
         </aside>
-        <article className="preview-card">
+        <article className="preview-card" style={rendererTheme.style}>
           <MarkdownRenderer
             markdown={MARKDOWN}
             profile="gfm-default"
             extensions={extensions}
+            themeStyle={rendererTheme.style}
           />
         </article>
       </section>

@@ -10,6 +10,7 @@ import { MARKDOWN_WORKSPACE_EDITOR_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import { LineHeightRail } from '@mdwrk/extension-theme-studio';
 import { createPreviewStyleSheet } from '@mdwrk/theme-preview';
 import { DEFAULT_DEMO_THEME_ID, DEMO_SHELL_THEMES, DEMO_THEME_PRESETS } from '@mdwrk/core-demo-themes';
+import { useApplyDocumentTheme } from '../useApplyDocumentTheme';
 import './styles.css';
 
 const THEME_PRESETS = DEMO_THEME_PRESETS;
@@ -72,6 +73,7 @@ export default function App(): React.JSX.Element {
     () => DEMO_SHELL_THEMES[themeId as keyof typeof DEMO_SHELL_THEMES] ?? DEMO_SHELL_THEMES[DEFAULT_THEME_ID],
     [themeId],
   );
+  useApplyDocumentTheme(shellTheme.style);
   const scopedSelector = `.demo-shell[data-theme="${themeId}"]`;
   const themeCss = React.useMemo(
     () => createPreviewStyleSheet(preset?.tokens ?? {}, {

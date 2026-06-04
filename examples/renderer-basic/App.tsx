@@ -3,6 +3,7 @@ import { DropdownSelector, TogglePill } from '@mdwrk/core-demo-react';
 import { MarkdownRenderer } from '@mdwrk/markdown-renderer-react';
 import { MARKDOWN_WORKSPACE_RENDERER_HELPER_CLASSES, MARKDOWN_WORKSPACE_RENDERER_THEME_BRIDGES } from '@mdwrk/ui-tokens';
 import { DEFAULT_DEMO_THEME_ID, DEMO_RENDERER_THEMES, DEMO_SHELL_THEMES, type DemoThemeId } from '@mdwrk/core-demo-themes';
+import { useApplyDocumentTheme } from '../useApplyDocumentTheme';
 import './styles.css';
 
 type OptionalExtensionId = 'definition-lists' | 'math' | 'footnotes' | 'superscript' | 'subscript';
@@ -15,6 +16,15 @@ const OPTIONAL_EXTENSION_OPTIONS: readonly { id: OptionalExtensionId; label: str
   { id: 'superscript', label: 'Superscript' },
   { id: 'subscript', label: 'Subscript' },
 ] as const;
+
+function parseThemeFromQuery(): DemoThemeId {
+  if (typeof window === 'undefined') {
+    return DEFAULT_DEMO_THEME_ID;
+  }
+
+  const theme = new URLSearchParams(window.location.search).get('theme');
+  return THEME_PRESETS[theme as DemoThemeId] ? (theme as DemoThemeId) : DEFAULT_DEMO_THEME_ID;
+}
 
 const markdown = `# Portable Markdown Renderer
 
@@ -65,7 +75,7 @@ without a language tag
 `;
 
 export default function App(): React.JSX.Element {
-  const [themePreset, setThemePreset] = React.useState<DemoThemeId>(DEFAULT_DEMO_THEME_ID);
+  const [themePreset, setThemePreset] = React.useState<DemoThemeId>(() => parseThemeFromQuery());
   const [enabledExtensions, setEnabledExtensions] = React.useState<OptionalExtensionId[]>([
     'definition-lists',
     'math',
@@ -76,6 +86,7 @@ export default function App(): React.JSX.Element {
 
   const currentTheme = THEME_PRESETS[themePreset];
   const shellTheme = DEMO_SHELL_THEMES[themePreset];
+  useApplyDocumentTheme(shellTheme.style);
 
   const toggleExtension = (extensionId: OptionalExtensionId) => {
     setEnabledExtensions((current) => current.includes(extensionId)
