@@ -1,7 +1,7 @@
 {
     "name":  "mdwrk",
     "private":  true,
-    "version":  "0.1.15",
+    "version":  "0.1.16",
     "packageManager":  "pnpm@10.11.0",
     "workspaces":  [
                        "packages/renderer/*",
@@ -37,9 +37,14 @@
                     "validate:mdwrk-extension-contributions":  "node ./tools/governance/validate-mdwrk-extension-contributions.mjs",
                     "validate:markdown-command-export-screenshot-manifest":  "node ./tools/governance/validate-markdown-command-export-screenshot-manifest.mjs",
                     "ci:governance":  "npm run validate:mdwrk-package-cr-order \u0026\u0026 npm run validate:mdwrk-docs-governance \u0026\u0026 npm run validate:mdwrk-extension-contributions \u0026\u0026 npm run validate:markdown-command-export-screenshot-manifest",
-                    "ci:install":  "npm install --ignore-scripts",
+                    "ci:install":  "npx pnpm@10.11.0 install --frozen-lockfile",
+                    "ci:publish-packages":  "node ./tools/release/verify-publish-packages.mjs",
                     "pack:packages":  "node ./tools/release/pack-workspaces.mjs",
-                    "publish:packages":  "node ./tools/release/run-publish.mjs"
+                    "publish:packages":  "node ./tools/release/run-publish.mjs",
+                    "release:prepare":  "node ./tools/release/prepare-release.mjs",
+                    "release:evidence":  "node ./tools/release/generate-release-evidence.mjs",
+                    "release:status":  "node ./tools/release/run-changesets.mjs status",
+                    "release:version":  "node ./tools/release/run-changesets.mjs version"
                 },
     "description":  "MdWrk core renderer, editor, token, icon, testing, and example packages.",
     "homepage":  "https://mdwrk.com",

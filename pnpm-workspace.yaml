@@ -4,4 +4,3 @@ packages:
   - "packages/editor/*"
   - "packages/extensions/*"
   - "packages/shared/*"
-  - "examples/*"
