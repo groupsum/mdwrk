@@ -13,17 +13,7 @@
       "@mdwrk/markdown-editor-react"
     ],
     [
-      "@mdwrk/i18n",
       "@mdwrk/ui-tokens"
-    ],
-    [
-      "@mdwrk/extension-runtime",
-      "@mdwrk/extension-workspace-files",
-      "@mdwrk/extension-git-ops",
-      "@mdwrk/extension-manager",
-      "@mdwrk/extension-theme-studio",
-      "@mdwrk/extension-gemini-agent",
-      "@mdwrk/extension-catalog-hello"
     ]
   ],
   "access": "public",
