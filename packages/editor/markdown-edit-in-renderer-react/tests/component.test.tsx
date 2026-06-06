@@ -2,7 +2,7 @@
 import "@testing-library/jest-dom/vitest";
 import "@mdwrk/testing/vitest-setup";
 import React from "react";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { MarkdownEditInRenderer, useMarkdownEditInRendererCommands, useMarkdownEditInRendererNavigation } from "../src/index.js";
 
@@ -96,8 +96,10 @@ describe("@mdwrk/markdown-edit-in-renderer-react", () => {
       fireEvent.click(screen.getByRole("button", { name: "down" }));
     });
 
-    expect(document.activeElement).toBe(editor);
-    expect(ref.current?.getSelection()).toEqual({ start: 4, end: 4, direction: "none" });
+    await waitFor(() => {
+      expect(document.activeElement).toBe(editor);
+      expect(ref.current?.getSelection()).toEqual({ start: 4, end: 4, direction: "none" });
+    });
   });
 
   it("keeps imperative commands fail-closed while disabled", async () => {
