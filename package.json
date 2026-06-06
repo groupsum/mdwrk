@@ -1,7 +1,7 @@
 {
     "name":  "mdwrk",
     "private":  true,
-    "version":  "0.1.16",
+    "version":  "0.1.17",
     "packageManager":  "pnpm@10.11.0",
     "workspaces":  [
                        "packages/renderer/*",
@@ -14,6 +14,9 @@
                     "npm":  "\u003e=10",
                     "pnpm":  "\u003e=10"
                 },
+    "devDependencies":  {
+                            "typescript":  "5.7.3"
+                        },
     "scripts":  {
                     "build":  "npm run build:shared \u0026\u0026 npm run build:renderer \u0026\u0026 npm run build:editor \u0026\u0026 npm run build:examples",
                     "build:shared":  "npm run build -w @mdwrk/ui-tokens \u0026\u0026 npm run build -w @mdwrk/core-demo-themes \u0026\u0026 npm run build -w @mdwrk/core-demo-react \u0026\u0026 npm run build -w @mdwrk/icons \u0026\u0026 npm run build -w @mdwrk/testing",

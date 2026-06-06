@@ -16,7 +16,6 @@ on:
 permissions:
   contents: write
   id-token: write
-  attestations: write
 
 concurrency:
   group: release-${{ github.ref }}
@@ -67,11 +66,6 @@ jobs:
             artifacts/extensions
             artifacts/packs
             artifacts/releases
-
-      - name: Attest release evidence provenance
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: release-evidence.tgz
 
       - name: Create GitHub release
         if: ${{ inputs.create_github_release && inputs.tag != '' }}
