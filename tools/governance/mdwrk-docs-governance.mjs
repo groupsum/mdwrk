@@ -43,19 +43,6 @@ export const MDWRK_DOCS_GOVERNANCE_FEATURES = [
       'Link and image commands',
     ],
   },
-  {
-    id: 'feat:mdwrk-extension-surface-documentation',
-    claimId: 'clm:docs-extension-authoring-guide',
-    path: 'data/markdown/docs/authoring/extension-contribution-surfaces.md',
-    slug: 'authoring/extension-contribution-surfaces',
-    requiredTerms: [
-      'Extension contribution surfaces',
-      'hook registrations',
-      'settings schemas',
-      'diagnostics',
-      'external catalog fixtures',
-    ],
-  },
 ];
 
 const ROOTS = [

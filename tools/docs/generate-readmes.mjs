@@ -318,10 +318,8 @@ readmes.set("packages/README.md", indexReadme({
     "Pick a family first, then move to a concrete package README for install and API details.",
     "",
     bullets([
-      "[Contracts](./contracts/README.md)",
       "[Renderer](./renderer/README.md)",
       "[Editor](./editor/README.md)",
-      "[Extensions](./extensions/README.md)",
       "[Shared](./shared/README.md)",
       "[Lander](./lander/README.md)",
       "[Content](./content/README.md)",
@@ -331,37 +329,6 @@ readmes.set("packages/README.md", indexReadme({
     { label: "Root README", href: "../README.md", note: "repo overview" },
     { label: "Examples", href: "../examples/README.md", note: "external-consumer validation" },
     { label: "npm org", href: npmOrgUrl, note: "published package scope" },
-  ]),
-}));
-
-readmes.set("packages/contracts/README.md", indexReadme({
-  relPath: "packages/contracts/README.md",
-  title: "MdWrk Contracts",
-  subtitle: "Theme and extension API foundations",
-  summary:
-    "The contracts family defines the stable type and capability boundaries shared by MdWrk themes, extension manifests, and extension hosts.",
-  why:
-    "Consumers need to know where the durable API contract starts. This family README separates contract packages from runtime and UI implementations.",
-  what: [
-    "`@mdwrk/extension-manifest` for manifest, capability, settings, integrity, and compatibility shapes.",
-    "`@mdwrk/extension-host` for the host-side API available to extensions at runtime.",
-    "`@mdwrk/theme-contract` for stable theme tokens, class names, bridges, and preset compatibility.",
-  ],
-  install: [
-    "npm install @mdwrk/extension-manifest @mdwrk/extension-host @mdwrk/theme-contract",
-  ],
-  usage: [
-    "Use these packages when you are defining compatibility, not when you are running the runtime.",
-    "",
-    bullets([
-      "[extension-manifest](./extension-manifest/README.md) for package metadata and capabilities.",
-      "[extension-host](./extension-host/README.md) for host APIs exposed to extensions.",
-      "[theme-contract](./theme-contract/README.md) for theme token and class guarantees.",
-    ]),
-  ].join("\n"),
-  related: links([
-    { label: "Extensions family", href: "../extensions/README.md", note: "runtime and bundled extensions" },
-    { label: "Shared family", href: "../shared/README.md", note: "token and i18n consumers" },
   ]),
 }));
 
@@ -425,41 +392,6 @@ readmes.set("packages/editor/README.md", indexReadme({
   ]),
 }));
 
-readmes.set("packages/extensions/README.md", indexReadme({
-  relPath: "packages/extensions/README.md",
-  title: "MdWrk Extensions",
-  subtitle: "Runtime and first-party bundled extensions",
-  summary:
-    "The extensions family contains the runtime that loads MdWrk extensions and the first-party bundled packages that register views, actions, and services.",
-  why:
-    "Extension ecosystems need clear boundaries between contracts, runtime, and concrete packages. This family README points readers to the right layer immediately.",
-  what: [
-    "`@mdwrk/extension-runtime` for loading, compatibility, activation, storage, and catalog workflows.",
-    "First-party bundled packages for workspace files, Git operations, extension management, Gemini workflows, theme authoring, language packs, and catalog validation.",
-  ],
-  install: [
-    "npm install @mdwrk/extension-runtime @mdwrk/extension-manager @mdwrk/extension-workspace-files",
-  ],
-  usage: [
-    "Use the runtime when you are building or hosting extensions. Use the individual package READMEs when you need a specific bundled capability.",
-    "",
-    bullets([
-      "[extension-runtime](./extension-runtime/README.md)",
-      "[extension-manager](./extension-manager/README.md)",
-      "[extension-workspace-files](./extension-workspace-files/README.md)",
-      "[extension-git-ops](./extension-git-ops/README.md)",
-      "[extension-gemini-agent](./extension-gemini-agent/README.md)",
-      "[extension-theme-studio](./extension-theme-studio/README.md)",
-      "[extension-language-pack-studio](./extension-language-pack-studio/README.md)",
-      "[extension-catalog-hello](./extension-catalog-hello/README.md)",
-    ]),
-  ].join("\n"),
-  related: links([
-    { label: "Contracts family", href: "../contracts/README.md", note: "manifest, host, and theme API contracts" },
-    { label: "Client app", href: "../../apps/client/README.md", note: "first-party extension host" },
-  ]),
-}));
-
 readmes.set("packages/shared/README.md", indexReadme({
   relPath: "packages/shared/README.md",
   title: "MdWrk Shared",
@@ -490,7 +422,6 @@ readmes.set("packages/shared/README.md", indexReadme({
     ]),
   ].join("\n"),
   related: links([
-    { label: "Contracts family", href: "../contracts/README.md", note: "theme contract and extension types" },
     { label: "Lander family", href: "../lander/README.md", note: "consumers of structured-data helpers" },
   ]),
 }));
@@ -679,15 +610,12 @@ readmes.set("apps/client/README.md", publicPackageReadme({
   related: links([
     { label: "Root README", href: "../../README.md", note: "repo overview" },
     { label: "Desktop shell", href: "../desktop/README.md", note: "native wrapper for this client" },
-    { label: "Extensions family", href: "../../packages/extensions/README.md", note: "runtime and bundled extensions" },
-    { label: "Theme contract", href: "../../packages/contracts/theme-contract/README.md", note: "theme compatibility surface" },
     { label: "Docs", href: "../../docs/README.md", note: "deeper architecture and conformance" },
   ]),
   extraSections: [
     section("How", bullets([
       "Run `npm run dev:client` for local client iteration.",
       "Run `npm run screenshots:matrix -w apps/client` when you need full theme and viewport coverage artifacts.",
-      "Use the extension family packages to understand the bundled runtime and first-party panels.",
     ])),
   ],
 }));
@@ -759,80 +687,6 @@ readmes.set("apps/mdwrkcom/README.md", workspaceSurfaceReadme({
 }));
 
 const packageConfigs = [
-  {
-    relPath: "packages/contracts/extension-manifest/README.md",
-    title: "@mdwrk/extension-manifest",
-    subtitle: "Extension metadata and compatibility contract",
-    summary: "This package defines the canonical MdWrk extension manifest shape, including capabilities, contributions, settings, integrity data, and compatibility declarations.",
-    why: "Use it when you need to describe an extension package in a durable, host-agnostic way.",
-    what: [
-      "Manifest structure for bundled and external extensions.",
-      "Capability, contribution, settings, i18n, support, integrity, and distribution types.",
-      "The package boundary consumed by extension packages, runtimes, and host validators.",
-    ],
-    install: ["npm install @mdwrk/extension-manifest"],
-    usage: code("ts", [
-      "import type { ExtensionManifest } from \"@mdwrk/extension-manifest\";",
-      "",
-      "const manifest: ExtensionManifest = {",
-      "  manifestVersion: 1,",
-      "  id: \"example.extension\",",
-      "  packageName: \"@scope/example-extension\",",
-      "  version: \"1.0.0\",",
-      "  displayName: { defaultMessage: \"Example Extension\" },",
-      "  description: { defaultMessage: \"Demonstrates the manifest contract.\" },",
-      "  kind: \"bundled\",",
-      "  icon: { kind: \"lucide\", name: \"Plug\" },",
-      "  enabledByDefault: true,",
-      "  capabilities: [],",
-      "  compatibility: { hostApi: \"*\", runtime: \"*\", themeContract: \"*\" },",
-      "  entry: { module: \"./index.js\" },",
-      "  contributions: {},",
-      "};",
-    ].join("\n")),
-  },
-  {
-    relPath: "packages/contracts/extension-host/README.md",
-    title: "@mdwrk/extension-host",
-    subtitle: "Host API surface for MdWrk extensions",
-    summary: "This package defines the host APIs that MdWrk extensions can use for commands, views, action rail items, settings, notifications, theme access, editor access, workspace access, i18n, diagnostics, and logging.",
-    why: "Use it when you are implementing an extension or a host and need a stable boundary between the two.",
-    what: [
-      "Type contracts for extension lifecycle and registration.",
-      "Host APIs for editor, workspace, theme, views, settings, notifications, diagnostics, and logging.",
-      "Primitive interfaces shared by the runtime and bundled extensions.",
-    ],
-    install: ["npm install @mdwrk/extension-host"],
-    usage: code("ts", [
-      "import type { ExtensionHost } from \"@mdwrk/extension-host\";",
-      "",
-      "export function boot(host: ExtensionHost) {",
-      "  return host.commands.list();",
-      "}",
-    ].join("\n")),
-  },
-  {
-    relPath: "packages/contracts/theme-contract/README.md",
-    title: "@mdwrk/theme-contract",
-    subtitle: "Portable MdWrk theme compatibility surface",
-    summary: "This package defines the stable MdWrk theme token, class-name, bridge, and preset compatibility surface used across apps, renderers, editors, and extensions.",
-    why: "Use it when you need themes to remain compatible across multiple MdWrk surfaces instead of drifting app by app.",
-    what: [
-      "Theme preset and draft shapes.",
-      "Stable token and class-name contracts.",
-      "Bridge metadata used to map token values into target surfaces.",
-    ],
-    install: ["npm install @mdwrk/theme-contract"],
-    usage: code("ts", [
-      "import { createEmptyThemePreset } from \"@mdwrk/theme-contract\";",
-      "",
-      "const preset = createEmptyThemePreset(\"my-theme\", \"My Theme\");",
-      "",
-      "preset.tokens = {",
-      "  \"color.canvas\": \"#111111\",",
-      "};",
-    ].join("\n")),
-  },
   {
     relPath: "packages/renderer/markdown-renderer-core/README.md",
     title: "@mdwrk/markdown-renderer-core",
@@ -944,122 +798,6 @@ const packageConfigs = [
       "    />",
       "  );",
       "}",
-    ].join("\n")),
-  },
-  {
-    relPath: "packages/extensions/extension-runtime/README.md",
-    title: "@mdwrk/extension-runtime",
-    subtitle: "Runtime for MdWrk extensions",
-    summary: "This package loads, validates, activates, deactivates, catalogs, installs, and tracks MdWrk extensions against the host and contract baselines.",
-    why: "Use it when you are building an extension host or testing extension lifecycle behavior.",
-    what: [
-      "Bundled and installed extension registration.",
-      "Compatibility checks against host, runtime, editor, renderer, and theme baselines.",
-      "Catalog loading, activation state, diagnostics, storage, and capability trimming.",
-    ],
-    install: ["npm install @mdwrk/extension-runtime @mdwrk/extension-host @mdwrk/extension-manifest"],
-    usage: "Use this package inside a host implementation. Pair it with `@mdwrk/extension-host` and `@mdwrk/extension-manifest` for a complete extension boundary.",
-  },
-  {
-    relPath: "packages/extensions/extension-manager/README.md",
-    title: "@mdwrk/extension-manager",
-    subtitle: "First-party extension operations console",
-    summary: "This package provides the first-party bundled operator console for browsing, enabling, disabling, configuring, and diagnosing MdWrk extensions.",
-    why: "Use it when you want a concrete management surface on top of the runtime rather than only the headless runtime APIs.",
-    what: [
-      "A packaged first-party extension, not the core runtime itself.",
-      "Views and UI for extension inventory, state, and diagnostics.",
-      "A bundled entry surface consumed by the client host.",
-    ],
-    install: ["npm install @mdwrk/extension-manager @mdwrk/extension-runtime"],
-    usage: "Import this package into a host that already exposes the MdWrk extension runtime and host APIs.",
-  },
-  {
-    relPath: "packages/extensions/extension-workspace-files/README.md",
-    title: "@mdwrk/extension-workspace-files",
-    subtitle: "Workspace file-system extension",
-    summary: "This package provides the first-party extension that backs project and file browsing inside the MdWrk workspace shell.",
-    why: "Use it when the host needs the default workspace file experience rather than only custom extension views.",
-    what: [
-      "Bundled workspace browsing and file operations.",
-      "A first-party extension package consumed by the client host.",
-      "A reference extension for workspace-centric host APIs.",
-    ],
-    install: ["npm install @mdwrk/extension-workspace-files @mdwrk/extension-runtime"],
-    usage: "Load it as a bundled extension inside a host that implements the MdWrk workspace APIs.",
-  },
-  {
-    relPath: "packages/extensions/extension-git-ops/README.md",
-    title: "@mdwrk/extension-git-ops",
-    subtitle: "Git workflow extension",
-    summary: "This package provides the first-party Git operations extension surface for MdWrk hosts.",
-    why: "Use it when you want Git-adjacent workflows exposed through the extension system instead of hard-coding them into the shell.",
-    what: [
-      "Bundled extension metadata and entrypoints for Git operations.",
-      "A first-party package intended to register Git-oriented views and actions.",
-      "A reusable extension boundary for hosts that support Git workflows.",
-    ],
-    install: ["npm install @mdwrk/extension-git-ops @mdwrk/extension-runtime"],
-    usage: "Consume it as a bundled extension package inside a host that already provides runtime and workspace services.",
-  },
-  {
-    relPath: "packages/extensions/extension-gemini-agent/README.md",
-    title: "@mdwrk/extension-gemini-agent",
-    subtitle: "Gemini workflow extension",
-    summary: "This package provides the first-party Gemini workflow extension with conversation threads, Markdown preview, draft-based writeback, and a bundled operator view.",
-    why: "Use it when you need AI-assisted drafting as an extension surface instead of embedding it directly in the shell.",
-    what: [
-      "Bundled Gemini agent views and services.",
-      "Settings, prompt, provider, and sidebar/view components.",
-      "A concrete example of a richer first-party MdWrk extension package.",
-    ],
-    install: ["npm install @mdwrk/extension-gemini-agent @mdwrk/extension-runtime"],
-    usage: "Register the package as a bundled extension in a host that exposes editor, workspace, and notification APIs.",
-  },
-  {
-    relPath: "packages/extensions/extension-theme-studio/README.md",
-    title: "@mdwrk/extension-theme-studio",
-    subtitle: "Theme authoring extension",
-    summary: "This package provides the first-party theme authoring extension for token inspection, preview, apply/revert flow, and export helpers.",
-    why: "Use it when you want theme editing to live inside the extension system and remain aligned to the shared token contract.",
-    what: [
-      "Theme drafting and export helpers.",
-      "Bundled views, services, and settings for theme authoring.",
-      "A concrete consumer of the theme contract and shared token packages.",
-    ],
-    install: ["npm install @mdwrk/extension-theme-studio @mdwrk/theme-contract"],
-    usage: "Load it into a host that implements the MdWrk theme APIs and wants a first-party authoring panel.",
-  },
-  {
-    relPath: "packages/extensions/extension-language-pack-studio/README.md",
-    title: "@mdwrk/extension-language-pack-studio",
-    subtitle: "Language-pack authoring extension",
-    summary: "This package provides the first-party extension for inspecting and shaping language-pack data inside MdWrk hosts.",
-    why: "Use it when localization authoring should remain an extension concern instead of being hard-wired into the app shell.",
-    what: [
-      "Bundled extension entrypoints and language-pack helpers.",
-      "A first-party consumer of the i18n package family and host APIs.",
-      "A workspace authoring surface for localization-related workflows.",
-    ],
-    install: ["npm install @mdwrk/extension-language-pack-studio @mdwrk/i18n"],
-    usage: "Load it as a bundled extension in a host with i18n and workspace capabilities.",
-  },
-  {
-    relPath: "packages/extensions/extension-catalog-hello/README.md",
-    title: "@mdwrk/extension-catalog-hello",
-    subtitle: "External catalog sample extension",
-    summary: "This package is a sample external extension used to validate catalog discovery, installation, trust, and runtime activation.",
-    why: "Use it when you need a small, auditable example of the external-extension path rather than a large first-party extension.",
-    what: [
-      "A tiny extension that registers a view and action-rail item.",
-      "An installable external-package example for trust and catalog flow.",
-      "A simple reference implementation for downstream extension authors.",
-    ],
-    install: ["npm install @mdwrk/extension-catalog-hello"],
-    usage: code("ts", [
-      "import extensionCatalogHello from \"@mdwrk/extension-catalog-hello\";",
-      "",
-      "console.log(extensionCatalogHello.manifest.id);",
     ].join("\n")),
   },
   {

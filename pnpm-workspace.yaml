@@ -1,6 +1,4 @@
 packages:
-  - "packages/contracts/*"
   - "packages/renderer/*"
   - "packages/editor/*"
-  - "packages/extensions/*"
   - "packages/shared/*"

@@ -18,19 +18,16 @@ export const MDWRK_PACKAGE_CR_FEATURE_IDS = [
 ];
 
 export const PACKAGE_OWNER_ORDER = [
-  { id: 'contracts', order: 10, prefixes: ['packages/contracts/'] },
-  { id: 'shared', order: 20, prefixes: ['packages/shared/'] },
-  { id: 'renderer', order: 30, prefixes: ['packages/renderer/'] },
-  { id: 'editor', order: 40, prefixes: ['packages/editor/'] },
-  { id: 'extensions', order: 50, prefixes: ['packages/extensions/'] },
-  { id: 'examples', order: 60, prefixes: ['examples/'] },
-  { id: 'docs', order: 70, prefixes: ['docs/'] },
-  { id: 'governance', order: 80, prefixes: ['.ssot/', 'tools/governance/', 'tools/testing/', 'AGENTS.md', 'package.json'] },
+  { id: 'shared', order: 10, prefixes: ['packages/shared/'] },
+  { id: 'renderer', order: 20, prefixes: ['packages/renderer/'] },
+  { id: 'editor', order: 30, prefixes: ['packages/editor/'] },
+  { id: 'examples', order: 40, prefixes: ['examples/'] },
+  { id: 'docs', order: 50, prefixes: ['docs/'] },
+  { id: 'governance', order: 60, prefixes: ['.ssot/', 'tools/governance/', 'tools/testing/', 'AGENTS.md', 'package.json'] },
 ];
 
 export const REQUIRED_AGENT_PATHS = [
   'AGENTS.md',
-  'packages/contracts/theme-contract/AGENTS.md',
   'packages/shared/ui-tokens/AGENTS.md',
   'packages/renderer/AGENTS.md',
   'packages/editor/AGENTS.md',

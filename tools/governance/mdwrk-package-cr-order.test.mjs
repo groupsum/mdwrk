@@ -10,18 +10,17 @@ import {
 
 test('orders change requests by package owner dependency order', () => {
   const ordered = orderChangeRequestsByOwner([
-    { id: 'CR-contract', path: 'packages/contracts/theme-contract/src/tokens.ts' },
+    { id: 'CR-shared', path: 'packages/shared/ui-tokens/src/index.ts' },
     { id: 'CR-editor', path: 'packages/editor/markdown-editor-core/src/index.ts' },
-    { id: 'CR-extension', path: 'packages/extensions/extension-runtime/src/index.ts' },
     { id: 'CR-docs', path: 'docs/reference/package-boundary-map.md' },
   ]);
 
-  assert.deepEqual(ordered.map((entry) => entry.id), ['CR-contract', 'CR-editor', 'CR-extension', 'CR-docs']);
-  assert.deepEqual(ordered.map((entry) => entry.owner), ['contracts', 'editor', 'extensions', 'docs']);
+  assert.deepEqual(ordered.map((entry) => entry.id), ['CR-shared', 'CR-editor', 'CR-docs']);
+  assert.deepEqual(ordered.map((entry) => entry.owner), ['shared', 'editor', 'docs']);
 });
 
 test('maps repository paths to package owners', () => {
-  assert.equal(packageOwnerForPath('packages/extensions/extension-runtime/src/index.ts').id, 'extensions');
+  assert.equal(packageOwnerForPath('packages/shared/ui-tokens/src/index.ts').id, 'shared');
   assert.equal(packageOwnerForPath('examples/editor-basic/App.tsx').id, 'examples');
   assert.equal(packageOwnerForPath('tools/testing/prepare-workspace-links.mjs').id, 'governance');
   assert.equal(packageOwnerForPath('unknown/file.txt').id, 'unowned');
@@ -47,5 +46,6 @@ test('validates the live first boundary runtime contract', async () => {
   ]);
   assert.ok(result.details.workspacePackageCount > 0);
   assert.ok(result.details.requiredAgentPaths.includes('AGENTS.md'));
-  assert.ok(result.details.orderedOwners.includes('extensions'));
+  assert.ok(result.details.orderedOwners.includes('shared'));
+  assert.equal(result.details.orderedOwners.includes('extensions'), false);
 });
