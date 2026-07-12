@@ -2,6 +2,14 @@ import assert from 'node:assert/strict';
 import { renderMarkdownToHtmlDocumentSync } from '../dist/html.js';
 import { renderMarkdownToHtmlSync } from '../dist/index.js';
 
+const toDataUri = (mimeType, bytes) => `data:${mimeType};base64,${Buffer.from(bytes).toString('base64')}`;
+const rasterFixtures = {
+  png: toDataUri('image/png', [0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0,0,0,13,0x49,0x48,0x44,0x52,0,0,0,1,0,0,0,1]),
+  gif: toDataUri('image/gif', [0x47,0x49,0x46,0x38,0x39,0x61,1,0,1,0]),
+  jpeg: toDataUri('image/jpeg', [0xff,0xd8,0xff,0xc0,0,7,8,0,1,0,1,1,0xff,0xd9]),
+  webp: toDataUri('image/webp', [0x52,0x49,0x46,0x46,22,0,0,0,0x57,0x45,0x42,0x50,0x56,0x50,0x38,0x58,10,0,0,0,0,0,0,0,0,0,0,0,0,0]),
+};
+
 const checks = [
   {
     id: 'sanitize-inline-html-and-unsafe-urls',
@@ -30,6 +38,39 @@ const checks = [
       assert.match(html, /<a href="#"/);
       assert.doesNotMatch(html, /javascript:/i);
       assert.doesNotMatch(html, /data:text/i);
+    },
+  },
+  {
+    id: 'mdwrk-safe-raster-data-images',
+    description: 'MdWrk sanitize mode preserves validated raster data images in inline, reference, and linked forms',
+    test() {
+      for (const dataUri of Object.values(rasterFixtures)) {
+        const markdown = `[![safe](${dataUri})](https://example.com)`;
+        const html = renderMarkdownToHtmlSync(markdown, { htmlHandling: 'sanitize', previewerProfile: 'mdwrk-cfm-previewer' });
+        assert.match(html, /href="https:\/\/example\.com"/);
+        assert.match(html, /src="data:image\/(?:png|jpeg|gif|webp);base64,/);
+      }
+      const referenceHtml = renderMarkdownToHtmlSync(`![safe][image]\n\n[image]: <${rasterFixtures.png}>`, { htmlHandling: 'sanitize', previewerProfile: 'mdwrk-cfm-previewer' });
+      assert.match(referenceHtml, /src="data:image\/png;base64,/);
+    },
+  },
+  {
+    id: 'mdwrk-rejects-unsafe-data-images-and-links',
+    description: 'MdWrk rejects malformed, mismatched, active-content, oversized-dimension, and hyperlink data URIs',
+    test() {
+      const oversizedPng = toDataUri('image/png', [0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0,0,0,13,0x49,0x48,0x44,0x52,0,0,0x40,1,0,0,0,1]);
+      const markdown = [
+        '![bad](data:image/png;base64,not-base64)',
+        `![mismatch](${toDataUri('image/jpeg', [0x47,0x49,0x46,0x38,0x39,0x61,1,0,1,0])})`,
+        '![svg](data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=)',
+        '![html](data:text/html;base64,PGgxPmJvb208L2gxPg==)',
+        `![large](${oversizedPng})`,
+        `[unsafe](${rasterFixtures.png})`,
+      ].join(' ');
+      const html = renderMarkdownToHtmlSync(markdown, { htmlHandling: 'sanitize', previewerProfile: 'mdwrk-cfm-previewer' });
+      assert.doesNotMatch(html, /src="data:/);
+      assert.doesNotMatch(html, /image\/svg\+xml|text\/html/);
+      assert.match(html, /href="#"/);
     },
   },
   {

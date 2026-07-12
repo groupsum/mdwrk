@@ -3,6 +3,8 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MarkdownRenderer, renderMarkdownToStaticHtmlDocument } from '../dist/index.js';
 
+const pngDataUri = `data:image/png;base64,${Buffer.from([0x89,0x50,0x4e,0x47,0x0d,0x0a,0x1a,0x0a,0,0,0,13,0x49,0x48,0x44,0x52,0,0,0,1,0,0,0,1]).toString('base64')}`;
+
 const checks = [
   {
     id: 'component-sanitize-html-policy',
@@ -83,6 +85,20 @@ const checks = [
       assert.match(html, /href="#"/);
       assert.doesNotMatch(html, /javascript:/i);
       assert.doesNotMatch(html, /data:text/i);
+    },
+  },
+  {
+    id: 'mdwrk-linked-raster-data-image-surface',
+    description: 'React preview preserves a validated raster data image while independently validating its outer link',
+    test() {
+      const html = renderToStaticMarkup(React.createElement(MarkdownRenderer, {
+        markdown: `[![safe](${pngDataUri})](https://example.com) [unsafe](${pngDataUri})`,
+        htmlHandling: 'sanitize',
+        previewerProfile: 'mdwrk-cfm-previewer',
+      }));
+      assert.match(html, /src="data:image\/png;base64,/);
+      assert.match(html, /href="https:\/\/example\.com"/);
+      assert.match(html, /href="#"/);
     },
   },
 ];

@@ -16,6 +16,10 @@ status_notes:
     at: "2026-04-21T09:08:25Z"
     note: "Expanded CFM profile ADR with preview/export profile disclosure requirements."
     status: "accepted"
+  -
+    at: "2026-07-12T21:12:37Z"
+    note: "Extended the MdWrk profile decision with context-sensitive safe raster data-URI image rendering."
+    status: "accepted"
 references: []
 body: |-
   # ADR-1028: CFM custom parser and preview profiles
@@ -23,12 +27,17 @@ body: |-
   ## Decision
   
   CFM shall define custom parser and custom previewer behavior as an additive profile layered above the frozen CommonMark and GFM profiles. CommonMark remains the normative core, GFM remains the default Markdown product profile, and CFM behavior must be named, gated, and testable as an explicit extension of those profiles.
+  The MdWrk preview profile shall additionally support validated raster `data:` URI image destinations. This is a rendering-policy capability, not a change to CommonMark or GFM parsing rules. URI policy shall be context-sensitive: approved raster `data:` URIs may be used as image sources, but `data:` URI hyperlink destinations remain unsafe and prohibited.
   
   ## Scope
   
   - Define CFM parser profile behavior without weakening CommonMark or GFM conformance claims.
   - Define CFM previewer profile behavior as a rendering policy, not as an implicit change to Markdown parsing.
   - Treat CFM as Custom Flavored Markdown: the named custom additive profile that may include custom syntax, rendering affordances, or extension-provided transforms.
+  - Support inline, reference-style, and safely hyperlinked images whose source is a validated base64 raster data URI.
+  - Allow only `image/png`, `image/jpeg`, `image/gif`, and `image/webp` base64 payloads.
+  - Require strict base64 decoding, declared MIME/signature agreement, and configured decoded-byte and pixel-dimension limits.
+  - Reject SVG, HTML, unsupported MIME types, invalid payloads, mismatched payloads, oversized payloads, `javascript:` destinations, and `data:` hyperlink destinations.
   - Keep unsupported custom behavior out of default CommonMark/GFM certification language.
   
   ## Consequences
@@ -36,10 +45,13 @@ body: |-
   - Every custom profile needs a SPEC, feature record, and evidence lane before it can be claimed.
   - Profile selection must be persisted and visible to settings/import/export surfaces.
   - Preview/export must report which parser and previewer profiles were active.
-  - This scope does not add new default CFM syntax; behavior that is specific to CFM must be documented explicitly as CFM-only.
+  - Image-source and hyperlink-destination sanitization must be evaluated independently.
+  - Rejected media must fail safely without navigation, script execution, or renderer failure; useful alt text or a deterministic fallback should remain available.
+  - This scope adds no new Markdown syntax. It guarantees a constrained CFM rendering behavior for syntax already parsed as images and links.
   
   ## 2026 SSOT Coverage Update
   
   CFM profile behavior shall be disclosed on preview, export, and conformance evidence surfaces whenever active parser or previewer behavior affects output. CM, GFM, and CFM remain separately targetable profiles.
   
   CFM parser behavior, CFM previewer behavior, and extension-provided profile effects must be additive to the CM and GFM baselines and must not silently weaken external conformance claims.
+  The safe raster data-image capability is governed by `feat:mdwrk-profile-safe-data-uri-images`, constrained by SPEC-2005 and SPEC-2060, and verified through the renderer core and React renderer test lanes.

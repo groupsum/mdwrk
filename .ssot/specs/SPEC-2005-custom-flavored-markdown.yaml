@@ -16,6 +16,10 @@ status_notes:
     at: "2026-04-21T09:20:21Z"
     note: "Expanded CFM spec with parser, previewer, extension, and export disclosure obligations."
     status: "draft"
+  -
+    at: "2026-07-12T21:12:37Z"
+    note: "Added normative safe raster data-image requirements for CFM."
+    status: "draft"
 references: []
 body: |-
   # Custom Flavored Markdown Specification
@@ -33,7 +37,15 @@ body: |-
   - CFM preview/export must disclose active custom profile behavior.
   - CFM features require parser, previewer, settings, and evidence coverage before release claims.
   - Ordered and unordered list authoring is documented as CM/GFM behavior; checklist semantics are documented as GFM behavior; load, block-map, reorder, palette, keyboard navigation, token bridges, and PDF artifact preparation are documented as MdWrk-operator behavior unless a named CFM feature changes rendered output.
+  ## Safe raster data-image capability
   
+  - CFM previewers must render inline and reference-style Markdown images backed by validated base64 raster data URIs.
+  - A validated raster data image may appear inside a separately validated safe hyperlink.
+  - Allowed media types are `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.
+  - A data image must use the `;base64,` form, decode strictly, match its declared media type by file signature, and remain within configured decoded-byte and pixel-dimension limits.
+  - `image/svg+xml`, HTML/XML payloads, unsupported media types, invalid base64, signature mismatches, and oversized payloads must be rejected safely.
+  - Support for raster data images is a CFM rendering guarantee. It must not be represented as a CommonMark or GFM host-loading guarantee.
+  - Rejection must not crash rendering or discard useful alternative text.
   ## 2026 SSOT Coverage Update
   
   CFM is the single MdWrk custom flavored markdown profile. CFM parser behavior, CFM previewer behavior, extension-provided transforms, and generated artifact behavior must remain additive to CM and GFM.

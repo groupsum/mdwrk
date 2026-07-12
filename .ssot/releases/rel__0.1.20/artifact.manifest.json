@@ -1,0 +1,1 @@
+{"artifacts":[{"id":"registry","kind":"registry","media_type":"application/json","path":".ssot/registry.json","sha256":"28a63b438966940df0056577434232d5cc4bca9f830f7d5b866d9c99983ff005","size":281015}],"kind":"output_artifact_manifest","release_id":"rel:0.1.20"}

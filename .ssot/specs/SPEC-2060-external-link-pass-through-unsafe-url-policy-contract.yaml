@@ -1,4 +1,4 @@
-schema_version: "0.2.0"
+schema_version: "0.6.0"
 kind: "spec"
 id: "spc:2060"
 number: 2060
@@ -11,7 +11,11 @@ tags: []
 summary: "External link behavior must distinguish absolute URI schemes and protocol-relative links from workspace links. Unsafe URL-bearing attributes and destinations must follow the preview/export sanitization policy rather than bypassing renderer safety controls."
 supersedes: []
 superseded_by: []
-status_notes: []
+status_notes:
+  -
+    at: "2026-07-12T21:12:38Z"
+    note: "Added context-sensitive image-source and hyperlink-destination URI policy."
+    status: "draft"
 references: []
 body: |-
   # SPEC-2060: External Link Pass Through And Unsafe URL Policy Contract
@@ -19,10 +23,18 @@ body: |-
   ## Requirements
   
   External link behavior must distinguish absolute URI schemes and protocol-relative links from workspace links. Unsafe URL-bearing attributes and destinations must follow the preview/export sanitization policy rather than bypassing renderer safety controls.
+  URI validation must be destination-context aware:
   
+  - Hyperlink destinations may use only the existing approved external, internal, fragment, and mail schemes. `data:` and `javascript:` hyperlink destinations are prohibited.
+  - Image sources may use approved HTTP(S), internal/relative sources, and validated base64 raster data URIs.
+  - Raster data-image media types are limited to `image/png`, `image/jpeg`, `image/gif`, and `image/webp`.
+  - Raster data-image validation requires strict base64 decoding, declared MIME/signature agreement, and configured decoded-byte and pixel-dimension limits.
+  - SVG, HTML/XML, unsupported, malformed, mismatched, or oversized data payloads must be rejected.
+  - When an image is nested inside a hyperlink, the image source and outer hyperlink destination must be validated independently.
+  - Rejection must fail closed without renderer failure, unsafe navigation, or script execution and should preserve useful alt text or a deterministic fallback.
   ## Evidence
   
-  Evidence must include preview/export policy tests, React renderer link interception evidence, or explicit partial feature status where browser-level coverage is broad rather than behavior-specific.
+  Evidence must include preview/export policy tests, React renderer link interception evidence, safe raster data-image positive cases, unsafe data-image and hyperlink negative cases, or explicit partial feature status where browser-level coverage is broad rather than behavior-specific.
 spec_kind: "normative"
 adr_ids:
   - "adr:1013"
