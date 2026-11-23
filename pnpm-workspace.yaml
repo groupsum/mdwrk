@@ -2,3 +2,4 @@ packages:
   - "packages/renderer/*"
   - "packages/editor/*"
   - "packages/shared/*"
+  - "examples/*"
