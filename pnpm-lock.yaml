@@ -943,19 +943,19 @@ packages:
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==, tarball: https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.31.tgz}
 
   '@mdwrk/extension-host@1.0.7':
-    resolution: {integrity: sha512-QU0uINpeBJWwisPepKDshr/Up7wPv3LOUr7fQj4teCMEkosdgsZX6z7acq7ZSm+Q4PVxPV5zW6iiS3QQotH4IA==, tarball: https://registry.npmjs.org/@mdwrk/extension-host/-/extension-host-1.0.7.tgz}
+    resolution: {integrity: sha512-gV43vfoE9D9Xbczc5E3Hp4otVx3vFLO++A60T8LmcJGBnwztHjB0f1O1rDNN9vKH3iZ8slMcoQxagWwEWysRyQ==, tarball: https://registry.npmjs.org/@mdwrk/extension-host/-/extension-host-1.0.7.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/extension-manifest@1.0.5':
-    resolution: {integrity: sha512-J0j4paTtqg8IilOFl7qExzl2h7uJTFnhN5P0Ugaqe+OVyTrSmfcoAAiOnRXLZoPSXf+rqm7ZZ77B2OPNxuUYOg==, tarball: https://registry.npmjs.org/@mdwrk/extension-manifest/-/extension-manifest-1.0.5.tgz}
+    resolution: {integrity: sha512-I/JybVoP8xLjXecJd0yJt0EnB0j9MtqQaZeuK2gHzhHhx15ewq257RK7x7QTNcvmt+kV5UR6jP+4hzeVD25BMQ==, tarball: https://registry.npmjs.org/@mdwrk/extension-manifest/-/extension-manifest-1.0.5.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/extension-runtime@1.2.4':
-    resolution: {integrity: sha512-XhYRKKONgEpgxsbvbEt0nAlTykyyPXVIDsO4Ll8FzufY0EyvUk10KeeAB4fjhIZk85dZySA4TYUhfXGBSd9xEg==, tarball: https://registry.npmjs.org/@mdwrk/extension-runtime/-/extension-runtime-1.2.4.tgz}
+    resolution: {integrity: sha512-Gtyd+ohA9zsgXyPUTEHHjGXxQDZr9jfchx2DKNB+3X7fdDSngEvS1RsMH64NVlyt57ggqQqO7HiSDysbKxUscg==, tarball: https://registry.npmjs.org/@mdwrk/extension-runtime/-/extension-runtime-1.2.4.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/extension-theme-studio@1.2.4':
-    resolution: {integrity: sha512-ywT+9OoBNJ1oCl7sx7I5Q9SxEWR+YrXfRWKpCPzjkTWQ885EHOyqlTY0Ki8xf09a9D9B8ZobmfizAOw3FWB1FQ==, tarball: https://registry.npmjs.org/@mdwrk/extension-theme-studio/-/extension-theme-studio-1.2.4.tgz}
+    resolution: {integrity: sha512-OZhcLX2mgGNj0jZKuYJQkAh3Vlu1Oa2vZdukPyFZxmKrIuXLXgq7/QNNQkMZPGdRQAgIk77bqJ4kfvjQP/EXEQ==, tarball: https://registry.npmjs.org/@mdwrk/extension-theme-studio/-/extension-theme-studio-1.2.4.tgz}
     engines: {node: '>=20 <23'}
     peerDependencies:
       react: ^19.0.0
@@ -988,31 +988,31 @@ packages:
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-contract@1.1.7':
-    resolution: {integrity: sha512-Hp33JU2XWeoBHf7X85O2cVDJ09mDQa/9zmTYG8KjjrF4VEk7y7xnp8xpdoLb97gdpso69q16mfSg1IiWVrG25Q==, tarball: https://registry.npmjs.org/@mdwrk/theme-contract/-/theme-contract-1.1.7.tgz}
+    resolution: {integrity: sha512-bIx4IRsTO1yM6fHLu12nt0WpzELeRexsxxUwjIL0OoyFwKdrzpk/m5LfO8RmNM8y57TE8UFQ2+QQmjl8R2LAgQ==, tarball: https://registry.npmjs.org/@mdwrk/theme-contract/-/theme-contract-1.1.7.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-diagnostics@1.0.0':
-    resolution: {integrity: sha512-Qr1Ckh7//8aOBg3JkWycQotgudbbs0UZWGA6TgldTc6/CGcsmUmIiUWmi4zzdBVVMHGrI0TXqXFM6xpd0iRbVg==, tarball: https://registry.npmjs.org/@mdwrk/theme-diagnostics/-/theme-diagnostics-1.0.0.tgz}
+    resolution: {integrity: sha512-sRgRfIZZWi+0LTFSPN/rJTfp/Iy3NNbdHvRTia6a6q0UOMP3LPBDFgKo3Cpc9Q6htBBG2KYOqfbp4oJY2y8eqg==, tarball: https://registry.npmjs.org/@mdwrk/theme-diagnostics/-/theme-diagnostics-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-draft@1.0.0':
-    resolution: {integrity: sha512-OZoIFAfLqzUQorX+5+SW97h4oa2DPSdq21yWNImm2iZXARkrDII0dERYupnICbnXqdtoGa0An40zLZmWosv7Gg==, tarball: https://registry.npmjs.org/@mdwrk/theme-draft/-/theme-draft-1.0.0.tgz}
+    resolution: {integrity: sha512-4wsXGVbgnoVV9yd9cZgzVDmDIRc5EcroUmiQRvNqPO4U/XA33i4iENeFZS9a5+gsZBwcBKXHL1iOglGMUS75oA==, tarball: https://registry.npmjs.org/@mdwrk/theme-draft/-/theme-draft-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-export@1.0.0':
-    resolution: {integrity: sha512-6BhhmH2Cq8Nn6Wjv86L68VjMgkCBgYArYN1cNMHtUj4X+m94CwlHjQ2VrMFmjqFVzFm0I6tRR/GFWmi463/qZQ==, tarball: https://registry.npmjs.org/@mdwrk/theme-export/-/theme-export-1.0.0.tgz}
+    resolution: {integrity: sha512-VMFqWvhTG6sq17ps4ktl8VhoDmsUWML7sXqkaw2cY4p6jMXu32C23hwzTblF1Bi8WlQ7J7ElXgm8lV8AkevwUA==, tarball: https://registry.npmjs.org/@mdwrk/theme-export/-/theme-export-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-presets@1.0.0':
-    resolution: {integrity: sha512-vT2XpWh7rPokspuIJ24sCL+qbwIJYw8WF3hkoxfLjmjwqZ5/fkmRFtYCrZdez8ZMbnvgmH33wX4zcIQyqVp63A==, tarball: https://registry.npmjs.org/@mdwrk/theme-presets/-/theme-presets-1.0.0.tgz}
+    resolution: {integrity: sha512-b/awSi0KvDXJZGWOCBO/XZluRyMvctdWoza740kepBSvdvmM7C2hHH8s6g2GOBOgsp7PeTf4VTsoCLc1JDJexA==, tarball: https://registry.npmjs.org/@mdwrk/theme-presets/-/theme-presets-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-preview@1.0.0':
-    resolution: {integrity: sha512-nnz3XD0wtg68mOYSwVM1zAaIaHS8GsJjh78MOYE2YAUzi/hnLl78ffk76u6bxhEOD78EyNVMTil8+HMbMWa1wQ==, tarball: https://registry.npmjs.org/@mdwrk/theme-preview/-/theme-preview-1.0.0.tgz}
+    resolution: {integrity: sha512-fKn4ofyKy7A5nCX1kH39aPvKqUe2f4NbFXbUFNbsRY6JFvzsTMbkpr6uwTWoYdTj08r+ErxJtzcgf4CrVRtviw==, tarball: https://registry.npmjs.org/@mdwrk/theme-preview/-/theme-preview-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/theme-specimens@1.0.0':
-    resolution: {integrity: sha512-u59bpS3DmswohfqKMa+gn0IIxKP6k5mBT+zXkCeQ4SQnQ3zWud0rNHoIounahKvyjE0wpLprS/ods84U09TWZg==, tarball: https://registry.npmjs.org/@mdwrk/theme-specimens/-/theme-specimens-1.0.0.tgz}
+    resolution: {integrity: sha512-Cd9OFR24Be3FJdyoHaa5WshHSbxuOJFnrCi6D5uy9Ar8ny041OiWEUM8lPGERKW+bSgz82WZ31nUXuqevHEExw==, tarball: https://registry.npmjs.org/@mdwrk/theme-specimens/-/theme-specimens-1.0.0.tgz}
     engines: {node: '>=20 <23'}
 
   '@mdwrk/ui-tokens@1.3.1':
