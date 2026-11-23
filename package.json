@@ -1,7 +1,7 @@
 {
     "name":  "mdwrk",
     "private":  true,
-    "version":  "0.1.20",
+    "version":  "0.1.21",
     "packageManager":  "pnpm@10.11.0",
     "workspaces":  [
                        "packages/renderer/*",
@@ -18,9 +18,10 @@
                             "typescript":  "5.7.3"
                         },
     "scripts":  {
-                    "build":  "npm run build:shared \u0026\u0026 npm run build:renderer \u0026\u0026 npm run build:editor \u0026\u0026 npm run build:examples",
-                    "build:shared":  "npm run build -w @mdwrk/ui-tokens \u0026\u0026 npm run build -w @mdwrk/core-demo-themes \u0026\u0026 npm run build -w @mdwrk/core-demo-react \u0026\u0026 npm run build -w @mdwrk/icons \u0026\u0026 npm run build -w @mdwrk/testing",
-                    "build:renderer":  "npm run build:shared \u0026\u0026 npm run build -w @mdwrk/markdown-renderer-core \u0026\u0026 npm run build -w @mdwrk/markdown-renderer-react",
+                    "build":  "npm run build:shared \u0026\u0026 npm run build:examples",
+                    "build:foundation":  "npm run build -w @mdwrk/ui-tokens \u0026\u0026 npm run build -w @mdwrk/icons \u0026\u0026 npm run build -w @mdwrk/testing",
+                    "build:shared":  "npm run build:editor \u0026\u0026 npm run build -w @mdwrk/core-demo-themes \u0026\u0026 npm run build -w @mdwrk/core-demo-react",
+                    "build:renderer":  "npm run build:foundation \u0026\u0026 npm run build -w @mdwrk/markdown-renderer-core \u0026\u0026 npm run build -w @mdwrk/markdown-renderer-react",
                     "build:editor":  "npm run build:renderer \u0026\u0026 npm run build -w @mdwrk/markdown-editor-core \u0026\u0026 npm run build -w @mdwrk/markdown-editor-react \u0026\u0026 npm run build -w @mdwrk/markdown-edit-in-renderer-react",
                     "prepare:workspace-links:examples":  "node ./tools/testing/prepare-workspace-links.mjs @mdwrk/extension-host @mdwrk/extension-manifest @mdwrk/theme-contract @mdwrk/studio-ui-tokens @mdwrk/markdown-editor-core @mdwrk/markdown-editor-react @mdwrk/markdown-edit-in-renderer-react @mdwrk/markdown-renderer-core @mdwrk/markdown-renderer-react @mdwrk/extension-runtime @mdwrk/extension-theme-studio @mdwrk/testing @mdwrk/ui-tokens @mdwrk/core-demo-themes @mdwrk/core-demo-react @mdwrk/theme-draft @mdwrk/theme-preview @mdwrk/theme-diagnostics @mdwrk/theme-presets @mdwrk/theme-export @mdwrk/theme-specimens",
                     "build:examples":  "npm run prepare:workspace-links:examples \u0026\u0026 npm run build -w @mdwrk/example-renderer-basic \u0026\u0026 npm run build -w @mdwrk/example-editor-basic \u0026\u0026 npm run build -w @mdwrk/example-editor-demo \u0026\u0026 npm run build -w @mdwrk/example-previewer-demo \u0026\u0026 npm run build -w @mdwrk/example-edit-in-renderer-demo \u0026\u0026 npm run build -w @mdwrk/example-ui-tokens-demo",
