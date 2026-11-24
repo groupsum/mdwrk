@@ -3,3 +3,6 @@ packages:
   - "packages/editor/*"
   - "packages/shared/*"
   - "examples/*"
+
+overrides:
+  'postcss@>=8 <8.5.23': 8.5.33
