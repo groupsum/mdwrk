@@ -14,6 +14,8 @@
     "@mdwrk/core-demo-react": "^1.0.1",
     "@mdwrk/core-demo-themes": "^1.0.1",
     "@mdwrk/markdown-edit-in-renderer-react": "^1.0.14",
+    "@mdwrk/markdown-editor-react": "^1.1.9",
+    "@mdwrk/markdown-renderer-react": "^1.1.8",
     "@mdwrk/theme-presets": "^1.0.0",
     "@mdwrk/theme-preview": "^1.0.0",
     "@mdwrk/ui-tokens": "^1.2.8",
@@ -30,7 +32,7 @@
     "jsdom": "^25.0.1",
     "typescript": "^5.7.3",
     "vite": "^6.4.1",
-    "vitest": "^2.1.8"
+    "vitest": "4.1.12"
   },
   "license": "Apache-2.0",
   "author": "Jacob Stewart <jacob@swarmauri.com>",

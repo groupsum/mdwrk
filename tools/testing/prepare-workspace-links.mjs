@@ -45,6 +45,15 @@ for (const packageName of requestedPackages) {
     throw new Error(`Unknown workspace package: ${packageName}`);
   }
   const target = path.resolve(repoRoot, relativeTarget);
+  // A clean checkout uses the installed package when its optional sibling checkout is absent.
+  try {
+    await fs.access(path.join(target, 'package.json'));
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      continue;
+    }
+    throw error;
+  }
   const linkPath = path.join(packageRoot, 'node_modules', ...packageName.split('/'));
   await fs.mkdir(path.dirname(linkPath), { recursive: true });
   await fs.rm(linkPath, { recursive: true, force: true });
